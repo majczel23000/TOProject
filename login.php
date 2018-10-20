@@ -12,8 +12,8 @@
             <a href="index.html">VetManager</a>
         </div>
         <div id="appAuthButtons">
-            <a href="login.html" class="btn btnLogin">Login</a>
-            <a href="register.html" class="btn btnRegister">Register</a>
+            <a href="login.php" class="btn btnLogin">Login</a>
+            <a href="register.php" class="btn btnRegister">Register</a>
         </div>
         <div class="clear"></div>
     </nav>
