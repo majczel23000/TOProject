@@ -1,0 +1,126 @@
+/*=====FONTS======*/
+@font-face {
+    font-family: 'OpenSans-Regular';
+    src: url('../fonts/OpenSans-Regular.ttf');
+}
+@font-face {
+    font-family: 'OpenSans-Bold';
+    src: url('../fonts/OpenSans-Bold.ttf');
+}
+@font-face {
+    font-family: 'OpenSans-Light';
+    src: url('../fonts/OpenSans-Light.ttf');
+}
+@font-face {
+    font-family: 'OpenSans-Italic';
+    src: url('../fonts/OpenSans-Italic.ttf');
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'OpenSans-Regular';
+    min-height: 100%;
+}
+.clear {
+    clear: both;
+}
+
+/*===MENUSTYLES===*/
+#menu {
+    background: #333;
+}
+#appTitle, #appAuthButtons {
+    color: #f6f6f6;
+    font-size: 1.2rem;
+    margin: 0;
+    width: 50%;
+    float: left;
+}
+#appTitle a {
+    display: block;
+    text-decoration: none;
+    color: #f6f6f6;
+    text-align: center;
+    margin: 25px;
+}
+.btn {
+    font-size: 1rem;
+    text-decoration: none;
+    color: black;
+    margin: 15px 10px;
+    float: right;
+    border: none;
+    padding: 15px 30px;
+  
+}
+.btn:hover {
+    cursor: pointer;
+}
+.btnLogin {
+    background:#39e572;
+}
+.btnRegister {
+    background: #187cf7;  
+}
+
+/*===CONTENTSTYLES===*/
+#content {
+    height: 100%;
+    width: 100%;
+    background: #f6f6f6;
+}
+#contentTitle h1{
+    text-align: center;
+    margin: 0;
+    padding: 50px 0px;
+}
+#contentDescription, #contentTitle, #contentFunctions {
+    width: 60%;
+    margin: 0 auto;
+    line-height: 28px;
+}
+#contentFunctions{
+    margin-top: 50px;
+}
+.functionItem {
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+}
+.functionItemImage {
+    float: left;
+    width: 50%;
+}
+.functionItemDescription {
+    float: left;
+    width: 50%;
+}
+.functionItemDescription p{
+    padding:10px;
+}
+
+/*===FORMSTYLES===*/
+#loginForm, #registerForm {
+    color: #f6f6f6;
+    width: 40%;
+    margin: 0 auto;
+    padding: 50px;
+    background: #333;
+    border: 2px solid #444;
+}
+.formGroup {
+    display: block;
+    padding: 10px;
+}
+.formGroup label{
+    width: 45%;
+    float: left;
+    line-height: 35px;
+}
+.formGroup input{
+    width: 45%;
+    float: right;
+    border: none;
+    padding: 10px;
+}
