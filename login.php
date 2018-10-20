@@ -9,7 +9,7 @@
 <body>
     <nav id="menu">
         <div id="appTitle">
-                <a href="index.html">VetManager</a>
+            <a href="index.html">VetManager</a>
         </div>
         <div id="appAuthButtons">
             <a href="login.html" class="btn btnLogin">Login</a>
