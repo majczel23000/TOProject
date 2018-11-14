@@ -42,7 +42,7 @@
             </div>
             <button type="submit" class="btn btnLogin">Login</button>
             <div class="clear"></div>
-        </form>
+        </div>
     </div>
 	<script src="js/jquery-3.3.1.min.js"></script>
 	<script src="js/login.js"></script>
