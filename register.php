@@ -1,4 +1,11 @@
-<!doctype html>
+<?php
+	session_start();
+	if (isset($_SESSION['LOGGED']) && $_SESSION['LOGGED']){			//if logged 
+		header('Location: home.php');
+		exit();
+	}
+?>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -9,7 +16,7 @@
 <body>
     <nav id="menu">
         <div id="appTitle">
-            <a href="index.html">VetManager</a>
+            <a href="index.php">VetManager</a>
         </div>
         <div id="appAuthButtons">
             <a href="login.php" class="btn btnLogin">Login</a>

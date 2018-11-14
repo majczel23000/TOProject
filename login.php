@@ -1,4 +1,11 @@
-<!doctype html>
+<?php
+	session_start();
+	if (isset($_SESSION['LOGGED']) && $_SESSION['LOGGED']){			//if logged 
+		header('Location: home.php');
+		exit();
+	}
+?>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -9,7 +16,7 @@
 <body>
     <nav id="menu">
         <div id="appTitle">
-            <a href="index.html">VetManager</a>
+            <a href="index.php">VetManager</a>
         </div>
         <div id="appAuthButtons">
             <a href="login.php" class="btn btnLogin">Login</a>
@@ -22,21 +29,22 @@
         <div id="contentTitle">
             <h1>Log into the system:</h1>
         </div>
-        <form id="loginForm">
+        <div id="loginForm">
             <div class="formGroup">
-                <label>Email: </label>
-                <input type="email" name="email">
+                <label for="email">Email: </label>
+                <input id="email" type="email" name="email">
                 <div class="clear"></div>
             </div>
             <div class="formGroup">
-                <label>Password: </label>
-                <input type="password" name="password">
+                <label for="password">Password: </label>
+                <input id="password" type="password" name="password">
                 <div class="clear"></div>
             </div>
             <button type="submit" class="btn btnLogin">Login</button>
             <div class="clear"></div>
         </form>
     </div>
-
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script src="js/login.js"></script>
 </body>
 </html>

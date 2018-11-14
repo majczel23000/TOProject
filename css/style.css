@@ -1,3 +1,6 @@
+body{
+	background: #f6f6f6;
+}
 /*=====FONTS======*/
 @font-face {
     font-family: 'OpenSans-Regular';
@@ -123,4 +126,12 @@ html, body {
     float: right;
     border: none;
     padding: 10px;
+}
+
+/*===LOGINSTYLES===*/
+.login-error{
+	dispaly:block;
+	color:gray;
+	letter-spacing:1px;
+	position:absolute;
 }
