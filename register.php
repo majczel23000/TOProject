@@ -29,36 +29,37 @@
         <div id="contentTitle">
             <h1>Register in the system:</h1>
         </div>
-        <form id="registerForm">
+        <div id="registerForm">
             <div class="formGroup">
-                <label>First Name: </label>
-                <input type="text" name="firstName">
+                <label for="firstName">First Name: </label>
+                <input id="firstName" type="text" name="firstName">
                 <div class="clear"></div>
             </div>
             <div class="formGroup">
-                <label>Last Name: </label>
-                <input type="text" name="lastName">
+                <label for="lastName">Last Name: </label>
+                <input id="lastName" type="text" name="lastName">
                 <div class="clear"></div>
             </div>
             <div class="formGroup">
-                <label>Email: </label>
-                <input type="email" name="email">
+                <label for="email">Email: </label>
+                <input id="email" type="email" name="email">
                 <div class="clear"></div>
             </div>
             <div class="formGroup">
-                <label>Password: </label>
-                <input type="password" name="password">
+                <label for="password">Password: </label>
+                <input id="password" type="password" name="password">
                 <div class="clear"></div>
             </div>
             <div class="formGroup">
-                <label>Confirm password: </label>
-                <input type="password" name="confirmPassword">
+                <label for="confirmPassword">Confirm password: </label>
+                <input id="confirmPassword" type="password" name="confirmPassword">
                 <div class="clear"></div>
             </div>
             <button type="submit" class="btn btnRegister">Register</button>
             <div class="clear"></div>
-        </form>
+        </div>
     </div>
-
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script src="js/register.js"></script>
 </body>
 </html>

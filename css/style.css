@@ -131,7 +131,25 @@ html, body {
 /*===LOGINSTYLES===*/
 .login-error{
 	dispaly:block;
-	color:gray;
+	color:#a6a6a6;
+	letter-spacing:1px;
+	position:absolute;
+}
+
+/*===REGISTERSTYLES===*/
+.register-error-info{
+	dispaly:block;
+	color:#a6a6a6;
+	letter-spacing:1px;
+	position:absolute;
+	border:1px solid #990000;
+	border-radius:10px;
+	text-align:center;
+	cursor:pointer;
+}
+.register-error{
+	dispaly:block;
+	color:#a6a6a6;
 	letter-spacing:1px;
 	position:absolute;
 }

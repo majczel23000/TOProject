@@ -1,5 +1,20 @@
+const mailReg = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/					//regularne dla maila
+$("#email").on('blur',function(){
+	if(!mailReg.test($(this).val())){								//jesli nie jest poprawne i nie ma błędu juz to pokazujemy błąd
+		if($('.login-error').length>0)
+			$('.login-error').remove();
+		$loginBlurError = $('<span></span>');
+		$loginBlurError.prop('class','login-error');
+		$loginBlurError.prop('id','loginBlurError');
+		$loginBlurError.html('Adres Email posiada niewłaściwy format!');
+		$('#loginForm').append($loginBlurError);
+	}
+	else{
+		if($('#loginBlurError').length>0)
+			$('#loginBlurError').remove();
+	}
+});
 $('.btnLogin').on('click',function(){
-	const mailReg = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/					//regularne dla maila
 	const email=$('#email').val();
 	const password=$('#password').val();
 	
@@ -9,22 +24,14 @@ $('.btnLogin').on('click',function(){
 	if(!email || !password){
 		$loginEmptyInput = $('<span></span>');
 		$loginEmptyInput.prop('class','login-error');
-		/*$loginEmptyInput.css({
-			'top': $(this).offset().top,
-			'left': $(this).offset().left + $(this).outerWidth() + 20
-		})*/
 		$loginEmptyInput.html('Proszę uzupełnić wszystkie pola!');
 		$('#loginForm').append($loginEmptyInput);
 	}
 	else if(!mailReg.test(email)){																//jesli nie jest poprawne i nie ma błędu juz to pokazujemy błąd
-		$loginEmptyInput = $('<span></span>');
-		$loginEmptyInput.prop('class','login-error');
-		/*$loginEmptyInput.css({
-			'top': $(this).offset().top,
-			'left': $(this).offset().left + $(this).outerWidth() + 20
-		})*/
-		$loginEmptyInput.html('Adres Email posiada niewłaściwy format!');
-		$('#loginForm').append($loginEmptyInput);
+		$wrongSyntaxEmail = $('<span></span>');
+		$wrongSyntaxEmail.prop('class','login-error');
+		$wrongSyntaxEmail.html('Adres Email posiada niewłaściwy format!');
+		$('#loginForm').append($wrongSyntaxEmail);
 	}
 	else{
 		$.ajax({
@@ -42,28 +49,28 @@ $('.btnLogin').on('click',function(){
 			success: function(json){
 				switch(json){
 					case 1:
-						$loginEmptyInput = $('<span></span>');
-						$loginEmptyInput.prop('class','login-error');
-						$loginEmptyInput.html('Nie można nawiazać połączenia! Prosimy spróbować ponowanie później.');
-						$('#loginForm').append($loginEmptyInput);
+						$errLogin = $('<span></span>');
+						$errLogin.prop('class','login-error');
+						$errLogin.html('Nie można nawiazać połączenia! Prosimy spróbować ponowanie później.');
+						$('#loginForm').append($errLogin);
 						break;
 					case 2:
-						$loginEmptyInput = $('<span></span>');
-						$loginEmptyInput.prop('class','login-error');
-						$loginEmptyInput.html('Wprowadzone dane są nieprawidłowe!');
-						$('#loginForm').append($loginEmptyInput);
+						$errLogin = $('<span></span>');
+						$errLogin.prop('class','login-error');
+						$errLogin.html('Wprowadzone dane są nieprawidłowe!');
+						$('#loginForm').append($errLogin);
 						break;
 					case 0:
 						location.href="home.php";
 						break;	
 					default:
-						$loginEmptyInput = $('<span></span>');
-						$loginEmptyInput.prop('class','login-error');
-						$loginEmptyInput.html('Wystąpił nieznany błąd!');
-						$('#loginForm').append($loginEmptyInput);
+						$errLogin = $('<span></span>');
+						$errLogin.prop('class','login-error');
+						$errLogin.html('Wystąpił nieznany błąd!');
+						$('#loginForm').append($errLogin);
 						break;
 				}
-				console.log(json);
+				//console.log(json);
 				$('body').css('opacity','1');
 				$('body').css('cursor','default');
 			},

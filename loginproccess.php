@@ -28,7 +28,7 @@ class Logowanie{
 	}
 	
 	public function customerService(){										//funkcja obsługująca lgoowanie klienta
-		$query="SELECT * FROM customer WHERE Email='".$this->email."'";			//pobieramy dane klienta o podanym loginie
+		$query="SELECT * FROM CUSTOMER WHERE EMAIL='".$this->email."'";			//pobieramy dane klienta o podanym loginie
 		$result=$this->db->query($query);
 		$num_rows=$result->num_rows;
 		if($num_rows!=1){														//jesli liczba pobranych wierszy jest różna od 1, to nie ma takiego klienta
@@ -37,9 +37,9 @@ class Logowanie{
 		}
 		else{
 			$user = $result->fetch_assoc();
-			if(password_verify($this->password,$user['password'])){				//jesli jest jeden wiersz to porównujemy hasło
+			if(password_verify($this->password,$user['PASSWORD'])){				//jesli jest jeden wiersz to porównujemy hasło
 				$_SESSION['LOGGED']=true;										//ustawiamy zmienne sesji
-				$_SESSION['USER_ID']=$user['IDCustomer'];							
+				$_SESSION['USER_ID']=$user['CUS_ID'];							
 				$_SESSION['ACC_TYPE']='CUSTOMER';
 				$result->free();
 				$this->returnVal=0;
@@ -47,18 +47,17 @@ class Logowanie{
 				$this->inLoginHistory=true;
 			}
 			else {																//jeśli podane hasło się różni
-				$_SESSION['USER_ID']=$user['IDCustomer'];							//zeby wiadomoe było na czyje konto chciał sie zalogować delikfent
+				$_SESSION['USER_ID']=$user['CUS_ID'];							//zeby wiadomoe było na czyje konto chciał sie zalogować delikfent
 				$result->free();
 				$this->returnVal=2;
 				$this->insertLoginHistory("CUS");								//wysyłamy informacje do tabeli LOGIN_HISTORY
 				$this->inLoginHistory=true;
 			}
 		}
-		
 	}
 	
 	public function employeeService(){										//to samo co wyżej tylko, że dla pracownika
-		$query="SELECT * FROM doctor WHERE Email='".$this->email."'";
+		$query="SELECT * FROM DOCTOR WHERE EMAIL='".$this->email."'";
 		$result=$this->db->query($query);
 		$num_rows=$result->num_rows;
 		if($num_rows!=1){
@@ -67,21 +66,21 @@ class Logowanie{
 		}
 		else{
 			$user = $result->fetch_assoc();
-			if(password_verify($this->password,$user['Password'])){
+			if(password_verify($this->password,$user['PASSWORD'])){
 				$_SESSION['LOGGED']=true;
-				$_SESSION['USER_ID']=$user['IDDoctor'];
+				$_SESSION['USER_ID']=$user['DOC_ID'];
 				$_SESSION['ACC_TYPE']='ADMIN';
-				$_SESSION['ADM_TYPE']=$user['Adm_Type'];
+				$_SESSION['ADM_TYPE']=$user['ADM_TYPE'];
 				$result->free();
 				$this->returnVal=0;
-				$this->insertLoginHistory("EMP");								//wysyłamy informacje do tabeli LOGIN_HISTORY
+				$this->insertLoginHistory("DOC");								//wysyłamy informacje do tabeli LOGIN_HISTORY
 				$this->inLoginHistory=true;
 			}
 			else {
-				$_SESSION['USER_ID']=$user['IDDoctor'];
+				$_SESSION['USER_ID']=$user['DOC_ID'];
 				$result->free();
 				$this->returnVal=2;
-				$this->insertLoginHistory("EMP");								//wysyłamy informacje do tabeli LOGIN_HISTORY
+				$this->insertLoginHistory("DOC");								//wysyłamy informacje do tabeli LOGIN_HISTORY
 				$this->inLoginHistory=true;
 			}
 		}
