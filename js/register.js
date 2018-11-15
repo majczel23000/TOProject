@@ -106,10 +106,10 @@ $('#confirmPassword').on('keyup',function(){
 
 // akcja po kliknięciu przycisku register
 $('#btnRegister').on('click', function(){
-	const firstName = $("firstName").val();
-	const lastName = $("lastName").val();
-	const email = $("email").val();
-	const password = $("password").val();
+	const firstName = $("#firstName").val();
+	const lastName = $("#lastName").val();
+	const email = $("#email").val();
+	const password = $("#password").val();
 
 	$.ajax({
 		type:"post",

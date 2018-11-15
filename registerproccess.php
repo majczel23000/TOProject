@@ -22,8 +22,9 @@ class Rejestracja{
 		if(mysqli_connect_errno())
             $this->returnVal = 1;
         else{
-            $query = "INSERT INTO customer (FIRST_NAME, LAST_NAME, PASSWORD, EMAIL) VALUES('".$this->firstName."','".$this->lastName."','".$this->password."','".$this->email."','".$this->firstName."')";
-            $db->query($query);
+            $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
+            $query = "INSERT INTO customer (FIRST_NAME, LAST_NAME, PASSWORD, EMAIL) VALUES('".$this->firstName."','".$this->lastName."','".$hashedPassword."','".$this->email."')";
+            $this->db->query($query);
             $this->returnVal = 0;
         }
         @$this->db->close();
