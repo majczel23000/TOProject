@@ -1,3 +1,12 @@
+// true - poprawnie uzupełnione, false - błędnie
+let validationObjects = {
+	"firstName": false,
+	"lastName": false,
+	"email": false,
+	"password": false,
+	"confirmPassword": false
+};
+
 //obsługa maila
 $('#email').on('blur',function(){
 	const mailReg = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/					//regularne dla maila
@@ -6,10 +15,15 @@ $('#email').on('blur',function(){
 	if(!mailReg.test($(this).val())){																//sprawdzamy czy zgadza sie z wyrażeniem regularnym
 		errorService(name,$(this),'Adres Email posiada niewłaściwy format!');						//wywołanie funkcji generującej błąd
 		isSyntaxError=true;																			//zapisujemy, ze był błąd, aby nie sprawdzać już czy email wolny
+		validationObjects["email"] = false;
 	}
 	else
+	{
 		if($('#'+name+'Info').length>0)																//jesli był błąd a juz nie powinien byc to usuwamy		
 			$('#'+name+'Info').remove();
+		validationObjects["email"] = true;
+	}
+	checkIfAllValid();
 	
 	if(!isSyntaxError){																				//jesli nie było błędu to sprawdzamy czy mail jest wolny
 		$.ajax({
@@ -42,43 +56,96 @@ $('#email').on('blur',function(){
 	}
 });
 //obsługa imienie
-$('#firstName').on('blur',function(){
+$('#firstName').on('keyup',function(){
 	const name="emptyFirstName";
 	if(!$(this).val())																		//jesli hasło ma mniej niz 5 liter	
 		errorService(name,$(this),'To pole nie może pozostać puste!');						//no a tu to to samo co wczesniej
-	else
+	else{
 		if($('#'+name+'Info').length>0)
 			$('#'+name+'Info').remove();
+		validationObjects["firstName"] = true;
+	}
+	checkIfAllValid();	
 });
 //obsługa nazwiska
-$('#lastName').on('blur',function(){
+$('#lastName').on('keyup',function(){
 	const name="emptyLastName";
 	if(!$(this).val())																		//jesli hasło ma mniej niz 5 liter	
 		errorService(name,$(this),'To pole nie może pozostać puste!');						//no a tu to to samo co wczesniej
-	else
+	else{
 		if($('#'+name+'Info').length>0)
 			$('#'+name+'Info').remove();
+		validationObjects["lastName"] = true;
+	}
+	checkIfAllValid();	
 });
 //obsługa hasła
-$('#password').on('blur',function(){
+$('#password').on('keyup',function(){
 	const name="weakPass";
 	if($(this).val().length<5)																		//jesli hasło ma mniej niz 5 liter	
 		errorService(name,$(this),'Hasło musi zawierać co najmniej 5 znaków!');						//no a tu to to samo co wczesniej
-	else
+	else{
 		if($('#'+name+'Info').length>0)
 			$('#'+name+'Info').remove();
+		validationObjects["password"] = true;
+	}
+	checkIfAllValid();	
 });
 //obsługa potwierdzenia hasła
-$('#confirmPassword').on('blur',function(){
+$('#confirmPassword').on('keyup',function(){
 	const name="diffrentPass";
 	if($(this).val()!=$('#password').val())															//jesli hasła się różnią	
 		errorService(name,$(this),'Podane hasła nie są takie same!');								//no a tu to to samo co wczesniej
-	else
+	else{
 		if($('#'+name+'Info').length>0)
 			$('#'+name+'Info').remove();
+		validationObjects["confirmPassword"] = true;
+	}
+	checkIfAllValid();
 });
+
+// akcja po kliknięciu przycisku register
+$('#btnRegister').on('click', function(){
+	const firstName = $("firstName").val();
+	const lastName = $("lastName").val();
+	const email = $("email").val();
+	const password = $("password").val();
+
+	$.ajax({
+		type:"post",
+		url:"registerproccess.php",
+		dataType:"json",
+		data:{
+			firstName: firstName,
+			lastName: lastName,
+			email: email,
+			password: password
+		},
+		beforeSend: function(){
+			$('body').css('opacity','0.6');
+			$('body').css('cursor','progress');
+		},
+		success: function(json){
+			switch(json){
+				case 0:
+					location.href="login.php";
+				default:
+					console.log('elo');
+			}
+			$('body').css('opacity','1');
+			$('body').css('cursor','default');
+		},
+		error: function(e){
+			console.warn(e);
+			$('body').css('opacity','1');
+			$('body').css('cursor','default');
+		}
+	})
+});
+
 //funkcja wyswietlająca błedy
 function errorService(name,$obj,msg){													//przyjmuje nazwe błędu, obiekt, który wywołał błąd (input) oraz treść błędu
+	validationObjects[$obj[0].id] = false;
 	if($('#'+name+'Info').length<1){													//jesli nie ma jeszcze takiego błędu to wchodzimy do ifa
 		$errorInfo=$('<span></span>');													//tworzymy wykrzyknik i nadajemy odpowiednie paramatery i właściwości
 		$errorInfo.prop('class','register-error-info');
@@ -104,4 +171,23 @@ function errorService(name,$obj,msg){													//przyjmuje nazwe błędu, obi
 		})
 		$('body').append($errorInfo);													//i dodajemy błąd do strony
 	}
+}
+
+// sprawdź, czy wszystkie elementy z validationObjects są poprawne i odpowiednio pokaż przycisk rejestracji (disabled/enabled)
+function checkIfAllValid(){
+	const btnRegister = $('#btnRegister');
+	console.log('check');
+	for (var k in validationObjects){
+		if (validationObjects.hasOwnProperty(k)) {
+			if(!validationObjects[k]){
+				btnRegister.removeClass("btnRegister");
+				btnRegister.addClass("btnRegisterDisabled");
+				btnRegister.attr("disabled", "disabled");
+				return;
+			}
+		}
+	}
+	btnRegister.removeClass("btnRegisterDisabled");
+	btnRegister.addClass("btnRegister");
+	btnRegister.removeAttr("disabled");     
 }

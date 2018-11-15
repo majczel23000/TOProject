@@ -55,7 +55,7 @@
                 <input id="confirmPassword" type="password" name="confirmPassword">
                 <div class="clear"></div>
             </div>
-            <button type="submit" class="btn btnRegister">Register</button>
+            <button id="btnRegister" type="submit" class="btn btnRegisterDisabled">Register</button>
             <div class="clear"></div>
         </div>
     </div>
