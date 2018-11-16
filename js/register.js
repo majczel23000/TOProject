@@ -1,4 +1,6 @@
-// true - poprawnie uzupełnione, false - błędnie
+// obiekt ktory przyjmuje jako key nazwe pola rejestracji,
+// a jako value true - poprawnie uzupełnione pole,
+// albo false - błędnie uzupełnione pole
 let validationObjects = {
 	"firstName": false,
 	"lastName": false,
@@ -55,6 +57,7 @@ $('#email').on('blur',function(){
 		})
 	}
 });
+
 //obsługa imienie
 $('#firstName').on('keyup',function(){
 	const name="emptyFirstName";
@@ -67,6 +70,7 @@ $('#firstName').on('keyup',function(){
 	}
 	checkIfAllValid();	
 });
+
 //obsługa nazwiska
 $('#lastName').on('keyup',function(){
 	const name="emptyLastName";
@@ -79,6 +83,7 @@ $('#lastName').on('keyup',function(){
 	}
 	checkIfAllValid();	
 });
+
 //obsługa hasła
 $('#password').on('keyup',function(){
 	const name="weakPass";
@@ -91,6 +96,7 @@ $('#password').on('keyup',function(){
 	}
 	checkIfAllValid();	
 });
+
 //obsługa potwierdzenia hasła
 $('#confirmPassword').on('keyup',function(){
 	const name="diffrentPass";
@@ -106,41 +112,43 @@ $('#confirmPassword').on('keyup',function(){
 
 // akcja po kliknięciu przycisku register
 $('#btnRegister').on('click', function(){
-	const firstName = $("#firstName").val();
-	const lastName = $("#lastName").val();
-	const email = $("#email").val();
-	const password = $("#password").val();
-
-	$.ajax({
-		type:"post",
-		url:"registerproccess.php",
-		dataType:"json",
-		data:{
-			firstName: firstName,
-			lastName: lastName,
-			email: email,
-			password: password
-		},
-		beforeSend: function(){
-			$('body').css('opacity','0.6');
-			$('body').css('cursor','progress');
-		},
-		success: function(json){
-			switch(json){
-				case 0:
-					location.href="login.php";
-				default:
-					console.log('elo');
+	// czy wszystkie są poprawnie wpisane
+	if(checkIfAllValid()){
+		const firstName = $("#firstName").val();
+		const lastName = $("#lastName").val();
+		const email = $("#email").val();
+		const password = $("#password").val();
+		$.ajax({
+			type:"post",
+			url:"registerproccess.php",
+			dataType:"json",
+			data:{
+				firstName: firstName,
+				lastName: lastName,
+				email: email,
+				password: password
+			},
+			beforeSend: function(){
+				$('body').css('opacity','0.6');
+				$('body').css('cursor','progress');
+			},
+			success: function(json){
+				switch(json){
+					case 0:
+						location.href="login.php";
+					default:
+						console.log('Default success response');
+				}
+				$('body').css('opacity','1');
+				$('body').css('cursor','default');
+			},
+			error: function(e){
+				console.warn(e);
+				$('body').css('opacity','1');
+				$('body').css('cursor','default');
 			}
-			$('body').css('opacity','1');
-			$('body').css('cursor','default');
-		},
-		error: function(e){
-			console.warn(e);
-			$('body').css('opacity','1');
-			$('body').css('cursor','default');
-		}
-	})
+		})
+	}
 });
 
 //funkcja wyswietlająca błedy
@@ -173,7 +181,8 @@ function errorService(name,$obj,msg){													//przyjmuje nazwe błędu, obi
 	}
 }
 
-// sprawdź, czy wszystkie elementy z validationObjects są poprawne i odpowiednio pokaż przycisk rejestracji (disabled/enabled)
+// sprawdź, czy wszystkie elementy z validationObjects są poprawne 
+// i odpowiednio pokaż przycisk rejestracji (disabled/enabled)
 function checkIfAllValid(){
 	const btnRegister = $('#btnRegister');
 	console.log('check');
@@ -183,11 +192,13 @@ function checkIfAllValid(){
 				btnRegister.removeClass("btnRegister");
 				btnRegister.addClass("btnRegisterDisabled");
 				btnRegister.attr("disabled", "disabled");
-				return;
+				return false;
 			}
 		}
 	}
+	// wszystkie elementy poprawne, można aktywować przycisk Register
 	btnRegister.removeClass("btnRegisterDisabled");
 	btnRegister.addClass("btnRegister");
-	btnRegister.removeAttr("disabled");     
+	btnRegister.removeAttr("disabled"); 
+	return true;    
 }

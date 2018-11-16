@@ -26,10 +26,8 @@
     </nav>
 
     <div id="content">
-        <div id="contentTitle">
-            <h1>Log into the system:</h1>
-        </div>
         <div id="loginForm">
+            <h1>Log into the system:</h1>
             <div class="formGroup">
                 <label for="email">Email: </label>
                 <input id="email" type="email" name="email">

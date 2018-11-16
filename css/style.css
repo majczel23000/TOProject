@@ -25,6 +25,10 @@ html, body {
     font-family: 'OpenSans-Regular';
     min-height: 100%;
 }
+body{
+    background: url('../img/background2.jpg');
+    background-size: cover;
+}
 .clear {
     clear: both;
 }
@@ -64,9 +68,11 @@ html, body {
 }
 .btnRegister {
     background: #187cf7;  
+    color:black;
 }
 .btnRegisterDisabled{
-    background: #d8e9ff;  
+    background: #eee;  
+    color: #888;
 }
 .btnRegisterDisabled:hover{
     cursor: not-allowed;
@@ -76,7 +82,6 @@ html, body {
 #content {
     height: 100%;
     width: 100%;
-    background: #f6f6f6;
 }
 #contentTitle h1{
     text-align: center;
@@ -115,7 +120,12 @@ html, body {
     margin: 0 auto;
     padding: 50px;
     background: #333;
-    border: 2px solid #444;
+    margin-top: 50px;
+}
+#registerForm h1, #loginForm h1{
+    text-align: center;
+    margin: 0px;
+    margin-bottom: 50px;
 }
 .formGroup {
     display: block;
@@ -132,6 +142,7 @@ html, body {
     border: none;
     padding: 10px;
 }
+
 
 /*===LOGINSTYLES===*/
 .login-error{

@@ -26,10 +26,9 @@
     </nav>
 
     <div id="content">
-        <div id="contentTitle">
-            <h1>Register in the system:</h1>
-        </div>
+        
         <div id="registerForm">
+                <h1>Register in the system:</h1>
             <div class="formGroup">
                 <label for="firstName">First Name: </label>
                 <input id="firstName" type="text" name="firstName">
