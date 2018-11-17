@@ -46,8 +46,8 @@ $('.btnLogin').on('click',function(){
 				$('body').css('opacity','0.6');
 				$('body').css('cursor','progress');
 			},
-			success: function(json){
-				switch(json){
+			success: function(json){						//json to tablica, idx 0 - rezultat logowania, idx 1 - dokąd przekierować(doctor, customer)
+				switch(json[0]){
 					case 1:
 						$errLogin = $('<span></span>');
 						$errLogin.prop('class','login-error');
@@ -61,7 +61,7 @@ $('.btnLogin').on('click',function(){
 						$('#loginForm').append($errLogin);
 						break;
 					case 0:
-						location.href="home.php";
+						location.href=json[1];
 						break;	
 					default:
 						$errLogin = $('<span></span>');
@@ -70,7 +70,7 @@ $('.btnLogin').on('click',function(){
 						$('#loginForm').append($errLogin);
 						break;
 				}
-				//console.log(json);
+				console.log(json);
 				$('body').css('opacity','1');
 				$('body').css('cursor','default');
 			},

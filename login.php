@@ -1,7 +1,11 @@
 <?php
 	session_start();
-	if (isset($_SESSION['LOGGED']) && $_SESSION['LOGGED']){			//if logged 
-		header('Location: home.php');
+	if(isset($_SESSION['DOCTOR'])){			//if logged as DOCTOR
+		header('Location: doctor');
+		exit();
+	}
+	if(isset($_SESSION['CUSTOMER'])){			//if logged as CUSTOMER
+		header('Location: customer');
 		exit();
 	}
 ?>
