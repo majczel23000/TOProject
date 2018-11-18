@@ -19,13 +19,14 @@ body{
     src: url('../fonts/OpenSans-Italic.ttf');
 }
 
+/*=====GLOBALSTYLES=======*/
 html, body {
     margin: 0;
     padding: 0;
     font-family: 'OpenSans-Regular';
     min-height: 100%;
 }
-body{
+.bodyNotlogged{
     background: url('../img/background2.jpg');
     background-size: cover;
 }
@@ -33,16 +34,25 @@ body{
     clear: both;
 }
 
-/*===MENUSTYLES===*/
+/*=====MENUSTYLES=====*/
 #menu {
     background: #333;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    overflow: hidden;
 }
 #appTitle, #appAuthButtons {
     color: #f6f6f6;
     font-size: 1.2rem;
     margin: 0;
-    width: 50%;
     float: left;
+}
+#appTitle{
+    width: 30%;
+}
+#appAuthButtond{
+    width: 70%;
 }
 #appTitle a {
     display: block;
@@ -51,7 +61,7 @@ body{
     text-align: center;
     margin: 25px;
 }
-.btn {
+.btn{
     font-size: 1rem;
     text-decoration: none;
     color: black;
@@ -66,9 +76,17 @@ body{
 .btnLogin {
     background:#39e572;
 }
+.btnLogin:hover{
+    background: #6af297;
+    transition: 0.1s all;
+}
 .btnRegister {
     background: #187cf7;  
     color:black;
+}
+.btnRegister:hover{
+    background: #3f90f4;
+    transition: 0.1s all;
 }
 .btnRegisterDisabled{
     background: #eee;  
@@ -77,11 +95,20 @@ body{
 .btnRegisterDisabled:hover{
     cursor: not-allowed;
 }
+.btnMenu{
+    background:#ff850c;
+    transition: 0.1s all;
+    padding: 15px 15px;
+}
+.btnMenu:hover{
+    background: #ff9935;
+}
 
-/*===CONTENTSTYLES===*/
+/*=====CONTENTSTYLES=====*/
 #content {
     height: 100%;
     width: 100%;
+    margin-top: 100px;
 }
 #contentTitle h1{
     text-align: center;
@@ -113,7 +140,7 @@ body{
     padding:10px;
 }
 
-/*===FORMSTYLES===*/
+/*=====FORMSTYLES=====*/
 #loginForm, #registerForm {
     color: #f6f6f6;
     width: 40%;

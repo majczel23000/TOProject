@@ -17,7 +17,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="Stylesheet" type="text/css" href="css/style.css" />
 </head>
-<body>
+<body class="bodyNotlogged">
     <nav id="menu">
         <div id="appTitle">
             <a href="index.php">VetManager</a>
