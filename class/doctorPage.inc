@@ -1,7 +1,7 @@
 <?php
 	class DoctorPage{
-		private $title = "[DoctorProfile]";
-		private $buttons = Array(
+		private $title = "[DoctorProfile]";													//zmienna przechowująca tytuł
+		private $buttons = Array(															//zmianna z przyciskami, nie każdy przycisk ma href i niekażdy ma id
 									0 => Array
 										(
 											"text" => "Wyloguj się",
@@ -43,23 +43,31 @@
 											"iClass" => "fas fa-plus-square"
 										)
 								);
-			private $styles = Array("mainStyles.css","doctorStyles.css");
-			private $scripts = Array("jquery-3.3.1.min.js","doctor.js","messages.js");
+			private $styles = Array("mainStyles.css","doctorStyles.css");								//nazwy plików ze stylami
+			private $scripts = Array("jquery-3.3.1.min.js","doctor.js","messages.js");					//nazwy plików ze skryptami
 			private $user;
 			
-			public function __construct($t,$u){
+			public function __construct($t,$u){															//konstruktor przyjmuje użytkownika i tytuł strony
 				$this->title=$t;
 				$this->user=$u;
 			}
 			
-			public function showPage(){
+			public function showPage(){																	//strona wyswietlajaca strone
+				$this->autorizathion();
 				echo "<!DOCTYPE html>\n";
 				echo "<html>\n";
 				$this->showHead();
 				$this->showBody();
 			}
 			
-			private function showHead(){
+			private function autorizathion(){															//sprawdzanie czy dany użytkownika ma tutaj dostep
+				if (!(isset($_SESSION['DOCTOR'])) || !unserialize($_SESSION['DOCTOR'])->checkIsLogged()){			//jesli nie zalogował sie to go wyrzucamy
+					header('Location: ../login.php');
+					exit();
+				}
+			}
+			
+			private function showHead(){																//wyswietlenie head
 				echo "<head>\n";
 					echo "\t<meta charset=\"utf-8\">\n";
 					echo "\t<title>".$this->title."</title>\n";
@@ -70,7 +78,7 @@
 				echo "</head>\n";
 			}
 			
-			private function showBody(){
+			private function showBody(){																//wysweitlenie body
 				echo "<body>\n";
 				$this->showNav();
 				echo "\t<div id=\"content\">\n";				
@@ -81,17 +89,17 @@
 				echo "</html>";
 			}
 			
-			private function showNav(){
+			private function showNav(){																	//nawigacaja
 				echo "\t<nav id=\"menu\">\n";
 				echo "\t\t<div id=\"appTitle\">\n";
 				echo "\t\t\t<a>VetManager</a>\n";
 				echo "\t\t</div>\n";
 				echo "\t\t<div id=\"actionButtons\">\n";
-				foreach($this->buttons as $butt){
+				foreach($this->buttons as $butt){		
 					echo "\t\t\t<a ";
-					if(isset($butt['id']))
+					if(isset($butt['id']))																//jesli przycisk posiada id to wypisujemy, jak nie to idziemy dalej
 						echo "id=\"".$butt['id']."\" ";
-					if(isset($butt['href']))
+					if(isset($butt['href']))															//to samo co wyżej tylko z href
 						echo "href=\"".$butt['href']."\" ";
 					echo "class=\"".$butt['class']."\"> <i class=\"".$butt['iClass']."\" style=\"margin-right: 10px\"></i>".$butt['text']."</a>\n";
 				}
@@ -105,7 +113,7 @@
 				echo "\t</nav>\n";
 			}
 			
-			public function showContent(){															//publiczna zeby mozna było ją zmienić na potrzeby danej pdostrony (albo protected)
+			protected function showContent(){															//protected zeby mozna było ją zmienić w klasach dziedziczących
 				echo "\t\t	<div id=\"contentTitle\">\n";
 				echo "\t\t\t<h1>Witaj ".$this->user->getFirstName()." ".$this->user->getLastName()."</h1>\n";
 				echo "\t\t	</div>\n";
@@ -114,7 +122,7 @@
 				echo "\t\t	</div>\n";
 			}
 			
-			private function showScripts(){
+			private function showScripts(){																//wyswwiuetlenie skryptów
 				foreach($this->scripts as $script)
 					echo "\t<script src=\"../js/".$script."\"></script>\n";
 			}
