@@ -7,7 +7,7 @@
 	}
 	$customer = unserialize($_SESSION['CUSTOMER']);
 ?> -->
-
+<!DOCTYPE html>
 <html>
 <html>
 <head>

@@ -59,7 +59,7 @@ $('#email').on('blur',function(){
 });
 
 //obsługa imienie
-$('#firstName').on('keyup',function(){
+$('#firstName').on('blur',function(){
 	const name="emptyFirstName";
 	if(!$(this).val())																		//jesli hasło ma mniej niz 5 liter	
 		errorService(name,$(this),'To pole nie może pozostać puste!');						//no a tu to to samo co wczesniej
@@ -72,7 +72,7 @@ $('#firstName').on('keyup',function(){
 });
 
 //obsługa nazwiska
-$('#lastName').on('keyup',function(){
+$('#lastName').on('blur',function(){
 	const name="emptyLastName";
 	if(!$(this).val())																		//jesli hasło ma mniej niz 5 liter	
 		errorService(name,$(this),'To pole nie może pozostać puste!');						//no a tu to to samo co wczesniej

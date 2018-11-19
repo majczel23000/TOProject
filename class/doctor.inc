@@ -7,6 +7,7 @@
 		public function __construct($id,$accT,$db){
 			parent::__construct($id,$accT,$db);											//wywołanie konstruktora Parenta
 			if($this->db){
+				$this->db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 				//żeby były polskie znaki w pobranych danych
 				$query="SELECT * FROM ".$this->accType." WHERE DOC_ID=".$this->idUser;	//pobieramy jego dane z bazy
 				$result=$this->db->query($query);
 				$row=$result->fetch_assoc();
