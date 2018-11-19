@@ -39,7 +39,7 @@
                     "iClass" => "fas fa-plus-square"
                 )
         );
-        private $styles = Array("mainStyles.css","doctorStyles.css");
+        private $styles = Array("mainStyles.css","customerStyles.css");
 		private $scripts = Array("jquery-3.3.1.min.js","customer.js","messages.js");
         private $user;
         

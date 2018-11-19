@@ -85,8 +85,8 @@
 				$this->showContent();
 				echo "\t</div>\n";
 				$this->showScripts();
-				echo "</body>\n";
 				$this->showFooter();
+				echo "</body>\n";
 				echo "</html>";
 			}
 			
@@ -132,7 +132,7 @@
 			}
 			
 			private function showFooter(){
-					echo "\t<div id=\"footer\">Michał Raźny, Daniel Pupczyk &#xA9; 2018\n";
+					echo "\t<div id=\"footer\">Michał Raźny, Daniel Pupczyk &#xA9; 2018</div>\n";
 			}
 			
 			protected function setStyles($stl){
