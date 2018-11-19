@@ -23,6 +23,35 @@
 			else
 				return false;
 		}
+
+		public function getFirstName(){
+			return $this->firstName;
+		}
+
+		public function getLastName(){
+			return $this->lastName;
+		}
+
+		public function getEmail(){
+			return $this->email;
+		}
+		
+		public function getPhoneNumber(){
+			return $this->phoneNumber;
+		}
+		
+		public function getAddress(){
+			return $this->address;
+		}
+
+		public function getUserID(){
+			return $this->isUser;
+		}
+
+		public function getAccType(){
+			return $this->accType;
+		}
+
 	}
 
 ?>

@@ -15,6 +15,16 @@ $("#email").on('blur',function(){
 	}
 });
 $('.btnLogin').on('click',function(){
+	login();
+});
+
+$('body').on("keypress", function(e){
+	if(e.which === 13){
+		login();
+	}
+})
+
+function login(){
 	const email=$('#email').val();
 	const password=$('#password').val();
 	
@@ -61,6 +71,7 @@ $('.btnLogin').on('click',function(){
 						$('#loginForm').append($errLogin);
 						break;
 					case 0:
+						localStorage.setItem('messageSuccess', 'Pomyslnie zalogowano. Witamy ponownie.');
 						location.href=json[1];
 						break;	
 					default:
@@ -81,4 +92,5 @@ $('.btnLogin').on('click',function(){
 			}
 		})
 	}
-})
+}
+

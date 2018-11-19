@@ -15,9 +15,11 @@
   <meta charset="utf-8">
   <title>VetManager - Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="Stylesheet" type="text/css" href="css/style.css" />
+  <link rel="Stylesheet" type="text/css" href="css/mainStyles.css" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
 </head>
-<body class="bodyNotlogged">
+<body class="bodyNotlogged" onload="onLoad()">
     <nav id="menu">
         <div id="appTitle">
             <a href="index.php">VetManager</a>
@@ -27,7 +29,14 @@
             <a href="register.php" class="btn btnRegister">Register</a>
         </div>
         <div class="clear"></div>
+        <div id="messages">
+            <div id="messagesInfo"></div>
+            <div id="messagesClose"><i id="messagesCloseIcon" class="fas fa-times-circle"></i></div>
+            <div class="clear"></div>
+        </div>
     </nav>
+
+    
 
     <div id="content">
         <div id="loginForm">
@@ -47,6 +56,7 @@
         </div>
     </div>
 	<script src="js/jquery-3.3.1.min.js"></script>
-	<script src="js/login.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/messages.js"></script>
 </body>
 </html>

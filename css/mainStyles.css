@@ -1,6 +1,3 @@
-body{
-	background: #f6f6f6;
-}
 /*=====FONTS======*/
 @font-face {
     font-family: 'OpenSans-Regular';
@@ -37,12 +34,9 @@ html, body {
 /*=====MENUSTYLES=====*/
 #menu {
     background: #333;
-    position: fixed;
     width: 100%;
-    top: 0;
-    overflow: hidden;
 }
-#appTitle, #appAuthButtons {
+#appTitle, #actionButtons {
     color: #f6f6f6;
     font-size: 1.2rem;
     margin: 0;
@@ -51,7 +45,7 @@ html, body {
 #appTitle{
     width: 30%;
 }
-#appAuthButtond{
+#actionButtons{
     width: 70%;
 }
 #appTitle a {
@@ -61,6 +55,8 @@ html, body {
     text-align: center;
     margin: 25px;
 }
+
+/*=====BUTTONSSTYLES=====*/
 .btn{
     font-size: 1rem;
     text-decoration: none;
@@ -95,20 +91,12 @@ html, body {
 .btnRegisterDisabled:hover{
     cursor: not-allowed;
 }
-.btnMenu{
-    background:#ff850c;
-    transition: 0.1s all;
-    padding: 15px 15px;
-}
-.btnMenu:hover{
-    background: #ff9935;
-}
+
 
 /*=====CONTENTSTYLES=====*/
 #content {
     height: 100%;
     width: 100%;
-    margin-top: 100px;
 }
 #contentTitle h1{
     text-align: center;
@@ -195,4 +183,27 @@ html, body {
 	color:red;
 	letter-spacing:1px;
 	position:absolute;
+}
+
+/*=====MESSEGESSTYLES=====*/
+#messages{
+    width:100%;
+    text-align: center;
+    padding: 20px;
+    display: none;
+}
+#messagesInfo{
+    width:90%;
+    float:left;
+}
+#messagesClose{
+    width:10%;
+    text-align: center;
+    float:left;
+}
+#messagesClose i:hover{
+    cursor: pointer;
+}
+.messageSuccess{
+    background: #39e572 !important;
 }

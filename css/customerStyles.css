@@ -1,0 +1,17 @@
+/*=====BUTTONS=====*/
+.btnMenu{
+    background:#ff850c;
+    transition: 0.1s all;
+    padding: 15px 15px;
+}
+.btnMenu:hover{
+    background: #ff9935;
+}
+.btnLogout{
+    background:#5a98fc;
+    transition: 0.1s all;
+    padding: 15px 15px;
+}
+.btnLogout:hover{
+    background: #659bf2;
+}

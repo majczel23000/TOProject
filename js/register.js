@@ -112,43 +112,7 @@ $('#confirmPassword').on('keyup',function(){
 
 // akcja po kliknięciu przycisku register
 $('#btnRegister').on('click', function(){
-	// czy wszystkie są poprawnie wpisane
-	if(checkIfAllValid()){
-		const firstName = $("#firstName").val();
-		const lastName = $("#lastName").val();
-		const email = $("#email").val();
-		const password = $("#password").val();
-		$.ajax({
-			type:"post",
-			url:"registerproccess.php",
-			dataType:"json",
-			data:{
-				firstName: firstName,
-				lastName: lastName,
-				email: email,
-				password: password
-			},
-			beforeSend: function(){
-				$('body').css('opacity','0.6');
-				$('body').css('cursor','progress');
-			},
-			success: function(json){
-				switch(json){
-					case 0:
-						location.href="login.php";
-					default:
-						console.log('Default success response');
-				}
-				$('body').css('opacity','1');
-				$('body').css('cursor','default');
-			},
-			error: function(e){
-				console.warn(e);
-				$('body').css('opacity','1');
-				$('body').css('cursor','default');
-			}
-		})
-	}
+	register();
 });
 
 //funkcja wyswietlająca błedy
@@ -185,7 +149,6 @@ function errorService(name,$obj,msg){													//przyjmuje nazwe błędu, obi
 // i odpowiednio pokaż przycisk rejestracji (disabled/enabled)
 function checkIfAllValid(){
 	const btnRegister = $('#btnRegister');
-	console.log('check');
 	for (var k in validationObjects){
 		if (validationObjects.hasOwnProperty(k)) {
 			if(!validationObjects[k]){
@@ -201,4 +164,51 @@ function checkIfAllValid(){
 	btnRegister.addClass("btnRegister");
 	btnRegister.removeAttr("disabled"); 
 	return true;    
+}
+
+$('body').on("keypress", function(e){
+	if(e.which === 13 && checkIfAllValid()){
+		register();
+	}
+})
+
+function register(){
+	// czy wszystkie są poprawnie wpisane
+	if(checkIfAllValid()){
+		const firstName = $("#firstName").val();
+		const lastName = $("#lastName").val();
+		const email = $("#email").val();
+		const password = $("#password").val();
+		$.ajax({
+			type:"post",
+			url:"registerproccess.php",
+			dataType:"json",
+			data:{
+				firstName: firstName,
+				lastName: lastName,
+				email: email,
+				password: password
+			},
+			beforeSend: function(){
+				$('body').css('opacity','0.6');
+				$('body').css('cursor','progress');
+			},
+			success: function(json){
+				switch(json){
+					case 0:
+						localStorage.setItem('messageSuccess', 'Pomyslnie zarejestrowano. Prosze się zalogować.')
+						location.href="login.php";
+					default:
+						console.log('Default success response');
+				}
+				$('body').css('opacity','1');
+				$('body').css('cursor','default');
+			},
+			error: function(e){
+				console.warn(e);
+				$('body').css('opacity','1');
+				$('body').css('cursor','default');
+			}
+		})
+	}
 }
