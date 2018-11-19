@@ -1,4 +1,4 @@
-function onLoad(){
+$(window).on('load',function(){
 	if(localStorage.getItem('messageSuccess')){
 		$message = $('#messagesInfo');
         $messageBox = $('#messages');
@@ -14,7 +14,7 @@ function onLoad(){
         $message.html(localStorage.getItem('messageError'));
         localStorage.removeItem('messageError');
     }
-}
+});
 
 $('#messagesCloseIcon').on("click", function(){
     $("#messages").css('display',"none");

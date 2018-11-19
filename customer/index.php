@@ -20,7 +20,7 @@
 
 
 </head>
-<body onload="onLoad()">
+<body>
     <nav id="menu">
         <div id="appTitle">
             <a>VetManager</a>
