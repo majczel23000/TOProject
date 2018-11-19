@@ -39,7 +39,7 @@ class Logowanie{
 			$customer = $result->fetch_assoc();									//jeśli jest jeden użytkownik to tworzymy tablice z pobranymi danymi
 			if(password_verify($this->password,$customer['PASSWORD'])){			//najpierw sprawdzamy czy podane hasło jest prawidłowe					
 				require('class/customer.inc');									//importujemy plik z klasą
-				$_SESSION['CUSTOMER']=serialize(new Customer($customer['CUS_ID'],'CUSTOMER',$this->db)); //i serializujemy nowy obiekt do SESSION
+				$_SESSION['CUSTOMER']=serialize(new Customer($customer['CUS_ID'],$this->db)); //i serializujemy nowy obiekt do SESSION
 				$result->free();
 				$this->returnVal=0;
 				$this->returnUserType="customer";
@@ -66,7 +66,7 @@ class Logowanie{
 			$doctor = $result->fetch_assoc();
 			if(password_verify($this->password,$doctor['PASSWORD'])){
 				require('class/doctor.inc');
-				$_SESSION['DOCTOR']=serialize(new Doctor($doctor['DOC_ID'],'DOCTOR',$this->db));
+				$_SESSION['DOCTOR']=serialize(new Doctor($doctor['DOC_ID'],$this->db));
 				$result->free();
 				$this->returnVal=0;
 				$this->returnUserType="doctor";

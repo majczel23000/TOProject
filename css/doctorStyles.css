@@ -1,11 +1,16 @@
+body{
+	background-color:#fff2e6;
+}
 /*=====BUTTONS=====*/
 .btnMenu{
     background:#ff850c;
     transition: 0.1s all;
     padding: 15px 15px;
+	width:100px;
+	text-align:center;
 }
-.btnMenu:hover{
-    background: #ff9935;
+.btnMenu:hover, .active-btn{
+    background: #ffcc99;
 }
 .btnLogout{
     background:#5a98fc;
@@ -13,5 +18,17 @@
     padding: 15px 15px;
 }
 .btnLogout:hover{
-    background: #659bf2;
+    background: #8ab3f5;
+}
+#content{
+	padding:30px 0px;
+	background-color:#ffffe6;
+	width:90%;
+	min-height:600px;
+	margin:auto;
+	border-radius:0 0 30px 30px;
+}
+#footer{
+	margin-top:10px;
+	text-align:center;
 }

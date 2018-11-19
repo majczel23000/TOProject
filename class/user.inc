@@ -10,9 +10,8 @@
 		protected $phoneNumber;
 		protected $db;													//połącznie z baza
 		
-		protected function __construct($id,$accT,$db){					//kostruktur pobiera id, typ konta i połączenie
+		protected function __construct($id,$db){					//kostruktur pobiera id, typ konta i połączenie
 			$this->idUser=$id;
-			$this->accType=$accT;
 			$this->isLogged=true;										//jesli sie udało to zmienia, ze zalogowany
 			$this->db=$db;
 		}

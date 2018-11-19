@@ -32,7 +32,7 @@
 											"href" => "#",
 											//"id" => "logoutButton",
 											"class" => "btn btnMenu",
-											"iClass" => "fas fa-plus-md"
+											"iClass" => "fas fa-user-md"
 										),
 									4 => Array
 										(
@@ -45,7 +45,7 @@
 								);
 			private $styles = Array("mainStyles.css","doctorStyles.css");								//nazwy plików ze stylami
 			private $scripts = Array("jquery-3.3.1.min.js","doctor.js","messages.js");					//nazwy plików ze skryptami
-			private $user;
+			protected $user;
 			
 			public function __construct($t,$u){															//konstruktor przyjmuje użytkownika i tytuł strony
 				$this->title=$t;
@@ -53,14 +53,14 @@
 			}
 			
 			public function showPage(){																	//strona wyswietlajaca strone
-				$this->autorizathion();
+				$this->authorization();
 				echo "<!DOCTYPE html>\n";
 				echo "<html>\n";
 				$this->showHead();
 				$this->showBody();
 			}
 			
-			private function autorizathion(){															//sprawdzanie czy dany użytkownika ma tutaj dostep
+			private function authorization(){															//sprawdzanie czy dany użytkownika ma tutaj dostep
 				if (!(isset($_SESSION['DOCTOR'])) || !unserialize($_SESSION['DOCTOR'])->checkIsLogged()){			//jesli nie zalogował sie to go wyrzucamy
 					header('Location: ../login.php');
 					exit();
@@ -86,22 +86,26 @@
 				echo "\t</div>\n";
 				$this->showScripts();
 				echo "</body>\n";
+				$this->showFooter();
 				echo "</html>";
 			}
 			
 			private function showNav(){																	//nawigacaja
 				echo "\t<nav id=\"menu\">\n";
 				echo "\t\t<div id=\"appTitle\">\n";
-				echo "\t\t\t<a>VetManager</a>\n";
+				echo "\t\t\t<a href=\"index.php\">VetManager</a>\n";
 				echo "\t\t</div>\n";
 				echo "\t\t<div id=\"actionButtons\">\n";
-				foreach($this->buttons as $butt){		
+				foreach($this->buttons as $butt){
 					echo "\t\t\t<a ";
 					if(isset($butt['id']))																//jesli przycisk posiada id to wypisujemy, jak nie to idziemy dalej
 						echo "id=\"".$butt['id']."\" ";
-					if(isset($butt['href']))															//to samo co wyżej tylko z href
-						echo "href=\"".$butt['href']."\" ";
-					echo "class=\"".$butt['class']."\"> <i class=\"".$butt['iClass']."\" style=\"margin-right: 10px\"></i>".$butt['text']."</a>\n";
+					if(isset($butt['href']) && !strpos($_SERVER['PHP_SELF'],$butt['href']))				//jesli posiada href i nie znajdujemy sie w tej lokalizacji					
+						echo "href=\"".$butt['href']."\" class=\"".$butt['class']."\"> <i class=\"".$butt['iClass']."\" style=\"margin-right: 10px\"></i>".$butt['text']."</a>\n";
+					else if(isset($butt['href']) && strpos($_SERVER['PHP_SELF'],$butt['href']))			//jesli posiada href i aktualnie znajdujemy sie na tej stronie					
+						echo "href=\"".$butt['href']."\" class=\"btn btnMenu active-btn\"> <i class=\"".$butt['iClass']."\" style=\"margin-right: 10px\"></i>".$butt['text']."</a>\n";
+					else																				//w innym przypadku wypisujemy bez artybutu href
+						echo "class=\"".$butt['class']."\"> <i class=\"".$butt['iClass']."\" style=\"margin-right: 10px\"></i>".$butt['text']."</a>\n";
 				}
 				echo "\t\t</div>\n";
 				echo "\t\t<div class=\"clear\"></div>\n";
@@ -126,6 +130,19 @@
 				foreach($this->scripts as $script)
 					echo "\t<script src=\"../js/".$script."\"></script>\n";
 			}
+			
+			private function showFooter(){
+					echo "\t<div id=\"footer\">Michał Raźny, Daniel Pupczyk &#xA9; 2018\n";
+			}
+			
+			protected function setStyles($stl){
+				$this->styles=$stl;
+			}
+			
+			protected function setScripts($scr){
+				$this->scripts=$scr;
+			}
+			
 	}
 
 

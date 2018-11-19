@@ -1,8 +1,9 @@
 <?php
 	require ('user.inc');
 	class Customer extends User{
-		public function __construct($id,$accT,$db){										
-			parent::__construct($id,$accT,$db);												//wywołanie kontruktora parenta
+		public function __construct($id,$db){										
+			parent::__construct($id,$db);												//wywołanie kontruktora parenta
+			$this->accType="CUSTOMER";
 			if($this->db){
 				$this->db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 				//żeby były polskie znaki w pobranych danych
 				$query="SELECT * FROM ".$this->accType." WHERE CUS_ID=".$this->idUser;		//pobiranie danych z bazy

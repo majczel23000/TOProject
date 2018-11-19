@@ -4,8 +4,9 @@
 		private $admType;
 		private $academicTitle;
 		
-		public function __construct($id,$accT,$db){
-			parent::__construct($id,$accT,$db);											//wywołanie konstruktora Parenta
+		public function __construct($id,$db){
+			parent::__construct($id,$db);											//wywołanie konstruktora Parenta
+			$this->accType="DOCTOR";
 			if($this->db){
 				$this->db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 				//żeby były polskie znaki w pobranych danych
 				$query="SELECT * FROM ".$this->accType." WHERE DOC_ID=".$this->idUser;	//pobieramy jego dane z bazy
