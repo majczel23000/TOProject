@@ -41,21 +41,29 @@
         );
         private $styles = Array("mainStyles.css","customerStyles.css");
 		private $scripts = Array("jquery-3.3.1.min.js","customer.js","messages.js");
-        private $user;
+        protected $user;
         
         public function __construct($t,$u){
             $this->title=$t;
             $this->user=$u;
         }
 
-        public function showPage(){
+        public function showPage(){																	//strona wyswietlajaca strone
+            $this->authorization();
             echo "<!DOCTYPE html>\n";
             echo "<html>\n";
             $this->showHead();
             $this->showBody();
         }
 
-        private function showHead(){
+        private function authorization(){
+            if (!(isset($_SESSION['CUSTOMER'])) || !unserialize($_SESSION['CUSTOMER'])->checkIsLogged()){
+                header('Location: ../login.php');
+                exit();
+            }
+        }
+
+        private function showHead(){																//wyswietlenie head
             echo "<head>\n";
                 echo "\t<meta charset=\"utf-8\">\n";
                 echo "\t<title>".$this->title."</title>\n";
@@ -65,31 +73,35 @@
                 echo "\t<link rel=\"stylesheet\" href=\"https://use.fontawesome.com/releases/v5.5.0/css/all.css\" integrity=\"sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU\" crossorigin=\"anonymous\">\n";
             echo "</head>\n";
         }
-
-        private function showBody(){
+        
+        private function showBody(){																//wysweitlenie body
             echo "<body>\n";
             $this->showNav();
             echo "\t<div id=\"content\">\n";				
             $this->showContent();
             echo "\t</div>\n";
             $this->showScripts();
+            $this->showFooter();
             echo "</body>\n";
             echo "</html>";
         }
 
-        private function showNav(){
+        private function showNav(){																	//nawigacaja
             echo "\t<nav id=\"menu\">\n";
             echo "\t\t<div id=\"appTitle\">\n";
-            echo "\t\t\t<a>VetManager</a>\n";
+            echo "\t\t\t<a href=\"index.php\">VetManager</a>\n";
             echo "\t\t</div>\n";
             echo "\t\t<div id=\"actionButtons\">\n";
             foreach($this->buttons as $butt){
                 echo "\t\t\t<a ";
-                if(isset($butt['id']))
+                if(isset($butt['id']))																//jesli przycisk posiada id to wypisujemy, jak nie to idziemy dalej
                     echo "id=\"".$butt['id']."\" ";
-                if(isset($butt['href']))
-                    echo "href=\"".$butt['href']."\" ";
-                echo "class=\"".$butt['class']."\"> <i class=\"".$butt['iClass']."\" style=\"margin-right: 10px\"></i>".$butt['text']."</a>\n";
+                if(isset($butt['href']) && !strpos($_SERVER['PHP_SELF'],$butt['href']))				//jesli posiada href i nie znajdujemy sie w tej lokalizacji					
+                    echo "href=\"".$butt['href']."\" class=\"".$butt['class']."\"> <i class=\"".$butt['iClass']."\" style=\"margin-right: 10px\"></i>".$butt['text']."</a>\n";
+                else if(isset($butt['href']) && strpos($_SERVER['PHP_SELF'],$butt['href']))			//jesli posiada href i aktualnie znajdujemy sie na tej stronie					
+                    echo "href=\"".$butt['href']."\" class=\"btn btnMenu active-btn\"> <i class=\"".$butt['iClass']."\" style=\"margin-right: 10px\"></i>".$butt['text']."</a>\n";
+                else																				//w innym przypadku wypisujemy bez artybutu href
+                    echo "class=\"".$butt['class']."\"> <i class=\"".$butt['iClass']."\" style=\"margin-right: 10px\"></i>".$butt['text']."</a>\n";
             }
             echo "\t\t</div>\n";
             echo "\t\t<div class=\"clear\"></div>\n";
@@ -101,7 +113,7 @@
             echo "\t</nav>\n";
         }
 
-        public function showContent(){															//publiczna zeby mozna było ją zmienić na potrzeby danej pdostrony (albo protected)
+        protected function showContent(){															//protected zeby mozna było ją zmienić w klasach dziedziczących
             echo "\t\t	<div id=\"contentTitle\">\n";
             echo "\t\t\t<h1>Witaj ".$this->user->getFirstName()." ".$this->user->getLastName()."</h1>\n";
             echo "\t\t	</div>\n";
@@ -110,9 +122,21 @@
             echo "\t\t	</div>\n";
         }
 
-        private function showScripts(){
+        private function showScripts(){																//wyswwiuetlenie skryptów
             foreach($this->scripts as $script)
                 echo "\t<script src=\"../js/".$script."\"></script>\n";
+        }
+        
+        private function showFooter(){
+                echo "\t<div id=\"footer\">Michał Raźny, Daniel Pupczyk &#xA9; 2018</div>\n";
+        }
+        
+        protected function setStyles($stl){
+            $this->styles=$stl;
+        }
+        
+        protected function setScripts($scr){
+            $this->scripts=$scr;
         }
     }
 

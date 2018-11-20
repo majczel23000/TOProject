@@ -27,8 +27,16 @@
 			return $this->firstName;
 		}
 
+		public function setFirstName($fN){
+			$this->firstName = $fN;
+		}
+
 		public function getLastName(){
 			return $this->lastName;
+		}
+
+		public function setLastName($lN){
+			$this->lastName = $lN;
 		}
 
 		public function getEmail(){
@@ -38,9 +46,17 @@
 		public function getPhoneNumber(){
 			return $this->phoneNumber;
 		}
+
+		public function setPhoneNumber($pN){
+			$this->phoneNumber = $pN;
+		}
 		
 		public function getAddress(){
 			return $this->address;
+		}
+
+		public function setAddress($a){
+			$this->address = $a;
 		}
 
 		public function getUserID(){
@@ -50,7 +66,6 @@
 		public function getAccType(){
 			return $this->accType;
 		}
-
 	}
 
 ?>
