@@ -60,7 +60,7 @@
 		}
 
 		public function getUserID(){
-			return $this->isUser;
+			return $this->idUser;
 		}
 
 		public function getAccType(){

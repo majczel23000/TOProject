@@ -1,12 +1,29 @@
 body{
-	background-color:#fff2e6;
+	background-color:#555;
 }
+
+/*=====GENERALSTYLES=====*/
+.center{
+    display: block;
+    margin: 0 auto;
+}
+#content{
+	padding:30px 0px;
+	background-color:#f6f6f6;
+	width:60%;
+	min-height:600px;
+	margin:auto;
+}
+#footer{
+	margin-top:10px;
+	text-align:center;
+}
+
 /*=====BUTTONS=====*/
 .btnMenu{
     background:#ff850c;
     transition: 0.1s all;
     padding: 15px 15px;
-	width:100px;
 	text-align:center;
 }
 .btnMenu:hover, .active-btn{
@@ -20,15 +37,91 @@ body{
 .btnLogout:hover{
     background: #8ab3f5;
 }
-#content{
-	padding:30px 0px;
-	background-color:#ffffe6;
-	width:90%;
-	min-height:600px;
-	margin:auto;
-	border-radius:0 0 30px 30px;
+.btnEdit{
+    border: none;
+    background:#333;
+    color: #f6f6f6;
+    transition: 0.1s all;
+    padding: 15px 15px;
 }
-#footer{
-	margin-top:10px;
+.btnEdit:hover{
+    background: #444;
+    cursor: pointer;
+}
+.btnSaveEdit{
+    border: none;
+    background:#40bc0f;
+    color: #f6f6f6;
+    transition: 0.1s all;
+    padding: 15px 15px;
+}
+.btnSaveEdit:hover{
+    background: #4ec41f;
+    cursor: pointer;
+}
+.btnSaveEditDisabled{
+    border: none;
+    background: #eee;  
+    color: #888;
+    transition: 0.1s all;
+    padding: 15px 15px;
+}
+.btnSaveEditDisabled{
+    cursor: not-allowed;
+}
+#editUserInfoButton{
+    margin-top: 20px;
+    font-size: 1rem;
+}
+
+
+/*=====TABLEINFOSTYLES=====*/
+#userInfo{
+    background: #f6f6f6;
+    border-radius:3px;
+    border-collapse: collapse;
+    height: 320px;
+    margin: auto;
+    max-width: 600px;
+    padding:5px;
+    width: 100%;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+#userInfo tr:hover td:nth-child(odd) {
+    background: #e6e6e6;
+}
+#userInfo tr:hover td {
+    background:#444;
+}
+#userInfo td {
+    background:#f0f0f0;
+    padding:20px;
+    text-align:left;
+    vertical-align:middle;
+    font-size:1.1rem;
+    overflow: hidden;
+    width: 50%;
+}
+#userInfo td:nth-child(even){
+    background: #333;
+    color: #f6f6f6;
+}
+.tdBeforeEdit{
+    padding: 20px !important;
+}
+.tdDuringEdit{
+    padding: 0px !important;
+}
+.tdDuringEdit input{
+    font-size: 1rem;
+    padding: 31px;
+    border: none;
+    width: 100%;
+}
+.edit-data-error{
+	display:block;
+	width:60%;
+	margin:auto;
+	color:red;
 	text-align:center;
 }
