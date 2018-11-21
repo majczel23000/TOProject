@@ -10,6 +10,7 @@ LOG-03 - maskowanie has³a (zajebiste wymaganie :D)
 
 KLI-01 - wyswietlanie danych klienta
 KLI-02 - edycja danych klienta
+KLI-04 - wyœwietlanie info o lekarzach
 
 Tego nie ma w wymaganiach, ale jest ju¿ u nas:
 ?????? - wyœwietlanie danych lekarza

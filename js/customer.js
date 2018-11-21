@@ -3,6 +3,8 @@ $('#logoutButton').on('click', function(){
 	location.href="../logout.php";
 });
 
+// piewrszy element tablicy wykorzystywany jest do wyswietlania błędów
+// drugi do okreslenia czy dane są poprawnie wpisane
 let validationObjects = {
 	"firstName": ['First Name', true],
 	"lastName": ['Last Name', true],
@@ -31,7 +33,6 @@ $('#editUserInfoButton').on('click', function(e){
 
         // Dodanie keyup eventów za pomocą jQuery do każdego inputka
         $('input').each(function(index){
-            console.log('d');
             $(this).on('keyup', function(){
                 validateInputValue($(this));
             });
@@ -165,5 +166,4 @@ function errorService(action, msg, id){
     } else{
         $('#'+id).remove();
     }
-    
 }

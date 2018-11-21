@@ -27,7 +27,7 @@
             3 => Array
                 (
                     "text" => "Lekarze",
-                    "href" => "#",
+                    "href" => "doctors.php",
                     "class" => "btn btnMenu",
                     "iClass" => "fas fa-user-md"
                 ),
