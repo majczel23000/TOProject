@@ -48,6 +48,7 @@ $('#email').on('blur',function(){
 						$('#'+name+'Info').remove();
 				$('#registerForm').css('opacity','1');
 				$('#registerForm').css('cursor','default');
+				checkIfAllValid();
 			},
 			error: function(e){
 				console.warn(e);

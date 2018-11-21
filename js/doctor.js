@@ -79,12 +79,6 @@ function insertInput($obj, $value){
     $obj.html("<input id='" + $obj[0].id + "' type='text' value='" + $value + "' onkeyup='validateInputValue(event)'>");
 }
 
-function removeInputs($obj, $value){
-    $obj.removeClass('tdDuringEdit');
-    $obj.addClass('tdBeforeEdit');
-    $obj.html($value);
-}
-
 // sprawdza czy przypadkiem nie jest puste
 function validateInputValue(e){
 	//const name="emptyInput";

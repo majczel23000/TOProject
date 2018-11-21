@@ -1,0 +1,21 @@
+ZROBIONE:
+
+REG-01 - rejestracja
+REG-02 - istniej¹cy adres email
+REG-03 - b³edne dane
+
+LOG-01 - logowanie
+LOG-02 - b³êdne dane
+LOG-03 - maskowanie has³a (zajebiste wymaganie :D)
+
+KLI-01 - wyswietlanie danych klienta
+KLI-02 - edycja danych klienta
+
+Tego nie ma w wymaganiach, ale jest ju¿ u nas:
+?????? - wyœwietlanie danych lekarza
+?????? - edycja danych lekarza
+
+Wszystkich wymagañ w dokumentacji jest 36.
+30% aplikacji to oko³o 11 wymagañ
+
+Aktualnie: 8/11
