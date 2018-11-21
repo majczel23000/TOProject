@@ -29,7 +29,7 @@
 									3 => Array
 										(
 											"text" => "Pacjenci",
-											"href" => "#",
+											"href" => "customers.php",
 											//"id" => "logoutButton",
 											"class" => "btn btnMenu",
 											"iClass" => "fas fa-user-md"

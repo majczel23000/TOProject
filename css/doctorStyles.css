@@ -118,6 +118,34 @@ body{
     border: none;
     width: 100%;
 }
+
+#customerList{
+    background: #f6f6f6;
+    border-radius:3px;
+    border-collapse: collapse;
+    height: 320px;
+    margin: auto;
+    padding:5px;
+    width: 100%;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 50px;
+}
+#customerList thead{
+    color: #f6f6f6;
+    background: #333;
+}
+#customerList thead th{
+    padding: 20px;
+}
+#customerList td{
+    padding: 10px 20px;
+}
+#customerList tr:hover td{
+    background: #eaeaea;
+}
+
+
 .edit-data-error{
 	display:block;
 	width:60%;
