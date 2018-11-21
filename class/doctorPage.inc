@@ -20,19 +20,19 @@
 										),
 									2 => Array
 										(
+											"text" => "Klienci",
+											"href" => "customers.php",
+											//"id" => "logoutButton",
+											"class" => "btn btnMenu",
+											"iClass" => "fas fa-user-md"
+										),
+									3 => Array
+										(
 											"text" => "Zwierzęta",
 											"href" => "#",
 											//"id" => "logoutButton",
 											"class" => "btn btnMenu",
 											"iClass" => "fas fa-paw"
-										),
-									3 => Array
-										(
-											"text" => "Pacjenci",
-											"href" => "customers.php",
-											//"id" => "logoutButton",
-											"class" => "btn btnMenu",
-											"iClass" => "fas fa-user-md"
 										),
 									4 => Array
 										(
@@ -107,6 +107,7 @@
 					else																				//w innym przypadku wypisujemy bez artybutu href
 						echo "class=\"".$butt['class']."\"> <i class=\"".$butt['iClass']."\" style=\"margin-right: 10px\"></i>".$butt['text']."</a>\n";
 				}
+				echo "\t\t	<div class=\"clear\"></div>\n";
 				echo "\t\t</div>\n";
 				echo "\t\t<div class=\"clear\"></div>\n";
 				echo "\t\t<div id=\"messages\">\n";
@@ -135,11 +136,11 @@
 					echo "\t<div id=\"footer\">Michał Raźny, Daniel Pupczyk &#xA9; 2018</div>\n";
 			}
 			
-			protected function setStyles($stl){
+			public function setStyles($stl){
 				$this->styles=$stl;
 			}
 			
-			protected function setScripts($scr){
+			public function setScripts($scr){
 				$this->scripts=$scr;
 			}
 			

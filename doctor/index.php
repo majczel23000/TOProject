@@ -56,7 +56,7 @@
 			if(mysqli_connect_errno())
 				return "Brak danych";
 			else{
-				$query="SELECT DATE FROM LOGIN_HISTORY WHERE DOC_ID=".$this->user->getUserID()." AND RESULT='ACCESS' ORDER BY DATE DESC LIMIT 1";
+				$query="SELECT DATE FROM LOGIN_HISTORY WHERE DOC_ID=".$this->user->getUserID()." AND RESULT='ACCESS' ORDER BY DATE DESC LIMIT 1 OFFSET 1"; //offset zeby to nie było aktualne lgoowanie, tylko poprzednie udane
 				$result=$db->query($query);
 				if($result->num_rows==0)
 					return "Brak danych";

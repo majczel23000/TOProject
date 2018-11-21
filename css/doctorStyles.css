@@ -87,6 +87,9 @@ body{
     width: 100%;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
+#userInfo tr:nth-child(2n){
+	opacity:0.97;
+}
 #userInfo tr:hover td:nth-child(odd) {
     background: #e6e6e6;
 }
@@ -119,17 +122,25 @@ body{
     width: 100%;
 }
 
+#doctorSubMenu{
+	padding-left:7%;
+}
+#doctorSubMenu > .btnMenu{
+	float:left;
+}
 #customerList{
     background: #f6f6f6;
     border-radius:3px;
     border-collapse: collapse;
-    height: 320px;
     margin: auto;
     padding:5px;
     width: 100%;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     margin-bottom: 50px;
+}
+#customerList tr:nth-child(2n){
+	background-color:#f0f0f0;
 }
 #customerList thead{
     color: #f6f6f6;

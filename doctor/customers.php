@@ -10,31 +10,15 @@
 		}
 		
 		protected function showContent(){															//nadpisana funkcja poakzujaća zawartosc
+			echo "\t\t	<div id=\"doctorSubMenu\">\n";
+			echo "\t\t\t	<a id=\"showCustomerList\" class=\"btn btnMenu\"> <i class=\"fas fa-bars\" style=\"margin-right: 10px\"></i>Pokaż listę wszystkich klientów</a>\n";
+			echo "\t\t\t	<a id=\"showCustomerDetail\" class=\"btn btnMenu\"> <i class=\"fas fa-clipboard\" style=\"margin-right: 10px\"></i>Pokaż szczegółowe dane klienta</a>\n";
+			echo "\t\t\t	<a id=\"sendEmail\" class=\"btn btnMenu\"> <i class=\"fas fa-envelope-open\" style=\"margin-right: 10px\"></i>Wyślij wiadomość e-mail</a>\n";
+			echo "\t\t\t	<div class=\"clear\"></div>\n";
+			echo "\t\t	</div>\n";
 			echo "\t\t	<div id=\"contentTitle\">\n";
-			echo "\t\t\t<h1><i class=\"fas fa-list-ul\"></i> Lista Klientów kliniki</h1>\n";
 			echo "\t\t	</div>\n";
             echo "\t\t	<div id=\"contentDescription\">\n";
-            echo "\t\t\t <table id=\"customerList\"> \n";
-            echo "\t\t\t\t <thead> \n";
-            echo "\t\t\t\t\t <tr> \n";
-            echo "\t\t\t\t\t\t <th>First Name</th> \n";
-            echo "\t\t\t\t\t\t <th>Last Name</th> \n";
-            echo "\t\t\t\t\t\t <th>Email</th> \n";
-            echo "\t\t\t\t\t\t <th>Phone Number</th> \n";
-            echo "\t\t\t\t\t </tr> \n";
-            echo "\t\t\t\t </thead> \n";
-            echo "\t\t\t\t  <tbody \n";
-            
-            foreach($this->getAllCustomers() as $customer){
-                echo "\t\t\t\t\t <tr> \n";
-                echo "\t\t\t\t\t\t <td>".$customer['FIRST_NAME']."</td>\n";
-                echo "\t\t\t\t\t\t <td>".$customer['LAST_NAME']."</td>\n";
-                echo "\t\t\t\t\t\t <td>".$customer['EMAIL']."</td>\n";
-                echo "\t\t\t\t\t\t <td>".$customer['PHONE_NUMBER']."</td>\n";
-                echo "\t\t\t\t\t </tr> \n";
-            }
-            echo "\t\t\t\t </tbody> \n";
-			echo "\t\t\t </table> \n";
             echo "\t\t	</div>\n";
         }
         
@@ -44,7 +28,7 @@
             if(mysqli_connect_errno())
                 return "Brak danych";
             else{
-                $query="SELECT FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER FROM CUSTOMER";
+                $query="SELECT FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER FROM CUSTOMER ORDER BY LAST_NAME, FIRST_NAME";
                 $result=$db->query($query);
                 if($result->num_rows==0)
                     return "Brak danych";
@@ -57,6 +41,8 @@
         }
 	}
 
-	$customers = new CustomerList("Lista klientów",unserialize($_SESSION['DOCTOR']));
+	$customers = new CustomerList("Obsługa klientów",unserialize($_SESSION['DOCTOR']));
+	$scripts = Array("jquery-3.3.1.min.js","doctorPatientService.js");
+	$customers->setScripts($scripts);
 	$customers->showPage();
 ?>
