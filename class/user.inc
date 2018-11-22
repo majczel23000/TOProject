@@ -66,6 +66,42 @@
 		public function getAccType(){
 			return $this->accType;
 		}
+		
+		public function getLastSuccessfulLogin(){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				return "Brak danych";
+			else{
+				$query="SELECT DATE FROM LOGIN_HISTORY WHERE ".substr($this->accType,0,3)."_ID=".$this->idUser." AND RESULT='ACCESS' ORDER BY DATE DESC LIMIT 1 OFFSET 1"; //offset zeby to nie było aktualne lgoowanie, tylko poprzednie udane
+				$result=$db->query($query);
+				if($result->num_rows==0)
+					return "Brak danych";
+				else{
+					$row = $result->fetch_assoc();
+					return $row['DATE'];
+				}
+			}
+			return "Brak danych";
+		}
+		
+		public function getLastFailedLogin(){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				return "Brak danych";
+			else{
+				$query="SELECT DATE FROM LOGIN_HISTORY WHERE ".substr($this->accType,0,3)."_ID=".$this->idUser." AND RESULT='DENIED' ORDER BY DATE DESC LIMIT 1";
+				$result=$db->query($query);
+				if($result->num_rows==0)
+					return "Brak danych";
+				else{
+					$row = $result->fetch_assoc();
+					return $row['DATE'];
+				}
+			}
+			return "Brak danych";
+		}
 	}
 
 ?>

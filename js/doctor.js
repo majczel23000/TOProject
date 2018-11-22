@@ -4,10 +4,11 @@ $('#logoutButton').on('click', function(){
 });
 
 let validationObjects = {
-	"firstName": true,
-	"lastName": true,
-	"address": true,
-	"phoneNumber": true
+	"firstName": ['First Name', true],
+	"lastName": ['Last Name', true],
+	"address": ['Address', true],
+	"phoneNumber": ['Phone Number', true],
+	"academicTitle": ['Academic Title', true]
 };
 
 $('#editUserInfoButton').on('click', function(e){
@@ -16,18 +17,26 @@ $('#editUserInfoButton').on('click', function(e){
     $button = $(e.currentTarget);
     $firstName = $('#firstName');
     $lastName = $('#lastName');
-    $email = $('#email');
     $address = $('#address');
     $phoneNumber = $('#phoneNumber');
+    $academicTitle = $('#academicTitle');
     if($button.hasClass('btnEdit')){
         insertInput($firstName, $firstName.html());
         insertInput($lastName, $lastName.html());
         insertInput($address, $address.html());
         insertInput($phoneNumber, $phoneNumber.html());
+        insertInput($academicTitle, $academicTitle.html());
 
         $button.html("Zapisz dane");
         $button.removeClass("btnEdit");
         $button.addClass("btnSaveEdit");
+		
+		 // Dodanie keyup eventów za pomocą jQuery do każdego inputka
+        $('input').each(function(){
+            $(this).on('keyup', function(){
+                validateInputValue($(this));
+            });
+        });
     }
 
     // jesli button to 'Zapisz dane' to wtedy aktualizujemy dane
@@ -36,11 +45,11 @@ $('#editUserInfoButton').on('click', function(e){
         const userData = {
             firstName: $firstName[0].childNodes[0].value,
             lastName: $lastName[0].childNodes[0].value,
-            email: $email.html(),
             address: $address[0].childNodes[0].value,
             phoneNumber: $phoneNumber[0].childNodes[0].value,
+            academicTitle: $academicTitle[0].childNodes[0].value
         }
-        console.log(userData);
+        //console.log(userData);
         $.ajax({
             type:"post",
             url:"editDoctorData.php",
@@ -51,7 +60,7 @@ $('#editUserInfoButton').on('click', function(e){
                 $('body').css('cursor','progress');
             },
             success: function(json){
-                switch(json){
+				switch(json){
                     case 0:
                         localStorage.setItem('messageSuccess', 'Pomyslnie zedytowano dane.');
                         location.href="index.php"
@@ -60,6 +69,7 @@ $('#editUserInfoButton').on('click', function(e){
                         console.log('Default success response');
                         break;
                 }
+				console.log(json);
                 $('body').css('opacity','1');
                 $('body').css('cursor','default');
             },
@@ -76,39 +86,59 @@ $('#editUserInfoButton').on('click', function(e){
 function insertInput($obj, $value){
     $obj.removeClass('tdBeforeEdit');
     $obj.addClass('tdDuringEdit');
-    $obj.html("<input id='" + $obj[0].id + "' type='text' value='" + $value + "' onkeyup='validateInputValue(event)'>");
+    $obj.html("<input id='" + $obj[0].id + "' type='text' value='" + $value + "'>");
 }
 
-// sprawdza czy przypadkiem nie jest puste
-function validateInputValue(e){
-	//const name="emptyInput";
-    if(e.target.value == ''){
-        e.target.style.background="#ffa8a8";
-        validationObjects[e.target.id] = false;
-		//errorService(name,"Prosze uzupełnić wszystkie pola.");
-    } else{
-        e.target.style.background="white";
-        validationObjects[e.target.id] = true;
-    }
-	let emptyInputError=false;
-	$("input").each(function() {
-		if($(this).css("background-color")=="rgb(255, 168, 168)"){
-			console.log("błąd");
-			emptyInputError=true;
-			errorService("emptyInput","Prosze uzupełnić wszystkie pola");
-		}
-	});
-	if(!emptyInputError)
-		if($("#emptyInputErr").length>0)
-			$("#emptyInputErr").remove();
 
+// Sprawdzenie czy pola nie sa puste, czyli walidacja
+function validateInputValue($obj){
+    if($obj.val() == ''){
+        $obj.css('background',"#ffa8a8");
+        validationObjects[$obj[0].id][1] = false;
+        // wysyłam error do wyswietlenia
+        errorService(true, 'Pole ' + validationObjects[$obj[0].id][0] + ' nie może być puste', $obj[0].id + "Error");
+    } 
+	else if($obj[0].id == 'phoneNumber'){
+        // nie ma dokładnie 9 znaków:
+        if($obj.val().length != 9){
+            $obj.css('background',"#ffa8a8");
+            validationObjects[$obj[0].id][1] = false;
+            // wysyłam error do wyswietlenia
+            errorService(true, 'Pole ' + validationObjects[$obj[0].id][0] + ' musi zawierać 9 cyfr', $obj[0].id + "Error");
+        } 
+        // phoneNumber zawiera też litery lub znaki specjalne
+        else if(isNaN($obj.val())){
+            $obj.css('background',"#ffa8a8");
+            validationObjects[$obj[0].id][1] = false;
+            // wysyłam error do wyswietlenia
+            errorService(true, 'Pole ' + validationObjects[$obj[0].id][0] + ' nie może zawierać liter lub znaków specjalnych', $obj[0].id + "Error");
+        } 
+        // phoneNumber poprawne
+        else {
+            $obj.css('background',"white");
+            validationObjects[$obj[0].id][1] = true;
+            // wysyłam info żeby usunąć error jesli taki był
+            errorService(false, "" , $obj[0].id + "Error");
+        }
+    }
+	else{
+        $obj.css('background',"white");
+        validationObjects[$obj[0].id][1] = true;
+        // wysyłam info żeby usunąć error jesli taki był
+        errorService(false, "" , $obj[0].id + "Error");
+    }
+    disableOrEnableEditButton();
+}
+
+// Zmiana buttona na disabled/enabled
+function disableOrEnableEditButton(){
     // gdy po przejsciu przez ponizszego for'a, flag będzie true, to znaczy
     // że wszystkie pola sa poprawnie uzupełnione i można aktywowac przycisk
     let flag = true;
     const btnRegister = $('#editUserInfoButton');
 	for (var k in validationObjects){
 		if (validationObjects.hasOwnProperty(k)) {
-			if(!validationObjects[k]){
+			if(!validationObjects[k][1]){
 				btnRegister.removeClass("btnSaveEdit");
 				btnRegister.addClass("btnSaveEditDisabled");
                 btnRegister.attr("disabled", "disabled");
@@ -124,13 +154,20 @@ function validateInputValue(e){
     }
 }
 
-function errorService(name,msg){													//przyjmuje nazwe błędu, obiekt, który wywołał błąd (input) oraz treść błędu
-	//validationObjects[$obj[0].id] = false;
-	if($('#'+name+'Err').length<1){													//jesli nie ma jeszcze takiego błędu to wchodzimy do ifa
-		$error = $('<span></span>');
-		$error.prop('class','edit-data-error');
-		$error.prop('id',name+'Err');
-		$error.html(msg);
-		$('#content').append($error);
-	}
+// wyswietlanie bledow
+// action = true -> wyswietlanie błędu
+// action = false -> usuwanie błędu
+// msg - wiadomosć do wyswietlenia
+// id - id span'u w którym pojawi sie konkretny błąd
+function errorService(action, msg, id){
+    if(action) {
+        $('#'+id).remove();
+        $error = $('<span></span>');
+        $error.prop('class','edit-data-error');
+        $error.html(msg);
+        $error.prop('id', id);
+        $('#content').append($error);
+    } else{
+        $('#'+id).remove();
+    }
 }
