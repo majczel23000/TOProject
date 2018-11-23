@@ -1,8 +1,3 @@
-$('#logoutButton').on('click', function(){
-    localStorage.setItem('messageSuccess', 'Pomyslnie wylogowano.')
-	location.href="../logout.php";
-});
-
 let validationObjects = {
 	"firstName": ['First Name', true],
 	"lastName": ['Last Name', true],

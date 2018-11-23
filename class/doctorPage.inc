@@ -44,7 +44,7 @@
 										)
 								);
 			private $styles = Array("mainStyles.css","doctorStyles.css");								//nazwy plików ze stylami
-			private $scripts = Array("jquery-3.3.1.min.js","doctor.js","messages.js");					//nazwy plików ze skryptami
+			private $scripts = Array("jquery-3.3.1.min.js","doctor.js","messages.js","logout.js");		//nazwy plików ze skryptami
 			protected $user;
 			
 			public function __construct($t,$u){															//konstruktor przyjmuje użytkownika i tytuł strony

@@ -38,26 +38,6 @@
 			return "----------------DOCTOR----------------<br>idUser: ".$this->idUser."<br>Account Type: ".$this->accType."<br>First Name: ".$this->firstName."<br>Last name: ".$this->lastName."<br>Email Address: ".$this->email."<br>Address: ".$this->address."<br>Phone number: ".$this->phoneNumber."<br>Academic Title: ".$this->academicTitle."<br>Admin Type: ".$this->admType."<br>";
 		}
 		
-		public function getAllPatients(){								
-			require('../connect.php');        
-			@$db=new mysqli($server,$user,$password,$dataBase);
-			$patients = Array();											//tworzymy tablice
-			$idx=0;
-			if(mysqli_connect_errno())
-				$patients[$idx]=1;											//jesli błąd bazy to zwracamy 1
-			else{
-				$query="SELECT FIRST_NAME, LAST_NAME, EMAIL, ADDRESS, PHONE_NUMBER FROM CUSTOMER ORDER BY LAST_NAME, FIRST_NAME";		//pobieramy dane
-				$result=$db->query($query);																
-				if($result->num_rows==0)
-					$patients[$idx]=0;																		//jesli 0 wierszy to zwracamy 0
-				else{
-					while($row=$result->fetch_assoc())
-						$patients[$idx++] = $row;															//wkładamy pacjentów do tabeli
-				}		
-			}
-			return $patients;
-		}
-		
 		public function editData($fN, $lN, $a, $pN, $aT){
 			$retVal=-1;
 			require('../connect.php');		
@@ -79,6 +59,66 @@
 			}
 			@$db->close();
 			return $retVal;
+		}
+		
+		public function getAllCustomers(){								
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$customers = Array();											//tworzymy tablice
+			$idx=0;
+			if(mysqli_connect_errno())
+				$customers[$idx]=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query="SELECT FIRST_NAME, LAST_NAME, EMAIL, ADDRESS, PHONE_NUMBER FROM CUSTOMER ORDER BY LAST_NAME, FIRST_NAME";		//pobieramy dane
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$customers[$idx]=0;																		//jesli 0 wierszy to zwracamy 0
+				else{
+					while($row=$result->fetch_assoc())
+						$customers[$idx++] = $row;															//wkładamy pacjentów do tabeli
+				}		
+			}
+			return $customers;
+		}
+		
+		public function getDetailCustomerData($e){
+			$customer=-1;
+			require('../connect.php');		
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				$customer=1;
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query="SELECT * FROM CUSTOMER WHERE EMAIL='".$e."'";
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$customer=0;																		//jesli 0 wierszy to zwracamy 0
+				else
+					$customer=$result->fetch_assoc();													//else to zapisujemy go do zmiennej
+				if($customer!=0){													//jesli wierszy było wiecej niż 0 to pobieramy inne dane
+					$query="SELECT COUNT(CUS_ID) AS LOGIN_NUM FROM LOGIN_HISTORY WHERE CUS_ID=".$customer['CUS_ID']." AND RESULT='ACCESS'";
+					$accessNum=$db->query($query);														//ilosc poprawnych logowac
+					$customer['LOGIN_NUM_A'] = $accessNum->fetch_assoc()['LOGIN_NUM'];
+					$query="SELECT COUNT(CUS_ID) AS LOGIN_NUM FROM LOGIN_HISTORY WHERE CUS_ID=".$customer['CUS_ID']." AND RESULT='DENIED'";
+					$deniedNum=$db->query($query);														//ilosc niepoprawnych
+					$customer['LOGIN_NUM_D'] = $deniedNum->fetch_assoc()['LOGIN_NUM'];
+					$query="SELECT DATE FROM LOGIN_HISTORY WHERE CUS_ID=".$customer['CUS_ID']." AND RESULT='ACCESS' ORDER BY DATE DESC LIMIT 1";
+					$accessLast=$db->query($query);														//ostatnie logowanie poprawne
+					$customer['LOGIN_LAST_A'] = $accessLast->fetch_assoc()['DATE'];
+					$query="SELECT DATE FROM LOGIN_HISTORY WHERE CUS_ID=".$customer['CUS_ID']." AND RESULT='DENIED' ORDER BY DATE DESC LIMIT 1";
+					$deniedLast=$db->query($query);														//ostatnie niepoprawen
+					$customer['LOGIN_LAST_D'] = $deniedLast->fetch_assoc()['DATE'];
+					
+					$customer['PET_NUM']="B/D";															//pozostałe dane, ale jeszcze nie ma bazy
+					$customer['PET_NAMES']="B/D";
+					$customer['VISIT_NEXT']="B/D";
+					$customer['VISIT_PREV']="B/D";
+					$customer['VISIT_NUM']="B/D";
+				}
+			}
+			@$db->close();
+			return $customer;
 		}
 	}
 ?>

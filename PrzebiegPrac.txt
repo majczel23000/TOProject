@@ -13,6 +13,7 @@ KLI-02 - edycja danych klienta
 KLI-04 - wyœwietlanie info o lekarzach
 
 LEK-02 - wyswietlenie listy klientów
+LEK-03 - wyswietlenie szczegó³ów klienta
 
 Tego nie ma w wymaganiach, ale jest ju¿ u nas:
 ?????? - wyœwietlanie danych lekarza
@@ -21,4 +22,4 @@ Tego nie ma w wymaganiach, ale jest ju¿ u nas:
 Wszystkich wymagañ w dokumentacji jest 36.
 30% aplikacji to oko³o 11 wymagañ
 
-Aktualnie: 10/11
+Aktualnie: 11/11

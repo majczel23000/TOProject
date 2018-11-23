@@ -128,7 +128,10 @@ body{
 #doctorSubMenu > .btnMenu{
 	float:left;
 }
-#customerList{
+#contentDescription{
+	text-align:center;
+}
+#customerList,#customerDetail{
     background: #f6f6f6;
     border-radius:3px;
     border-collapse: collapse;
@@ -139,21 +142,52 @@ body{
     text-align: center;
     margin-bottom: 50px;
 }
-#customerList tr:nth-child(2n){
+#customerList tr:nth-child(2n),#customerDetail tr:nth-child(2n){
 	background-color:#f0f0f0;
 }
-#customerList thead{
+#customerList thead,#customerDetail thead{
     color: #f6f6f6;
     background: #333;
 }
-#customerList thead th{
+#customerList thead th,#customerDetail thead th{
     padding: 20px;
 }
-#customerList td{
+#customerList td,#customerDetail td{
     padding: 10px 20px;
 }
-#customerList tr:hover td{
+#customerList tr:hover td,#customerDetail tr:hover td{
     background: #eaeaea;
+	cursor:pointer;
+}
+#customerDetail{
+	margin-top:10px;
+}
+#customerDetail tr td:last-child{
+	background-color:gray;
+	width:50%;
+}
+
+.detail-input{
+    font-size: 1rem;
+    padding: 31px;
+    border: none;
+    width: 90%;
+	box-shadow: 3px 3px 5px 6px #ccc;
+}
+.detail-input::placeholder{
+    color:gray;
+}
+.search-button{
+	transition: 0.1s all;
+	display:block;
+	margin:auto;
+	margin-top:15px;
+	width:50%;
+	padding:15px;
+	background-color:#ff850c;
+}
+.search-button:hover{
+	background-color:#ffcc99;
 	cursor:pointer;
 }
 

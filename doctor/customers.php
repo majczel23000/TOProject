@@ -24,7 +24,7 @@
 	}
 
 	$customers = new CustomerList("Obsługa klientów",unserialize($_SESSION['DOCTOR']));
-	$scripts = Array("jquery-3.3.1.min.js","doctorPatientService.js");
+	$scripts = Array("jquery-3.3.1.min.js","doctorPatientService.js","logout.js");
 	$customers->setScripts($scripts);
 	$customers->showPage();
 ?>
