@@ -154,8 +154,8 @@ body{
 }
 #customerList tr:hover td{
     background: #eaeaea;
+	cursor:pointer;
 }
-
 
 .edit-data-error{
 	display:block;

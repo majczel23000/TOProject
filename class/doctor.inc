@@ -29,12 +29,16 @@
 		public function getAcademicTitle(){
 			return $this->academicTitle;
 		}
+		
+		public function getAdmType(){
+			return $this->admType;
+		}
 			
 		public function __toString(){													//wypisanie na ekranie
 			return "----------------DOCTOR----------------<br>idUser: ".$this->idUser."<br>Account Type: ".$this->accType."<br>First Name: ".$this->firstName."<br>Last name: ".$this->lastName."<br>Email Address: ".$this->email."<br>Address: ".$this->address."<br>Phone number: ".$this->phoneNumber."<br>Academic Title: ".$this->academicTitle."<br>Admin Type: ".$this->admType."<br>";
 		}
 		
-		public function getAllPatients(){									//funkcja pobierajaca pacjentów
+		public function getAllPatients(){								
 			require('../connect.php');        
 			@$db=new mysqli($server,$user,$password,$dataBase);
 			$patients = Array();											//tworzymy tablice
@@ -42,14 +46,14 @@
 			if(mysqli_connect_errno())
 				$patients[$idx]=1;											//jesli błąd bazy to zwracamy 1
 			else{
-				$query="SELECT FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER FROM CUSTOMER ORDER BY LAST_NAME, FIRST_NAME";		//pobieramy dane
+				$query="SELECT FIRST_NAME, LAST_NAME, EMAIL, ADDRESS, PHONE_NUMBER FROM CUSTOMER ORDER BY LAST_NAME, FIRST_NAME";		//pobieramy dane
 				$result=$db->query($query);																
 				if($result->num_rows==0)
 					$patients[$idx]=0;																		//jesli 0 wierszy to zwracamy 0
 				else{
 					while($row=$result->fetch_assoc())
 						$patients[$idx++] = $row;															//wkładamy pacjentów do tabeli
-				}
+				}		
 			}
 			return $patients;
 		}

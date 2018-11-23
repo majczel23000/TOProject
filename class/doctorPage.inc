@@ -24,7 +24,7 @@
 											"href" => "customers.php",
 											//"id" => "logoutButton",
 											"class" => "btn btnMenu",
-											"iClass" => "fas fa-user-md"
+											"iClass" => "fas fa-users"
 										),
 									3 => Array
 										(
@@ -107,6 +107,8 @@
 					else																				//w innym przypadku wypisujemy bez artybutu href
 						echo "class=\"".$butt['class']."\"> <i class=\"".$butt['iClass']."\" style=\"margin-right: 10px\"></i>".$butt['text']."</a>\n";
 				}
+				if($this->user->getAdmType()=="HEAD")
+					echo "\t\t\t <a href=\"#\" class=\"btn btnMenu\"><i class=\"fas fa-user-md\" style=\"margin-right: 10px\"></i>Lekarze</a>\n";
 				echo "\t\t	<div class=\"clear\"></div>\n";
 				echo "\t\t</div>\n";
 				echo "\t\t<div class=\"clear\"></div>\n";
