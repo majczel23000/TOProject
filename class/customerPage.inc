@@ -135,7 +135,7 @@
             $this->styles=$stl;
         }
         
-        protected function setScripts($scr){
+        public function setScripts($scr){
             $this->scripts=$scr;
         }
     }

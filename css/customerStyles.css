@@ -69,13 +69,13 @@ body{
 .btnSaveEditDisabled{
     cursor: not-allowed;
 }
-.btnDoctorHours{
+.btnShowDoctorDetails, .btnHideDoctorDetails{
     width: 100%;
     height: 100%;
     border: none;
     background:#5a98fc;
 }
-.btnDoctorHours:hover{
+.btnShowDoctorDetails:hover, .btnHideDoctorDetails:hover{
     cursor: pointer;
     background:#8ab3f5;
 }
