@@ -16,7 +16,7 @@ class Rejestracja{
     }
 
     public function registerProccess(){
-        session_start();
+        /*session_start();
 		require('connect.php');
 		@$this->db=new mysqli($server,$user,$password,$dataBase);
 		if(mysqli_connect_errno())
@@ -28,6 +28,9 @@ class Rejestracja{
             $this->returnVal = 0;
         }
         @$this->db->close();
+		echo json_encode($this->returnVal);*/
+		require('class/user.inc');
+		$this->returnVal=User::addUser($this->firstName,$this->lastName,$this->email,$this->password);
 		echo json_encode($this->returnVal);
     }
 }

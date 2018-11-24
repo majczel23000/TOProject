@@ -67,6 +67,21 @@
 			return $this->accType;
 		}
 		
+		public static function addUser($fN, $lN, $e, $p){
+			$retVal;
+			require('connect.php');
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+            $retVal = 1;
+			else{
+				$hashedPassword = password_hash($p, PASSWORD_DEFAULT);
+				$query = "INSERT INTO customer (FIRST_NAME, LAST_NAME, PASSWORD, EMAIL) VALUES('".$fN."','".$lN."','".$hashedPassword."','".$e."')";
+				$db->query($query);
+				$retVal = 0;
+			}
+			return $retVal;
+		}
+		
 		public function getLastSuccessfulLogin(){
 			require('../connect.php');        
 			@$db=new mysqli($server,$user,$password,$dataBase);
