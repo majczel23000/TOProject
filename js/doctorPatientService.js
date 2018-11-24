@@ -101,7 +101,7 @@ function showCustomerDetail(val){										//val istnieje, gdy przekazujemy mail
 	$("#contentTitle").append("<hr>");																			//dajemy se kreske 
 	$("#contentTitle").append("<h1><i class=\"fas fa-info-circle\"></i> Szczegółowe dane klienta</h1>");		//ustawiamy tytuł
 	//$("#contentTitle").fadeOut(1);
-	$inputDetail=$("<input class=\"detail-input\" type=\"text\" placeholder=\"wprowadź adres mailowy klienta, którego dane cię interesują\" >");
+	$inputDetail=$("<input class=\"detail-input\" type=\"text\" placeholder=\"Wprowadź adres mailowy klienta, którego dane cię interesują\" >");
 	if(val!=null)														//jesli ten val ustnieje, to wypełniamy nim inputa
 		$inputDetail.val(val);
 	$("#contentDescription").append($inputDetail);							//wstawiamy na strone input
@@ -117,61 +117,85 @@ function showCustomerDetail(val){										//val istnieje, gdy przekazujemy mail
 }
 
 function getCustomerData(){
+	const mailReg = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/					//regularne dla maila
 	if($("#customerDetail").length>0)
 		$("#customerDetail").remove();
-	const mail = $('.detail-input').val();
-	$.ajax({									
-		type:"post",
-		url:"getPatientsData.php",
-		dataType:"json",
-		data:{
-			accType:"doctor",
-			returnVal:"detail",											//określa czy chcemy całe czy tylko jednego pacienta
-			mail:mail
-		},
-		beforeSend: function(){
-			$('body').css('opacity','0.6');
-			$('body').css('cursor','progress');
-		},
-		success: function(json){
-			if(json==0 || json==1){															//jesli 0 lub 1(połączenie złe) to znaczy, ze nie ma takiego
-				let $table=$("<table></table>");														//tworzymy tabele
-				$table.attr("id","customerDetail");														//dajemy jej id
-				$table.append("<thead><tr><th colspan=\"2\">Dane klienta: "+mail+"</tr></thead>");		//wstawiamy do niej thead
-				$tbody=$("<tbody></tbody>");
-				$tbody.append("<tr><td colspan=\"2\">Nie istnieje klient o podanym adresie mailowym.</td></tr>");
-				$table.append($tbody);
-				$("#contentDescription").append($table);
+	if($('.detail-input').val()==''){
+		$('.detail-input').css({
+			'box-shadow':'3px 3px 5px 6px #ffb3b3'
+		});
+		$('.detail-input').attr('placeholder','To pole nie może pozostać puste');
+	}
+	else if(!mailReg.test($('.detail-input').val())){
+		$('.detail-input').css({
+			'box-shadow':'3px 3px 5px 6px #ffb3b3'
+		});
+		$('.detail-input').attr('placeholder',' wartość "'+$('.detail-input').val()+'" nie jest adresem mailowym');
+		$('.detail-input').val('');
+	}
+	else{
+		$('.detail-input').css({
+			'box-shadow':'3px 3px 5px 6px #ccc'
+		});
+		$('.detail-input').attr('placeholder','Wprowadź adres mailowy klienta, którego dane cię interesują');
+		const mail = $('.detail-input').val();
+		$.ajax({									
+			type:"post",
+			url:"getPatientsData.php",
+			dataType:"json",
+			data:{
+				accType:"doctor",
+				returnVal:"detail",											//określa czy chcemy całe czy tylko jednego pacienta
+				mail:mail
+			},
+			beforeSend: function(){
+				$('body').css('opacity','0.6');
+				$('body').css('cursor','progress');
+			},
+			success: function(json){
+				if(json==0 || json==1){															//jesli 0 lub 1(połączenie złe) to znaczy, ze nie ma takiego
+					let $table=$("<table></table>");														//tworzymy tabele
+					$table.attr("id","customerDetail");														//dajemy jej id
+					$table.append("<thead><tr><th colspan=\"2\">Dane klienta: "+mail+"</tr></thead>");		//wstawiamy do niej thead
+					$tbody=$("<tbody></tbody>");
+					$tbody.append("<tr><td colspan=\"2\">Nie istnieje klient o podanym adresie mailowym.</td></tr>");
+					$table.append($tbody);
+					$("#contentDescription").append($table);
+				}
+				else{
+					let $table=$("<table></table>");																//tworzymy tabele
+					$table.attr("id","customerDetail");																//dajemy jej id
+					$table.append("<thead><tr><th colspan=\"2\">Dane klienta: "+json['EMAIL']+"</tr></thead>");		//wstawiamy do niej thead
+					$tbody=$("<tbody></tbody>");
+					$tbody.append("<tr><td>First Name: </td><td>"+json['FIRST_NAME']+"</td></tr>");					//i poszczególne dane
+					$tbody.append("<tr><td>Last Name: </td><td>"+json['LAST_NAME']+"</td></tr>");
+					$tbody.append("<tr><td>Address: </td><td>"+json['ADDRESS']+"</td></tr>");
+					$tbody.append("<tr><td>Phone Number: </td><td>"+json['PHONE_NUMBER']+"</td></tr>");
+					$tbody.append("<tr><td>Last Successful Login: </td><td>"+json['LOGIN_LAST_A']+"</td></tr>");
+					$tbody.append("<tr><td>Last Failed Login: </td><td>"+json['LOGIN_LAST_D']+"</td></tr>");
+					$tbody.append("<tr><td>Suffessful Login Number: </td><td>"+json['LOGIN_NUM_A']+"</td></tr>");
+					$tbody.append("<tr><td>Failed Login Number: </td><td>"+json['LOGIN_NUM_D']+"</td></tr>");
+					$tbody.append("<tr><td>Pets Number: </td><td>"+json['PET_NUM']+"</td></tr>");
+					$tbody.append("<tr><td>Pets Name: </td><td>"+json['PET_NAMES']+"</td></tr>");
+					$tbody.append("<tr><td>Last Visit: </td><td>"+json['VISIT_PREV']+"</td></tr>");
+					$tbody.append("<tr><td>Next Visit: </td><td>"+json['VISIT_NEXT']+"</td></tr>");
+					$tbody.append("<tr><td>Visits number: </td><td>"+json['VISIT_NUM']+"</td></tr>");
+					
+					$table.append($tbody);
+					$("#contentDescription").append($table);														//wstawiamy na strone tabele juz pelną
+					
+					$('html, body').animate({
+						scrollTop: $("#customerDetail").offset().top
+					}, 1000);
+				}
+				$('body').css('opacity','1');
+				$('body').css('cursor','default');
+			},
+			error: function(e){
+				console.warn(e);
+				$('body').css('opacity','1');
+				$('body').css('cursor','default');
 			}
-			else{
-				let $table=$("<table></table>");																//tworzymy tabele
-				$table.attr("id","customerDetail");																//dajemy jej id
-				$table.append("<thead><tr><th colspan=\"2\">Dane klienta: "+json['EMAIL']+"</tr></thead>");		//wstawiamy do niej thead
-				$tbody=$("<tbody></tbody>");
-				$tbody.append("<tr><td>First Name: </td><td>"+json['FIRST_NAME']+"</td></tr>");					//i poszczególne dane
-				$tbody.append("<tr><td>Last Name: </td><td>"+json['LAST_NAME']+"</td></tr>");
-				$tbody.append("<tr><td>Address: </td><td>"+json['ADDRESS']+"</td></tr>");
-				$tbody.append("<tr><td>Phone Number: </td><td>"+json['PHONE_NUMBER']+"</td></tr>");
-				$tbody.append("<tr><td>Last Successful Login: </td><td>"+json['LOGIN_LAST_A']+"</td></tr>");
-				$tbody.append("<tr><td>Last Failed Login: </td><td>"+json['LOGIN_LAST_D']+"</td></tr>");
-				$tbody.append("<tr><td>Suffessful Login Number: </td><td>"+json['LOGIN_NUM_A']+"</td></tr>");
-				$tbody.append("<tr><td>Failed Login Number: </td><td>"+json['LOGIN_NUM_D']+"</td></tr>");
-				$tbody.append("<tr><td>Pets Number: </td><td>"+json['PET_NUM']+"</td></tr>");
-				$tbody.append("<tr><td>Pets Name: </td><td>"+json['PET_NAMES']+"</td></tr>");
-				$tbody.append("<tr><td>Last Visit: </td><td>"+json['VISIT_PREV']+"</td></tr>");
-				$tbody.append("<tr><td>Next Visit: </td><td>"+json['VISIT_NEXT']+"</td></tr>");
-				$tbody.append("<tr><td>Visits number: </td><td>"+json['VISIT_NUM']+"</td></tr>");
-				
-				$table.append($tbody);
-				$("#contentDescription").append($table);														//wstawiamy na strone tabele juz pelną
-			}
-			$('body').css('opacity','1');
-			$('body').css('cursor','default');
-		},
-		error: function(e){
-			console.warn(e);
-			$('body').css('opacity','1');
-			$('body').css('cursor','default');
-		}
-	});
+		});
+	}
 }
