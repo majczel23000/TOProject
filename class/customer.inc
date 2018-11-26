@@ -101,5 +101,63 @@
 			return $doctors;
 		}
 
+		// zapytanie do bazy o zwrócenie wszystkich zwierząt zalogowanego customera
+		public function getAllAnimal(){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$animals = Array();											
+			$idx=0;
+			if(mysqli_connect_errno())
+				$animals[$idx]=1;											
+			else{
+				$query="SELECT CUS_ANI_ID, SPECIES, RACE, NAME FROM customer_animal JOIN animal_race USING(ANI_RAC_ID) JOIN animal_species USING(ANI_SPE_ID) WHERE CUS_ID=".$this->idUser;		
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$animals[$idx]=0;																		
+				else{
+					while($row=$result->fetch_assoc())
+						$animals[$idx++] = $row;															
+				}
+			}
+			return $animals;
+		}
+
+		// $animalID - CUS_ANI_ID według którego będziemy szukać konkretnego zwierzaka (unikalny w tabeli)
+		public function getAnimalDetails($animalID){									
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				return 1;											
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`");
+				$query="SELECT * FROM CUSTOMER_ANIMAL JOIN ANIMAL_RACE USING(ANI_RAC_ID) JOIN ANIMAL_SPECIES USING(ANI_SPE_ID) WHERE CUS_ANI_ID =".$animalID;		
+				$result=$db->query($query);
+				$num_rows=$result->num_rows;
+				if($num_rows!=1){
+					$result->free();
+					return 0;
+				} else {
+					return $result->fetch_assoc();
+				}																
+			}
+		}
+
+		// $animalID - CUS_ANI_ID według którego będziemy edytować konkretnego zwierzaka (unikalny w tabeli)
+		public function editAnimalData($name, $weight, $height, $animalID){
+			require('../connect.php');
+			$returnVal = -1;
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				$returnVal = 1;
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`");
+				$query = "UPDATE CUSTOMER_ANIMAL SET NAME='".$name."', WEIGHT='".$weight."', HEIGHT='".$height."' WHERE CUS_ANI_ID LIKE '".$animalID."'";
+				$db->query($query);
+				$returnVal = 0;
+			}
+			@$this->db->close();
+			return $returnVal;
+		}
+
 	}
 ?>

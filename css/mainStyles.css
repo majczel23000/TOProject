@@ -208,3 +208,6 @@ html, body {
 .messageSuccess{
     background: #39e572 !important;
 }
+.messageError{
+    background: red !important;
+}

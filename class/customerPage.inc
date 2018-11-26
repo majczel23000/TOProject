@@ -20,7 +20,7 @@
             2 => Array
                 (
                     "text" => "Zwierzęta",
-                    "href" => "#",
+                    "href" => "animals.php",
                     "class" => "btn btnMenu",
                     "iClass" => "fas fa-paw"
                 ),
