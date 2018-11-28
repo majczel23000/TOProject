@@ -1,7 +1,11 @@
-// do przechowywania wszystkich zwróconych z bazy zwierząt
+// do przechowywania wszystkich zwróconych z bazy zwierząt, gatunków i ras
 let animalsList = [];
+let animalsSpecies = [];
+let animalsRaces = [];
 // do przechowywania ID wybranego zwierzęcie (tego którego detale są aktualnie pokazane)
 let animalID = null;
+let speciesID = null;
+let raceID = null;
 
 // po załadowaniu strony
 $(window).on('load', function(){
@@ -102,6 +106,7 @@ function showSelectedAnimalDetails(animal){
 				console.warn("BŁĄD POŁĄCZENIA");
 			}
 			else{
+				console.log(json);
 				// czyszcze tytuł strony i zamieniam na tytuł z detalami zwierzaka
 				$("#contentTitle").empty();
 				$("#contentTitle").html("<h1><i class='fas fa-paw'></i> Szczegóły zwierzaka: " + animal['NAME'] + "</h1>");
@@ -198,7 +203,7 @@ function showEditInputs($button){
         // Dodanie keyup eventów za pomocą jQuery do każdego inputka
         $('input').each(function(index){
             $(this).on('keyup', function(){
-                validateInputValue($(this));
+                validateInputValue($(this), $button);
             });
         });
     }
@@ -217,7 +222,7 @@ function deleteInput($obj, $value){
 }
 
 // Sprawdzenie czy pola nie sa puste, czyli walidacja
-function validateInputValue($obj){
+function validateInputValue($obj, $button){
     if($obj.val() == ''){
         $obj.css('background',"#ffa8a8");
         validationObjects[$obj[0].id][1] = false;
@@ -243,30 +248,30 @@ function validateInputValue($obj){
         // wysyłam info żeby usunąć error jesli taki był
         errorService(false, "" , $obj[0].id + "Error");
     }
-    disableOrEnableEditButton();
+    disableOrEnableEditButton($button);
 }
 
 // Zmiana buttona na disabled/enabled
-function disableOrEnableEditButton(){
+function disableOrEnableEditButton($button){
     // gdy po przejsciu przez ponizszego for'a, flag będzie true, to znaczy
     // że wszystkie pola sa poprawnie uzupełnione i można aktywowac przycisk
     let flag = true;
-    const btnRegister = $('#btnEditAnimalInfo');
+	const btnRegister = $('#btnEditAnimalInfo');
 	for (var k in validationObjects){
 		if (validationObjects.hasOwnProperty(k)) {
 			if(!validationObjects[k][1]){
-				btnRegister.removeClass("saveAnimalButton");
-				btnRegister.addClass("saveAnimalButtonDisabled");
-                btnRegister.attr("disabled", "disabled");
+				$button.removeClass("saveAnimalButton");
+				$button.addClass("saveAnimalButtonDisabled");
+                $button.attr("disabled", "disabled");
                 flag = false;
 			}
 		}
     }
     if(flag){
         // wszystkie elementy poprawne, można aktywować przycisk 'Zapisz dane zwierzaka'
-        btnRegister.removeClass("saveAnimalButtonDisabled");
-        btnRegister.addClass("saveAnimalButton");
-        btnRegister.removeAttr("disabled");
+        $button.removeClass("saveAnimalButtonDisabled");
+        $button.addClass("saveAnimalButton");
+        $button.removeAttr("disabled");
     }
 }
 
@@ -351,5 +356,196 @@ $('#messagesCloseIcon').on("click", function(){
 
 // po kliknięciu przycisku 'Dodaj zwierzaka'
 $("#btnAddAnimal").on('click', function(){
-	console.log('add');
+	$("#contentTitle").empty();
+	$("#contentTitle").html("<h1><i class='fas fa-plus'></i> Dodaj zwierzaka </h1>");
+	$thead = $("#animalListThead");
+	$tbody = $("#animalsListTbody");
+	$thead.empty();
+	$tbody.empty();
+	// wyswietlanie formularza
+	$tbody.append("<tr><td>Imię: </td><td class='darkTheme tdDuringAnimalEdit'><input placeholder='Wpisz imię' id='name' type='text'></td></tr>");
+	$tbody.append("<tr><td>Gatunek: </td><td class='darkTheme tdDuringAnimalEdit'><select id='selectSpecies'></select></td></tr>");
+	$tbody.append("<tr><td>Rasa: </td><td class='darkTheme tdDuringAnimalEdit'><select id='selectRace'></select></td></tr>");
+	$tbody.append("<tr><td>Wzrost: </td><td class='darkTheme tdDuringAnimalEdit'><input  placeholder='Podaj wzrost' id='height' type='text'></td></tr>");
+	$tbody.append("<tr><td>Waga: </td><td class='darkTheme tdDuringAnimalEdit'><input placeholder='Podaj wagę' id='weight' type='text'></td></tr>");
+	$tbody.append("<tr><td>Data urodzenia: </td><td class='darkTheme tdDuringAnimalEdit'><input id='birthDate' type='date'></td></tr>");
+	$button = $("<button id='btnConfirmAddAnimal'><i class='fas fa-add' style='margin-right: 10px'></i>Dodaj zwierzaka</button>");
+	$content = $("#content");
+	$content.append($button);
+
+	// Dodanie keyup eventów za pomocą jQuery do każdego inputka
+	$('input').each(function(index){
+		$(this).on('keyup', function(){
+			validateInputValue($(this), $("#btnConfirmAddAnimal"));
+		});
+	});
+
+	$('#btnConfirmAddAnimal').on('click', function(){
+		collectDataFromAddForm();
+	});
+
+	getAnimalSpecies();
+
 });
+
+// zapytanie do bazy o pobranie gatunków zwierząt a potem pokazanie opcji w select
+function getAnimalSpecies(){
+	$.ajax({									
+		type:"post",
+		url:"getAnimalsData.php",
+		dataType:"json",
+		data:{
+			accType:"customer",
+			returnVal:"speciesData" // parametr określa że chcemy liste gatunków zwierząt
+		},
+		success: function(json){
+			// w przypadku braku wyników
+			if(json[0]==0){
+				$selectSpecies=$("#selectSpecies");
+				$selectSpecies.html('brak');		
+			}
+			else if(json[0]==1){
+				$selectSpecies=$("#selectSpecies");
+				$selectSpecies.html('brak');	
+				console.warn("BŁĄD POŁĄCZENIA");
+			}
+			else{
+				animalsSpecies = json;
+				// wstawiamy otrzymaną tablicę gatunków do selecta <select id='selectSpecies'></select>
+				$selectSpecies=$("#selectSpecies");
+				for(let i=0;i<json.length;i++){
+					$option=$("<option></option>");
+					$option.html(json[i]['SPECIES']);
+					$selectSpecies.append($option);
+				};
+
+				// dodaje event do zmiany option w selectSpecies
+				$("#selectSpecies").change(function () {
+   					$("#selectSpecies option:selected" ).each(function() {
+						for(let i = 0; i < animalsSpecies.length; i++){
+							if(animalsSpecies[i]['SPECIES'] === $(this).text()){
+								getAnimalsRace(animalsSpecies[i]['ANI_SPE_ID']);
+							}
+						}
+    				});
+  				}).change();
+			}
+		},
+		error: function(e){
+			console.warn(e);
+		}
+	});
+}
+
+// wyswietla liste ras według zaznaczonej opcji gatunku
+function getAnimalsRace(species){
+	$.ajax({									
+		type:"post",
+		url:"getAnimalsData.php",
+		dataType:"json",
+		data:{
+			accType:"customer",
+			returnVal:"racesData", // parametr określa że chcemy liste ras zwierząt
+			ANI_SPE_ID: species
+		},
+		success: function(json){
+			// w przypadku braku wyników
+			if(json[0]==0){
+				$selectRaces=$("#selectRace");
+				$selectRaces.html('brak');		
+			}
+			else if(json[0]==1){
+				$selectRaces=$("#selectRace");
+				$selectRaces.html('brak');	
+				console.warn("BŁĄD POŁĄCZENIA");
+			}
+			else{
+				console.log('RASY: ', json);
+				animalsRaces = json;
+				// wstawiamy otrzymaną tablicę gatunków do selecta <select id='selectRace'></select>
+				$selectRaces=$("#selectRace");
+				$selectRaces.empty();
+				for(let i=0;i<json.length;i++){
+					$option=$("<option></option>");
+					$option.html(json[i]['RACE']);
+					$selectRaces.append($option);
+				};
+			}
+		},
+		error: function(e){
+			console.warn(e);
+		}
+	});
+}
+
+function collectDataFromAddForm(){
+	const animalData = {
+		name:"",
+		species:"",
+		race: "",
+		height: "",
+		weight: "",
+		birthDate: ""
+	}
+	animalData.name = $("#name").val();
+	for(let i = 0; i < animalsSpecies.length; i++){
+		if(animalsSpecies[i]['SPECIES'] === $( "#selectSpecies option:selected" ).text()){
+			animalData.species = animalsSpecies[i]['ANI_SPE_ID'];
+		}
+	}
+	for(let i = 0; i < animalsRaces.length; i++){
+		if(animalsRaces[i]['RACE'] === $( "#selectRace option:selected" ).text()){
+			animalData.race = animalsRaces[i]['ANI_RAC_ID'];
+		}
+	}
+	animalData.height = $("#height").val();
+	animalData.weight = $("#weight").val();
+	animalData.birthDate = $("#birthDate").val();
+	addNewAnimal(animalData);
+}
+
+
+// DO ZROBIENIA JESZCZE JEST TO WŁASNIE
+function addNewAnimal(animalData){
+	$.ajax({									
+		type:"post",
+		url:"addAnimal.php",
+		dataType:"json",
+		data:{
+			accType:"customer",
+			name: animalData.name,
+			species: animalData.species,
+			race: animalData.race,
+			height: animalData.height,
+			weight: animalData.weight,
+			birthDate: animalData.birthDate,
+		},
+		success: function(json){
+			// w przypadku braku wyników
+			if(json[0]==0){
+				$selectRaces=$("#selectRace");
+				$selectRaces.html('brak');		
+			}
+			else if(json[0]==1){
+				$selectRaces=$("#selectRace");
+				$selectRaces.html('brak');	
+				console.warn("BŁĄD POŁĄCZENIA");
+			}
+			else{
+				console.log('RASY: ', json);
+				animalsRaces = json;
+				// wstawiamy otrzymaną tablicę gatunków do selecta <select id='selectRace'></select>
+				$selectRaces=$("#selectRace");
+				$selectRaces.empty();
+				for(let i=0;i<json.length;i++){
+					$option=$("<option></option>");
+					$option.html(json[i]['RACE']);
+					$selectRaces.append($option);
+				};
+			}
+		},
+		error: function(e){
+			console.warn(e);
+		}
+	});
+}

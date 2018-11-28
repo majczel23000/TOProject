@@ -159,5 +159,63 @@
 			return $returnVal;
 		}
 
+		// pobiera wszystkie gatunki zwierząt
+		public function getAnimalsSpecies(){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$species = Array();											
+			$idx=0;
+			if(mysqli_connect_errno())
+				$species[$idx]=1;											
+			else{
+				$db->query("SET NAMES utf8 COLLATE utf8_polish_ci");
+				$query="SELECT * FROM animal_species";		
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$species[$idx]=0;																		
+				else{
+					while($row=$result->fetch_assoc())
+						$species[$idx++] = $row;															
+				}
+			}
+			return $species;
+		}
+
+		// pobiera wszystkie rasy zwierząt
+		public function getAnimalsRaces($ANI_SPE_ID){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$races = Array();											
+			$idx=0;
+			$db->query("SET NAMES utf8 COLLATE utf8_polish_ci");
+			if(mysqli_connect_errno())
+				$races[$idx]=1;											
+			else{
+				$query="SELECT * FROM animal_race WHERE ANI_SPE_ID=".$ANI_SPE_ID;		
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$races[$idx]=0;																		
+				else{
+					while($row=$result->fetch_assoc())
+						$races[$idx++] = $row;															
+				}
+			}
+			return $races;
+		}
+
+		public function addAnimal($name, $species, $race, $height, $weight, $birthDate){
+			$retVal;
+			require('connect.php');
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+            $retVal = 1;
+			else{
+				$hashedPassword = password_hash($p, PASSWORD_DEFAULT);
+				$query = "INSERT INTO customer (FIRST_NAME, LAST_NAME, PASSWORD, EMAIL) VALUES('".$fN."','".$lN."','".$hashedPassword."','".$e."')";
+				$db->query($query);
+				$retVal = 0;
+			}
+			return $retVal;
+		}
 	}
 ?>
