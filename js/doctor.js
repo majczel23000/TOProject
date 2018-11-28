@@ -25,21 +25,112 @@ $('#editUserInfoButton').on('click', function(e){
 		//dodanie inputów do godzin przyjęć 
 		$adminssionHours=$(".adminssion-hours");						//pobieramy godziny przyjęć
 		$adminssionHours.each(function(){								//dla każdej komórki z godzinami przyjęć
-			$(this).css('padding','5px');								//zmieniamy padding komórki, w której znajdują sie te godziny
+			$(this).css('padding','10px');								//zmieniamy padding komórki, w której znajdują sie te godziny
 			let startH;
 			let finishH;
+			
+			$tableAH= $('<table></table>');								//tworzymy tabele;
+			const dayID = $(this).attr('id');
+			$tableAH.attr('id',dayID+'Table');
+			$tableAH.addClass("editAH");								
+			$trAH=$("<tr></tr>");
+			$inputCheckbox=$('<input>');								//input z checkboxem
+			$inputCheckbox.attr('id',dayID+'Checkbox');	//dajemy mu id 
 			$val=$(this).html();
 			if($val=="Brak Przyjęć"){									//jesli nie było godzin przyjeć to uznajemy, ze w tym dniu nie ma przyjęć
-				$val=null;
-				$(this).html('<table id="'+$(this).attr('id')+'Table" class="editAH"><tr><td style="width:80%" colspan="4">Dzień bez przyjęć</td><td><input type="checkbox" checked="true"></td></tr></table>');	
+				$tdAH=$('<td></td>');									//tworzymy td
+				$tdAH.attr('colspan','4');							
+				$tdAH.css('width','80%');
+				$tdAH.addClass('can-remove');							//potrzebny przy klikaniu w checkbox
+				$tdAH.html('Dzień bez przyjęć');
+				$trAH.append($tdAH);									//wstawiamy go do tr
+				$inputCheckbox.attr('checked','true');					//zaznaczymy inputa
 			}
 			else{
 				var splited = $val.split("-");							//w przeciwnym razie rozdzielamy godziny na startową i końcową
 				startH=splited[0];
 				finishH=splited[1];								
 				//dodajemy tabele do uzupełnienia danych edycji
-				$(this).html('<table id="'+$(this).attr('id')+'Table" class="editAH"><tr><td>Od</td><td><input type="text" value="'+startH+'"></td><td>Do</td><td><input type="text" value="'+finishH+'"></td><td><input type="checkbox"></td></tr></table>');		
-			}
+				$tdAH1=$('<td></td>');									//tworzymy td
+				$tdAH1.html('Od');
+				$tdAH1.addClass('can-remove');							//potrzebny przy klikaniu w checkbox
+				$trAH.append($tdAH1);									//wstawiamy go do tr
+				
+				$inputSh=$('<input>');									//input z godzinami startowymi
+				$inputSh.attr('type','text');
+				$inputSh.attr('id',dayID+'S');
+				$inputSh.attr('value',startH);
+				$tdAH2=$('<td></td>');									//td z inputem z godzinami startowymi
+				$tdAH2.addClass('can-remove');
+				$tdAH2.append($inputSh);
+				$trAH.append($tdAH2);
+				
+				$tdAH3=$('<td></td>');									//tworzymy td
+				$tdAH3.html('Do');
+				$tdAH3.addClass('can-remove');
+				$trAH.append($tdAH3);									//wstawiamy go do tr
+				
+				$inputFh=$('<input>');									//input z godzinami finiszowymi
+				$inputFh.attr('type','text');
+				$inputFh.attr('id',dayID+'F');
+				$inputFh.attr('value',finishH);
+				$tdAH4=$('<td></td>');									//td z inputem
+				$tdAH4.addClass('can-remove');
+				$tdAH4.append($inputFh);
+				$trAH.append($tdAH4);
+			}	
+			
+			$inputCheckbox.attr('type','checkbox');
+			$inputCheckbox.on('click',function(){										//przy zaznaczaniu albo pokazujemy godziny, albo je zamykamy
+				const id = $(this).parent().parent().parent().parent().attr('id');		//bo chcemy sie dostać do id tabeli, zeby sprawdzic jaki dzien został klikniety
+				if($(this).is(':checked')){												//gdy został zaznaczony
+					$("#"+id+" .can-remove ").remove();									//usuwamy komórki oprócz checkboxa			
+					$td=$('<td></td>');									
+					$td.attr('colspan','4');
+					$td.addClass('can-remove');					
+					$td.css('width','80%');
+					$td.html('Dzień bez przyjęć');
+					$("#"+id+" > tbody > tr").prepend($td);				
+				}
+				else{																	//to samo co wczesniej, ale idziemy od tyłu, zeby prepend pasowało
+					$("#"+id+" .can-remove ").remove();	
+					
+					$input2=$('<input>');									
+					$input2.attr('type','text');
+					$input2.attr('id',dayID+'F');
+					$td4=$('<td></td>');									
+					$td4.addClass('can-remove');
+					$td4.append($input2);
+					$("#"+id+" > tbody > tr").prepend($td4);
+					
+					$td3=$('<td></td>');								
+					$td3.html('Do');
+					$td3.addClass('can-remove');
+					$("#"+id+" > tbody > tr").prepend($td3);
+					
+					$input1=$('<input>');								
+					$input1.attr('type','text');
+					$input1.attr('id',dayID+'S');
+					$td2=$('<td></td>');								
+					$td2.addClass('can-remove');
+					$td2.append($input1);
+					$("#"+id+" > tbody > tr").prepend($td2);
+
+					$td1=$('<td></td>');									
+					$td1.html('Od');
+					$td1.addClass('can-remove');							
+					$("#"+id+" > tbody > tr").prepend($td1);	
+				}
+			});
+			$tdAH5=$('<td></td>');									//td z checkboxem
+			$tdAH5.append($inputCheckbox);
+			$trAH.append($tdAH5);
+			
+			$tbodyAH=$('<tbody></tbody>');
+			$tbodyAH.append($trAH);									//wstawiamy tr do tbody
+			$tableAH.append($tbodyAH);								//wstawiamy tbody do tabeli
+			$(this).html('');
+			$(this).append($tableAH);	
 		});
 
         $button.html("Zapisz dane");
@@ -47,7 +138,7 @@ $('#editUserInfoButton').on('click', function(e){
         $button.addClass("btnSaveEdit");
 		
 		 // Dodanie keyup eventów za pomocą jQuery do każdego inputka
-        $('input').each(function(){
+        $('#userInfo > tbody > tr > td > input').each(function(){
             $(this).on('keyup', function(){
                 validateInputValue($(this));
             });
@@ -57,24 +148,54 @@ $('#editUserInfoButton').on('click', function(e){
     // jesli button to 'Zapisz dane' to wtedy aktualizujemy dane
     // usuwamy inputy i wracamy do wyswietlania tylko tekstu
     else if($button.hasClass('btnSaveEdit')){
-        const userData = {
-            firstName: $firstName[0].childNodes[0].value,
-            lastName: $lastName[0].childNodes[0].value,
-            address: $address[0].childNodes[0].value,
-            phoneNumber: $phoneNumber[0].childNodes[0].value,
-            academicTitle: $academicTitle[0].childNodes[0].value
-        }
-        //console.log(userData);
+		//pobieramy dane o godzinach
+		let mondayHours="";let tuesdayHours="";let wednesdayHours="";let thursdayHours="";let fridayHours="";let saturdayHours="";let sundayHours="";
+		if(!$("#mondayAHCheckbox").is(':checked')){
+			mondayHours=$("#mondayAHS").val()+"-"+$("#mondayAHF").val();
+		}
+		if(!$("#tuesdayAHCheckbox").is(':checked')){
+			tuesdayHours=$("#tuesdayAHS").val()+"-"+$("#tuesdayAHF").val();
+		}
+		if(!$("#wednesdayAHCheckbox").is(':checked')){
+			wednesdayHours=$("#wednesdayAHS").val()+"-"+$("#wednesdayAHF").val();
+		}
+		if(!$("#thursdayAHCheckbox").is(':checked')){
+			thursdayHours=$("#thursdayAHS").val()+"-"+$("#thursdayAHF").val();
+		}
+		if(!$("#fridayAHCheckbox").is(':checked')){
+			fridayHours=$("#fridayAHS").val()+"-"+$("#fridayAHF").val();
+		}
+		if(!$("#saturdayAHCheckbox").is(':checked')){
+			saturdayHours=$("#saturdayAHS").val()+"-"+$("#saturdayAHF").val();
+		}
+		if(!$("#sundayAHCheckbox").is(':checked')){
+			sundayHours=$("#sundayAHS").val()+"-"+$("sundayAHF").val();
+		}
+			
         $.ajax({
             type:"post",
             url:"editDoctorData.php",
             dataType:"json",
-            data: userData,
+            data:{
+				firstName: $firstName[0].childNodes[0].value,
+				lastName: $lastName[0].childNodes[0].value,
+				address: $address[0].childNodes[0].value,
+				phoneNumber: $phoneNumber[0].childNodes[0].value,
+				academicTitle: $academicTitle[0].childNodes[0].value,
+				mondayHours:mondayHours,
+				tuesdayHours:tuesdayHours,
+				wednesdayHours:wednesdayHours,
+				thursdayHours:thursdayHours,
+				fridayHours:fridayHours,
+				saturdayHours:saturdayHours,
+				sundayHours:sundayHours
+			},
             beforeSend: function(){
                 $('body').css('opacity','0.6');
                 $('body').css('cursor','progress');
             },
             success: function(json){
+				console.log(json);
 				switch(json){
                     case 0:
                         localStorage.setItem('messageSuccess', 'Pomyslnie zedytowano dane.');
@@ -84,7 +205,6 @@ $('#editUserInfoButton').on('click', function(e){
                         console.log('Default success response');
                         break;
                 }
-				console.log(json);
                 $('body').css('opacity','1');
                 $('body').css('cursor','default');
             },

@@ -20,27 +20,7 @@
 				$this->academicTitle=$row['ACADEMIC_TITLE'];
 				$this->email=$row['EMAIL'];
 				$this->admType=$row['ADM_TYPE'];
-				$query="SELECT * FROM ADMISSION_HOURS WHERE ADM_H_ID=".$this->idUser;
-				$result=$this->db->query($query);
-				if($result->num_rows!=1){												//jesli godziny przyjec nieuzupełnione
-					$arr=Array(	"MONDAY"	=> 'Brak Przyjęć',
-								"TUESDAY"	=> 'Brak Przyjęć',
-								"WEDNESDAY"	=> 'Brak Przyjęć',
-								"THURSDAY"	=> 'Brak Przyjęć',
-								"FRIDAY" 	=> 'Brak Przyjęć',
-								"SATURDAY"	=> 'Brak Przyjęć',
-								"SUNDAY" 	=> 'Brak Przyjęć');
-					$this->admissionHours=$arr;
-				}
-				else{
-					$arr=$result->fetch_assoc();
-					foreach($arr as $key=>$val){										//jesli wiersz jest pusty to znaczy, ze nie ma przyjęć w danym dniu
-						if($val==null){
-							$arr[$key]="Brak Przyjęć";
-						}
-					}
-					$this->admissionHours=$arr;
-				}
+				$this->admissionHours=$this->getAdmissionHoursFromDataBase($this->db);			//przypisujemy tez godziny przyjeć
 			}
 		}
 		
@@ -64,7 +44,33 @@
 			return "----------------DOCTOR----------------<br>idUser: ".$this->idUser."<br>Account Type: ".$this->accType."<br>First Name: ".$this->firstName."<br>Last name: ".$this->lastName."<br>Email Address: ".$this->email."<br>Address: ".$this->address."<br>Phone number: ".$this->phoneNumber."<br>Academic Title: ".$this->academicTitle."<br>Admin Type: ".$this->admType."<br>";
 		}
 		
-		public function editData($fN, $lN, $a, $pN, $aT){
+		private function getAdmissionHoursFromDataBase($db){
+			$query="SELECT * FROM ADMISSION_HOURS WHERE ADM_H_ID=".$this->idUser;
+			$result=$db->query($query);
+			if($result->num_rows!=1){												//jesli nie ma go w tabeli przyjęć, to go dodajemy
+				$addQuery = "INSERT INTO ADMISSION_HOURS (ADM_H_ID) VALUES (".$this->idUser.")";
+				$db->query($addQuery);
+				$arr=Array(	"MONDAY"	=> 'Brak Przyjęć',
+							"TUESDAY"	=> 'Brak Przyjęć',
+							"WEDNESDAY"	=> 'Brak Przyjęć',
+							"THURSDAY"	=> 'Brak Przyjęć',
+							"FRIDAY" 	=> 'Brak Przyjęć',
+							"SATURDAY"	=> 'Brak Przyjęć',
+							"SUNDAY" 	=> 'Brak Przyjęć');
+				return $arr;
+			}
+			else{
+				$arr=$result->fetch_assoc();
+				foreach($arr as $key=>$val){										//jesli wiersz jest pusty to znaczy, ze nie ma przyjęć w danym dniu
+					if($val==null){
+						$arr[$key]="Brak Przyjęć";
+					}
+				}
+				return $arr;
+			}
+		}
+		
+		public function editData($fN, $lN, $a, $pN, $aT,$admH){
 			$retVal=-1;
 			require('../connect.php');		
 			@$db=new mysqli($server,$user,$password,$dataBase);
@@ -74,12 +80,31 @@
 				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
 				$query = "UPDATE doctor SET FIRST_NAME='".$fN."', LAST_NAME='".$lN."', ADDRESS='".$a."', PHONE_NUMBER='".$pN."', ACADEMIC_TITLE='".$aT."' WHERE EMAIL='".$this->email."'";
 				$db->query($query);
+				//zminamy godziny przyjęć
+				foreach($admH as $key=>$val){						//jesli jest "" to musimy wprowadzic NULL do tabeli, ale bez apostrofów, zeby wprowadziło sie jako NULL, a nie jako 
+					if($val==""){																											//string z wartością NULL
+						$admH[$key]="NULL";
+					}
+					else{
+						$admH[$key]="'".$val."'";					//w przeciwnym razie wprowadzamy godziny z apostrofami
+					}
+				}
+				$query = "UPDATE ADMISSION_HOURS SET 
+														MONDAY=".$admH['MONDAY'].", 
+														TUESDAY=".$admH['TUESDAY'].", 
+														WEDNESDAY=".$admH['WEDNESDAY'].", 
+														THURSDAY=".$admH['THURSDAY'].", 
+														FRIDAY=".$admH['FRIDAY'].", 
+														SATURDAY=".$admH['SATURDAY'].", 
+														SUNDAY=".$admH['SUNDAY']." WHERE ADM_H_ID=".$this->idUser;
+				$db->query($query);
 				$retVal=0;	
 				$this->firstName=$fN;
 				$this->lastName=$lN;
 				$this->address=$a;
 				$this->phoneNumber=$pN;
 				$this->academicTitle=$aT;
+				$this->admissionHours=$this->getAdmissionHoursFromDataBase($db);			//zapisujemy wszystkie zmienione dane w aktualnej sesji
 				//session_start();
 				$_SESSION['DOCTOR']=serialize($this);
 			}

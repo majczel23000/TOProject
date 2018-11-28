@@ -143,12 +143,17 @@ table.editAH > tbody > tr > td{
 	width:20%;
 	text-align:center;
 }
-table.editAH input{
+table.editAH > tbody > tr > td:last-child{
+	text-align:right;
+}
+table.editAH input[type=text]{
 	width:100%;
 	border:none;
 	text-align:center;
 	font-size:1.1rem;
 }
+
+
 /*=====SUBMENUDOCTOR=====*/
 #doctorSubMenu{
 	text-align:center;

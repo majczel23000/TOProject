@@ -57,7 +57,7 @@
 			echo "\t\t\t\t\t </tr> \n";
 			echo "\t\t\t\t\t <tr> \n";
 			echo "\t\t\t\t\t\t <td>Wendesday</td>\n";
-			echo "\t\t\t\t\t\t <td id=\"wendesdayAH\" class=\"adminssion-hours\">".$this->user->getAdmissionHours()['WEDNESDAY']."</td>\n";
+			echo "\t\t\t\t\t\t <td id=\"wednesdayAH\" class=\"adminssion-hours\">".$this->user->getAdmissionHours()['WEDNESDAY']."</td>\n";
 			echo "\t\t\t\t\t </tr> \n";
 			echo "\t\t\t\t\t <tr> \n";
 			echo "\t\t\t\t\t\t <td>Thursday</td>\n";
