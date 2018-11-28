@@ -10,6 +10,7 @@ let validationObjects = {
 };
 
 //obsługa maila
+var rotation=0;
 $('#email').on('blur',function(){
 	const mailReg = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/					//regularne dla maila
 	const name="wrongSyntaxEmail";
@@ -19,10 +20,8 @@ $('#email').on('blur',function(){
 		isSyntaxError=true;																			//zapisujemy, ze był błąd, aby nie sprawdzać już czy email wolny
 		validationObjects["email"] = false;
 	}
-	else
-	{
-		if($('#'+name+'Info').length>0)																//jesli był błąd a juz nie powinien byc to usuwamy		
-			$('#'+name+'Info').remove();
+	else{
+		deleteErrors(name);
 		validationObjects["email"] = true;
 	}
 	checkIfAllValid();
@@ -36,24 +35,39 @@ $('#email').on('blur',function(){
 				email:$(this).val()
 			},
 			beforeSend: function(){
-				$('#registerForm').css('opacity','0.8');
-				$('#registerForm').css('cursor','progress');
+				$loadingImg=$('<img src="img/loading.png">');													//tworzymy wykrzyknik i nadajemy odpowiednie paramatery i właściwości
+				$loadingImg.prop('id','loadingImg');
+				$loadingImg.css({
+					'position':'absolute',
+					'top':$('#email').offset().top,
+					'left':$('#email').offset().left - 50,
+					'width':$('#email').outerHeight(),
+					'height':$('#email').outerHeight(),
+				});	
+				$('body').append($loadingImg);
+				setInterval(function(){ 
+					rotation += 5;
+					$('#loadingImg').css({'-webkit-transform' : 'rotate('+ rotation +'deg)',
+								 '-moz-transform' : 'rotate('+ rotation +'deg)',
+								 '-ms-transform' : 'rotate('+ rotation +'deg)',
+								 'transform' : 'rotate('+ rotation +'deg)'});
+				}, 20);
+				
+				//$('#registerForm').css('opacity','0.8');
+				//$('#registerForm').css('cursor','progress');
 			},
 			success: function(json){
 				const name="mailNotAvailable";
 				if(!json)																			//jesli json==false to znaczy, ze mail zajęty
 					errorService(name,$('#email'),'Adres Email jest już zajęty!');					//wiec generujemy błąd
 				else
-					if($('#'+name+'Info').length>0)													//jesli był błąd a juz nie powinien byc to usuwamy		
-						$('#'+name+'Info').remove();
-				$('#registerForm').css('opacity','1');
-				$('#registerForm').css('cursor','default');
+					deleteErrors(name);																//jesli był błąd a juz nie powinien byc to usuwamy		
+				$('#loadingImg').remove();
 				checkIfAllValid();
 			},
 			error: function(e){
 				console.warn(e);
-				$('#registerForm').css('opacity','1');
-				$('#registerForm').css('cursor','default');
+				$('#loadingImg').remove();
 			}
 		})
 	}
@@ -61,26 +75,42 @@ $('#email').on('blur',function(){
 
 //obsługa imienie
 $('#firstName').on('blur',function(){
-	const name="emptyFirstName";
-	if(!$(this).val())																		//jesli hasło ma mniej niz 5 liter	
-		errorService(name,$(this),'To pole nie może pozostać puste!');						//no a tu to to samo co wczesniej
-	else{
-		if($('#'+name+'Info').length>0)
-			$('#'+name+'Info').remove();
-		validationObjects["firstName"] = true;
+	const nameReg = /^([a-zA-Z]){3,20}$/													//regularne tylko dla liter
+	const name="emptyFirstName";															//nazwa błędu z pustym inputem
+	const name2="tooLessLetterFN";															//nazwa błęd, gdy za mało liter
+	if(!$(this).val()){																		//jesli pole puste	
+		deleteErrors(name2);																//usuwamy drugi błąd dla tego pola, jesli był generowany 	
+		errorService(name,$(this),'Prosze uzupełnić imię!');								//i tworzymy aktualny błąd
 	}
-	checkIfAllValid();	
+	else if(!nameReg.test($(this).val())){													//to samo co w IF powyżej
+		deleteErrors(name);
+		errorService(name2,$(this),'Imię musi zawierać od 3 do 20 liter!');						
+	}
+	else{																					//jesli ok, to usuwamy dwa błędy
+		deleteErrors(name);
+		deleteErrors(name2);
+		validationObjects["firstName"] = true;												//zapisujemy, ze pole jest ok
+	}
+	checkIfAllValid();																		//sprawdzamy czy mozna aktywować przycisk
 });
 
 //obsługa nazwiska
 $('#lastName').on('blur',function(){
+	const nameReg = /^([a-zA-Z]){2,25}$/													//regularne tylko dla liter
 	const name="emptyLastName";
-	if(!$(this).val())																		//jesli hasło ma mniej niz 5 liter	
-		errorService(name,$(this),'To pole nie może pozostać puste!');						//no a tu to to samo co wczesniej
-	else{
-		if($('#'+name+'Info').length>0)
-			$('#'+name+'Info').remove();
-		validationObjects["lastName"] = true;
+	const name2="tooLessLetterLN";															//nazwa błęd, gdy za mało liter
+	if(!$(this).val()){																		//jesli pole puste	
+		deleteErrors(name2);																//usuwamy drugi błąd dla tego pola, jesli był generowany 	
+		errorService(name,$(this),'Prosze uzupełnić nazwisko!');								//i tworzymy aktualny błąd
+	}
+	else if(!nameReg.test($(this).val())){													//to samo co w IF powyżej
+		deleteErrors(name);
+		errorService(name2,$(this),'Nazwisko musi zawierać od 2 do 25 liter!');						
+	}
+	else{																					//jesli ok, to usuwamy dwa błędy
+		deleteErrors(name);
+		deleteErrors(name2);
+		validationObjects["lastName"] = true;												//zapisujemy, ze pole jest ok
 	}
 	checkIfAllValid();	
 });
@@ -91,8 +121,7 @@ $('#password').on('keyup',function(){
 	if($(this).val().length<5)																		//jesli hasło ma mniej niz 5 liter	
 		errorService(name,$(this),'Hasło musi zawierać co najmniej 5 znaków!');						//no a tu to to samo co wczesniej
 	else{
-		if($('#'+name+'Info').length>0)
-			$('#'+name+'Info').remove();
+		deleteErrors(name);
 		validationObjects["password"] = true;
 	}
 	checkIfAllValid();	
@@ -104,8 +133,7 @@ $('#confirmPassword').on('keyup',function(){
 	if($(this).val()!=$('#password').val())															//jesli hasła się różnią	
 		errorService(name,$(this),'Podane hasła nie są takie same!');								//no a tu to to samo co wczesniej
 	else{
-		if($('#'+name+'Info').length>0)
-			$('#'+name+'Info').remove();
+		deleteErrors(name);
 		validationObjects["confirmPassword"] = true;
 	}
 	checkIfAllValid();
@@ -144,6 +172,13 @@ function errorService(name,$obj,msg){													//przyjmuje nazwe błędu, obi
 		})
 		$('body').append($errorInfo);													//i dodajemy błąd do strony
 	}
+}
+//funkcja usuwająca błedy
+function deleteErrors(name){
+	if($('#'+name+'Info').length>0)
+		$('#'+name+'Info').remove();
+	if($('#'+name).length>0)
+		$('#'+name).remove();
 }
 
 // sprawdź, czy wszystkie elementy z validationObjects są poprawne 

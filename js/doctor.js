@@ -21,6 +21,26 @@ $('#editUserInfoButton').on('click', function(e){
         insertInput($address, $address.html());
         insertInput($phoneNumber, $phoneNumber.html());
         insertInput($academicTitle, $academicTitle.html());
+		
+		//dodanie inputów do godzin przyjęć 
+		$adminssionHours=$(".adminssion-hours");						//pobieramy godziny przyjęć
+		$adminssionHours.each(function(){								//dla każdej komórki z godzinami przyjęć
+			$(this).css('padding','5px');								//zmieniamy padding komórki, w której znajdują sie te godziny
+			let startH;
+			let finishH;
+			$val=$(this).html();
+			if($val=="Brak Przyjęć"){									//jesli nie było godzin przyjeć to uznajemy, ze w tym dniu nie ma przyjęć
+				$val=null;
+				$(this).html('<table id="'+$(this).attr('id')+'Table" class="editAH"><tr><td style="width:80%" colspan="4">Dzień bez przyjęć</td><td><input type="checkbox" checked="true"></td></tr></table>');	
+			}
+			else{
+				var splited = $val.split("-");							//w przeciwnym razie rozdzielamy godziny na startową i końcową
+				startH=splited[0];
+				finishH=splited[1];								
+				//dodajemy tabele do uzupełnienia danych edycji
+				$(this).html('<table id="'+$(this).attr('id')+'Table" class="editAH"><tr><td>Od</td><td><input type="text" value="'+startH+'"></td><td>Do</td><td><input type="text" value="'+finishH+'"></td><td><input type="checkbox"></td></tr></table>');		
+			}
+		});
 
         $button.html("Zapisz dane");
         $button.removeClass("btnEdit");

@@ -14,7 +14,6 @@
 			echo "\t\t\t	<a id=\"showCustomerList\" class=\"btn btnMenu\"> <i class=\"fas fa-bars\" style=\"margin-right: 10px\"></i>Pokaż listę wszystkich klientów</a>\n";
 			echo "\t\t\t	<a id=\"showCustomerDetail\" class=\"btn btnMenu\"> <i class=\"fas fa-clipboard\" style=\"margin-right: 10px\"></i>Pokaż szczegółowe dane klienta</a>\n";
 			echo "\t\t\t	<a id=\"sendEmail\" class=\"btn btnMenu\"> <i class=\"fas fa-envelope-open\" style=\"margin-right: 10px\"></i>Wyślij wiadomość e-mail</a>\n";
-			echo "\t\t\t	<div class=\"clear\"></div>\n";
 			echo "\t\t	</div>\n";
 			echo "\t\t	<div id=\"contentTitle\">\n";
 			echo "\t\t	</div>\n";

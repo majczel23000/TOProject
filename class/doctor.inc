@@ -3,6 +3,7 @@
 	class Doctor extends User{															//to samo co User, ale dodatkowe atrybuty
 		private $admType;
 		private $academicTitle;
+		private $admissionHours;
 		
 		public function __construct($id,$db){
 			parent::__construct($id,$db);											//wywołanie konstruktora Parenta
@@ -19,6 +20,27 @@
 				$this->academicTitle=$row['ACADEMIC_TITLE'];
 				$this->email=$row['EMAIL'];
 				$this->admType=$row['ADM_TYPE'];
+				$query="SELECT * FROM ADMISSION_HOURS WHERE ADM_H_ID=".$this->idUser;
+				$result=$this->db->query($query);
+				if($result->num_rows!=1){												//jesli godziny przyjec nieuzupełnione
+					$arr=Array(	"MONDAY"	=> 'Brak Przyjęć',
+								"TUESDAY"	=> 'Brak Przyjęć',
+								"WEDNESDAY"	=> 'Brak Przyjęć',
+								"THURSDAY"	=> 'Brak Przyjęć',
+								"FRIDAY" 	=> 'Brak Przyjęć',
+								"SATURDAY"	=> 'Brak Przyjęć',
+								"SUNDAY" 	=> 'Brak Przyjęć');
+					$this->admissionHours=$arr;
+				}
+				else{
+					$arr=$result->fetch_assoc();
+					foreach($arr as $key=>$val){										//jesli wiersz jest pusty to znaczy, ze nie ma przyjęć w danym dniu
+						if($val==null){
+							$arr[$key]="Brak Przyjęć";
+						}
+					}
+					$this->admissionHours=$arr;
+				}
 			}
 		}
 		
@@ -32,6 +54,10 @@
 		
 		public function getAdmType(){
 			return $this->admType;
+		}
+		
+		public function getAdmissionHours(){
+			return $this->admissionHours;
 		}
 			
 		public function __toString(){													//wypisanie na ekranie

@@ -1,0 +1,31 @@
+<?php
+	session_start();
+	require("../class/doctor.inc");
+	require("../class/doctorPage.inc");
+	
+	class DoctorsList extends DoctorPage{
+		
+		public function __construct($t,$u){
+			parent::__construct($t,$u);
+		}
+		
+		protected function showContent(){															//nadpisana funkcja poakzujaća zawartosc
+			echo "\t\t	<div id=\"doctorSubMenu\">\n";
+			echo "\t\t\t	<a id=\"showDoctorList\" class=\"btn btnMenu\"> <i class=\"fas fa-bars\" style=\"margin-right: 10px\"></i>Pokaż listę wszystkich lekarzy</a>\n";
+			if($this->user->getAdmType()=="HEAD"){
+				echo "\t\t\t	<a id=\"editDoctorData\" class=\"btn btnMenu\"> <i class=\"fas fa-cogs\" style=\"margin-right: 10px\"></i>Edytuj dane lekarza</a>\n";
+				echo "\t\t\t	<a id=\"addDoctor\" class=\"btn btnMenu\"> <i class=\"fas fa-plus\" style=\"margin-right: 10px\"></i>Dodaj nowego lekarza</a>\n";
+			}
+			echo "\t\t	</div>\n";
+			echo "\t\t	<div id=\"contentTitle\">\n";
+			echo "\t\t	</div>\n";
+            echo "\t\t	<div id=\"contentDescription\">\n";
+            echo "\t\t	</div>\n";
+        }
+	}
+
+	$doctors = new DoctorsList("Obsługa lekarzy",unserialize($_SESSION['DOCTOR']));
+	$scripts = Array("jquery-3.3.1.min.js","doctorDoctorsService.js","logout.js");
+	$doctors->setScripts($scripts);
+	$doctors->showPage();
+?>
