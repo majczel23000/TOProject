@@ -203,15 +203,16 @@
 			return $races;
 		}
 
-		public function addAnimal($name, $species, $race, $height, $weight, $birthDate){
+		// Dodawanie nowego zwierzęcia
+		public function addAnimal($name, $species, $race, $height, $weight, $birthDate, $gender){
 			$retVal;
-			require('connect.php');
+			require('../connect.php');
 			@$db=new mysqli($server,$user,$password,$dataBase);
+			$db->query("SET NAMES utf8 COLLATE utf8_polish_ci");
 			if(mysqli_connect_errno())
-            $retVal = 1;
+            	$retVal = 1;
 			else{
-				$hashedPassword = password_hash($p, PASSWORD_DEFAULT);
-				$query = "INSERT INTO customer (FIRST_NAME, LAST_NAME, PASSWORD, EMAIL) VALUES('".$fN."','".$lN."','".$hashedPassword."','".$e."')";
+				$query = "INSERT INTO customer_animal (NAME, WEIGHT, HEIGHT, GENDER, BIRTH_DATE, ANI_RAC_ID, CUS_ID) VALUES('".$name."','".$weight."','".$height."','".$gender."','".$birthDate."','".$race."','".$this->idUser."')";
 				$db->query($query);
 				$retVal = 0;
 			}

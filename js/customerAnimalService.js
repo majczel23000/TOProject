@@ -17,8 +17,9 @@ function showAnimalsList(from){
 	if(from === 'details'){
 		$(".btnBackToAnimalList").remove();
 		$("#btnEditAnimalInfo").remove();
+		$("#btnConfirmAddAnimal").remove();
 		$("#contentTitle").empty();
-		$("#contentTitle").html("<h1><i class='fas fa-paw'></i> Twoje zwierzęta </h1>");
+		$("#contentTitle").html("<h1><i class='fas fa-paw'></i> Twoje zwierzaki </h1>");
 		// jesli pojawiły nam się błędy walidacji podczas edycji, a ich nie naprawimy i naciśniemy przycisk 
 		// 'Wróć do listy zwierząt' to musimy je usunąć ze strony
 		$('.edit-data-error').each(function(index){
@@ -109,7 +110,7 @@ function showSelectedAnimalDetails(animal){
 				console.log(json);
 				// czyszcze tytuł strony i zamieniam na tytuł z detalami zwierzaka
 				$("#contentTitle").empty();
-				$("#contentTitle").html("<h1><i class='fas fa-paw'></i> Szczegóły zwierzaka: " + animal['NAME'] + "</h1>");
+				$("#contentTitle").html("<h1><i class='fas fa-paw'></i> Szczegóły zwierzaka: " + json['NAME'] + "</h1>");
 				showBackButton();
 				showEditButton();
 				$thead = $("#animalListThead");
@@ -172,7 +173,6 @@ function showEditButton(){
 				height: $height[0].childNodes[0].value,
 				animalID: animalID
 			}
-			console.log(animalData);
 			editAnimalData(animalData);
 		}
 	});
@@ -180,7 +180,13 @@ function showEditButton(){
 
 // pierwszy element tablicy wykorzystywany jest do wyswietlania błędów
 // drugi do okreslenia czy dane są poprawnie wpisane
-let validationObjects = {
+let validationObjectsAdd = {
+	"weight": ['Waga', false],
+	"height": ['Wzrost', false],
+	"name": ['Imię', false],
+	"birthDate": ['Data urodzenia', false]
+};
+let validationObjectsEdit = {
 	"weight": ['Waga', true],
 	"height": ['Wzrost', true],
 	"name": ['Imię', true]
@@ -203,7 +209,7 @@ function showEditInputs($button){
         // Dodanie keyup eventów za pomocą jQuery do każdego inputka
         $('input').each(function(index){
             $(this).on('keyup', function(){
-                validateInputValue($(this), $button);
+                validateInputValue($(this), $button, validationObjectsEdit);
             });
         });
     }
@@ -222,44 +228,45 @@ function deleteInput($obj, $value){
 }
 
 // Sprawdzenie czy pola nie sa puste, czyli walidacja
-function validateInputValue($obj, $button){
+function validateInputValue($obj, $button, $objects){
+	console.log($objects);
     if($obj.val() == ''){
         $obj.css('background',"#ffa8a8");
-        validationObjects[$obj[0].id][1] = false;
+        $objects[$obj[0].id][1] = false;
         // wysyłam error do wyswietlenia
-        errorService(true, 'Pole ' + validationObjects[$obj[0].id][0] + ' nie może być puste', $obj[0].id + "Error");
+        errorService(true, 'Pole ' + $objects[$obj[0].id][0] + ' nie może być puste', $obj[0].id + "Error");
     } else if($obj[0].id == 'weight' || $obj[0].id == 'height'){
         // zawiera też litery lub znaki specjalne
         if(isNaN($obj.val())){
             $obj.css('background',"#ffa8a8");
-            validationObjects[$obj[0].id][1] = false;
+            $objects[$obj[0].id][1] = false;
             // wysyłam error do wyswietlenia
-            errorService(true, 'Pole ' + validationObjects[$obj[0].id][0] + ' musi być liczbą', $obj[0].id + "Error");
+            errorService(true, 'Pole ' + $objects[$obj[0].id][0] + ' musi być liczbą', $obj[0].id + "Error");
         } 
         else {
             $obj.css('background',"white");
-            validationObjects[$obj[0].id][1] = true;
+            $objects[$obj[0].id][1] = true;
             // wysyłam info żeby usunąć error jesli taki był
             errorService(false, "" , $obj[0].id + "Error");
         }
-    } else{
+	}else{
         $obj.css('background',"white");
-        validationObjects[$obj[0].id][1] = true;
+        $objects[$obj[0].id][1] = true;
         // wysyłam info żeby usunąć error jesli taki był
         errorService(false, "" , $obj[0].id + "Error");
-    }
-    disableOrEnableEditButton($button);
+	}
+    disableOrEnableEditButton($button, $objects);
 }
 
 // Zmiana buttona na disabled/enabled
-function disableOrEnableEditButton($button){
+function disableOrEnableEditButton($button, $objects){
     // gdy po przejsciu przez ponizszego for'a, flag będzie true, to znaczy
     // że wszystkie pola sa poprawnie uzupełnione i można aktywowac przycisk
     let flag = true;
 	const btnRegister = $('#btnEditAnimalInfo');
-	for (var k in validationObjects){
-		if (validationObjects.hasOwnProperty(k)) {
-			if(!validationObjects[k][1]){
+	for (var k in $objects){
+		if ($objects.hasOwnProperty(k)) {
+			if(!$objects[k][1]){
 				$button.removeClass("saveAnimalButton");
 				$button.addClass("saveAnimalButtonDisabled");
                 $button.attr("disabled", "disabled");
@@ -356,6 +363,10 @@ $('#messagesCloseIcon').on("click", function(){
 
 // po kliknięciu przycisku 'Dodaj zwierzaka'
 $("#btnAddAnimal").on('click', function(){
+	$(".btnBackToAnimalList").remove();
+	showBackButton();
+	$("#btnConfirmAddAnimal").remove();
+	$("#btnEditAnimalInfo").remove();
 	$("#contentTitle").empty();
 	$("#contentTitle").html("<h1><i class='fas fa-plus'></i> Dodaj zwierzaka </h1>");
 	$thead = $("#animalListThead");
@@ -366,22 +377,28 @@ $("#btnAddAnimal").on('click', function(){
 	$tbody.append("<tr><td>Imię: </td><td class='darkTheme tdDuringAnimalEdit'><input placeholder='Wpisz imię' id='name' type='text'></td></tr>");
 	$tbody.append("<tr><td>Gatunek: </td><td class='darkTheme tdDuringAnimalEdit'><select id='selectSpecies'></select></td></tr>");
 	$tbody.append("<tr><td>Rasa: </td><td class='darkTheme tdDuringAnimalEdit'><select id='selectRace'></select></td></tr>");
+	$tbody.append("<tr><td>Płeć: </td><td class='darkTheme tdDuringAnimalEdit'><select id='selectGender'><option>MALE</option><option>FEMALE</option></select></td></tr>");
 	$tbody.append("<tr><td>Wzrost: </td><td class='darkTheme tdDuringAnimalEdit'><input  placeholder='Podaj wzrost' id='height' type='text'></td></tr>");
 	$tbody.append("<tr><td>Waga: </td><td class='darkTheme tdDuringAnimalEdit'><input placeholder='Podaj wagę' id='weight' type='text'></td></tr>");
 	$tbody.append("<tr><td>Data urodzenia: </td><td class='darkTheme tdDuringAnimalEdit'><input id='birthDate' type='date'></td></tr>");
-	$button = $("<button id='btnConfirmAddAnimal'><i class='fas fa-add' style='margin-right: 10px'></i>Dodaj zwierzaka</button>");
+	$button = $("<button id='btnConfirmAddAnimal' class='saveAnimalButtonDisabled'><i class='fas fa-plus' style='margin-right: 10px'></i>Dodaj zwierzaka</button>");
 	$content = $("#content");
 	$content.append($button);
 
 	// Dodanie keyup eventów za pomocą jQuery do każdego inputka
 	$('input').each(function(index){
 		$(this).on('keyup', function(){
-			validateInputValue($(this), $("#btnConfirmAddAnimal"));
+			validateInputValue($(this), $("#btnConfirmAddAnimal"), validationObjectsAdd);
 		});
 	});
+	// Event change dla inputa typu date
+	$('#birthDate').change(function(){
+		validateInputValue($(this), $("#btnConfirmAddAnimal"), validationObjectsAdd);
+	})
 
 	$('#btnConfirmAddAnimal').on('click', function(){
-		collectDataFromAddForm();
+		if(!$(this).hasClass('saveAnimalButtonDisabled'))
+			collectDataFromAddForm();
 	});
 
 	getAnimalSpecies();
@@ -460,7 +477,6 @@ function getAnimalsRace(species){
 				console.warn("BŁĄD POŁĄCZENIA");
 			}
 			else{
-				console.log('RASY: ', json);
 				animalsRaces = json;
 				// wstawiamy otrzymaną tablicę gatunków do selecta <select id='selectRace'></select>
 				$selectRaces=$("#selectRace");
@@ -485,7 +501,8 @@ function collectDataFromAddForm(){
 		race: "",
 		height: "",
 		weight: "",
-		birthDate: ""
+		birthDate: "",
+		gender: ""
 	}
 	animalData.name = $("#name").val();
 	for(let i = 0; i < animalsSpecies.length; i++){
@@ -498,6 +515,7 @@ function collectDataFromAddForm(){
 			animalData.race = animalsRaces[i]['ANI_RAC_ID'];
 		}
 	}
+	animalData.gender = $( "#selectGender option:selected" ).text();
 	animalData.height = $("#height").val();
 	animalData.weight = $("#weight").val();
 	animalData.birthDate = $("#birthDate").val();
@@ -507,6 +525,7 @@ function collectDataFromAddForm(){
 
 // DO ZROBIENIA JESZCZE JEST TO WŁASNIE
 function addNewAnimal(animalData){
+	console.log('Dane zwierzaka', animalData);
 	$.ajax({									
 		type:"post",
 		url:"addAnimal.php",
@@ -519,29 +538,20 @@ function addNewAnimal(animalData){
 			height: animalData.height,
 			weight: animalData.weight,
 			birthDate: animalData.birthDate,
+			gender: animalData.gender
 		},
 		success: function(json){
 			// w przypadku braku wyników
 			if(json[0]==0){
-				$selectRaces=$("#selectRace");
-				$selectRaces.html('brak');		
+				showMessage('Wystąpił błąd w trakcie dodawania zwierzaka', false);		
 			}
 			else if(json[0]==1){
-				$selectRaces=$("#selectRace");
-				$selectRaces.html('brak');	
+				showMessage('Wystąpił błąd w trakcie dodawania zwierzaka', false);		
 				console.warn("BŁĄD POŁĄCZENIA");
 			}
 			else{
-				console.log('RASY: ', json);
-				animalsRaces = json;
-				// wstawiamy otrzymaną tablicę gatunków do selecta <select id='selectRace'></select>
-				$selectRaces=$("#selectRace");
-				$selectRaces.empty();
-				for(let i=0;i<json.length;i++){
-					$option=$("<option></option>");
-					$option.html(json[i]['RACE']);
-					$selectRaces.append($option);
-				};
+				showMessage('Zwierzak został dodany!', true);
+				$("html, body").animate({ scrollTop: 0 }, "slow");	
 			}
 		},
 		error: function(e){
