@@ -61,8 +61,8 @@ function showAnimalsList(from){
 				$tbody=$("#animalsListTbody");
 				for(let i=0;i<json.length;i++){
 					$tr=$("<tr></tr>");
-					$tr.html("<td>"+json[i]['SPECIES']+"</td><td>"+
-					json[i]['RACE']+"</td><td>"+json[i]['NAME']+"</td>");
+					$tr.html("<td style=\"width: 33.3%\">"+json[i]['SPECIES']+"</td><td style=\"width: 33.3%\">"+
+					json[i]['RACE']+"</td><td style=\"width: 33.3%\">"+json[i]['NAME']+"</td>");
 					$tr.addClass('singleAnimalRow');
 					$tbody.append($tr);
 					// tworze Click Event dla każdego zwierzaka (rekordu)
@@ -118,12 +118,20 @@ function showSelectedAnimalDetails(animal){
 				$thead.empty();
 				$tbody.empty();
 				// wstawiamy konkretne otrzymane detale zwierzaka do <tbody></tbody>, czyli wyswietlam jego info
-				$tbody.append("<tr><td>Imię: </td><td id='name' class='darkTheme'>"+json['NAME']+"</td></tr>");
-				$tbody.append("<tr><td>Gatunek: </td><td class='darkTheme'>"+json['SPECIES']+" (" + json['SPECIES_DESC'] + ")</td></tr>");
-				$tbody.append("<tr><td>Rasa: </td><td class='darkTheme'>"+json['RACE']+" (" + json['RACE_DESC'] + ")</td></tr>");
-				$tbody.append("<tr><td>Wzrost: </td><td id='height' class='darkTheme'>"+json['HEIGHT']+"</td></tr>");
-				$tbody.append("<tr><td>Waga: </td><td id='weight' class='darkTheme'>"+json['WEIGHT']+"</td></tr>");
-				$tbody.append("<tr><td>Data urodzenia: </td><td class='darkTheme'>"+json['BIRTH_DATE']+"</td></tr>");
+				$tbody.append("<tr><td style=\"width: 50%\">Imię: </td><td style=\"width: 50%\" id='name' class='darkTheme'>"+json['NAME']+"</td></tr>");
+				$tbody.append("<tr><td style=\"width: 50%\">Gatunek: </td><td style=\"width: 50%\" class='darkTheme'>"+json['SPECIES']+
+					"<button id='btnSpeciesDesc' class='btnInfo'><i class='fas fa-info'></i></button></td></tr>");
+				$tbody.append("<tr><td style=\"width: 50%\">Rasa: </td><td id='race' style=\"width: 50%\" class='darkTheme'>"+json['RACE']+ 
+					"<button id='btnRaceDesc' class='btnInfo'><i class='fas fa-info'></i></button></td></tr>");
+				$tbody.append("<tr><td style=\"width: 50%\">Wzrost: </td><td style=\"width: 50%\" id='height' class='darkTheme'>"+json['HEIGHT']+"</td></tr>");
+				$tbody.append("<tr><td style=\"width: 50%\">Waga: </td><td style=\"width: 50%\" id='weight' class='darkTheme'>"+json['WEIGHT']+"</td></tr>");
+				$tbody.append("<tr><td style=\"width: 50%\">Data urodzenia: </td><td style=\"width: 50%\" class='darkTheme'>"+json['BIRTH_DATE']+"</td></tr>");
+				$("#btnRaceDesc").on('click', function(){
+					showModalComponent('Opis Rasy', json['RACE_DESC']);
+				});
+				$("#btnSpeciesDesc").on('click', function(){
+					showModalComponent('Opis gatunku', json['SPECIES_DESC']);
+				});
 				// zapisuje CUS_ANI_ID z bazy w zmiennej animalID (przyda się do edycji danych tego zwierzaka)						
 				animalID = animal['CUS_ANI_ID'];
 			}
@@ -557,5 +565,90 @@ function addNewAnimal(animalData){
 		error: function(e){
 			console.warn(e);
 		}
+	});
+}
+
+// funkcja do tworzenia komponentu modala
+function showModalComponent($titleText, $messageText){
+	// przezroczysty div na cały ekran
+	$container=$('<div></div>');
+	$container.prop('id','modalContainer');
+	$container.css({
+		'position':'fixed',
+		'top':'0px',
+		'left':'0px',
+		'width':'100%',
+		'height':'100%',
+		'background':'rgba(255, 236, 204, 0.5)'
+	});	
+	$('body').append($container);
+
+	// div wyśrodkowany w pionie i poziomie na tytuł i treść
+	$content = $('<div></div>');
+	$content.prop('id','modalContent');
+	$content.css({
+		'position':'absolute',
+		'top':'50%',
+		'left':'50%',
+		'width':'500px',
+		'padding': '20px 50px',
+		'background':'#ff850c',
+		'margin-left':'-270px',
+		'margin-top':'-220px',
+		'border-radius': '5px',
+		'box-shadow': '0px 0px 5px 0px rgba(0,0,0,0.75)'
+	});	
+	$container.append($content);
+
+	// tytuł modala
+	$title = $('<div></div>');
+	$title.prop('id','modalTitle');
+	$title.css({
+		'width': '440px',
+		'float': 'left',
+		'padding': '10px 20px 20px 20px',
+		'background':'#ff850c',
+		'font-size':'1.3rem'
+	});
+	$title.html("<i class='fas fa-align-center' style='margin-right: 10px'></i>" + $titleText);
+	$content.append($title);
+
+	// przycisk do zamykania modala
+	$closeButton = $('<div></div>');
+	$closeButton.prop('id','closeModal');
+	$closeButton.css({
+		'width': '20px',
+		'float': 'left',
+		'font-size': '1.6rem',
+		'background':'#ff850c'
+	});
+	$closeButton.hover(function(){
+		$(this).css(
+			"cursor", "pointer"
+		);
+	});
+	$closeButton.html("<i class='fas fa-window-close'></i>");
+	$content.append($closeButton);
+
+	// div na wiadomosc do wyswietlenia
+	$message = $('<div></div>');
+	$message.prop('id','messageModal');
+	$message.css({
+		'width': '100%',
+		'height': '100%',
+		'font-size': '1.1rem'
+	});
+	$message.html($messageText);
+	$content.append($message);
+
+	// po kliknięciu gdziekolwiek poza content znika modal
+	$container.on('click', function(){
+		$container.remove();
+	}).children().click(function() {
+		return false;
+	});
+	
+	$closeButton.on('click', function(){
+		$container.remove();
 	});
 }

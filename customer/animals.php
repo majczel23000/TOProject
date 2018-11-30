@@ -23,9 +23,9 @@
             echo "\t\t\t <table id=\"animalList\"> \n";
             echo "\t\t\t\t <thead id=\"animalListThead\"> \n";
             echo "\t\t\t\t\t <tr> \n";
-            echo "\t\t\t\t\t\t <th>Gatunek</th> \n";
-            echo "\t\t\t\t\t\t <th>Rasa</th> \n";
-            echo "\t\t\t\t\t\t <th>Imię</th> \n";
+            echo "\t\t\t\t\t\t <th style=\"width: 33.3%\">Gatunek</th> \n";
+            echo "\t\t\t\t\t\t <th style=\"width: 33.3%\">Rasa</th> \n";
+            echo "\t\t\t\t\t\t <th style=\"width: 33.3%\">Imię</th> \n";
             echo "\t\t\t\t\t </tr> \n";
             echo "\t\t\t\t </thead> \n";
             echo "\t\t\t\t  <tbody id=\"animalsListTbody\"\n"; 

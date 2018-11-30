@@ -134,6 +134,18 @@ body{
     cursor: not-allowed !important;
 }
 
+.btnInfo{
+    margin-left: 20px;
+    border: none;
+    padding: 10px 20px;
+    background: #5a98fc;
+    transition: 0.1s all;
+}
+.btnInfo:hover{
+    cursor: pointer;
+    background:#8ab3f5;
+}
+
 
 /*=====TABLEINFOSTYLES=====*/
 #userInfo{
