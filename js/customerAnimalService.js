@@ -123,6 +123,11 @@ function showSelectedAnimalDetails(animal){
 					"<button id='btnSpeciesDesc' class='btnInfo'><i class='fas fa-info'></i></button></td></tr>");
 				$tbody.append("<tr><td style=\"width: 50%\">Rasa: </td><td id='race' style=\"width: 50%\" class='darkTheme'>"+json['RACE']+ 
 					"<button id='btnRaceDesc' class='btnInfo'><i class='fas fa-info'></i></button></td></tr>");
+				if(json['GENDER'] === 'MALE')
+					translatedGender = 'Samiec';
+				else
+					translatedGender = 'Samica';
+				$tbody.append("<tr><td style=\"width: 50%\">Płeć: </td><td style=\"width: 50%\" id='gender' class='darkTheme'>"+translatedGender+"</td></tr>");	
 				$tbody.append("<tr><td style=\"width: 50%\">Wzrost: </td><td style=\"width: 50%\" id='height' class='darkTheme'>"+json['HEIGHT']+"</td></tr>");
 				$tbody.append("<tr><td style=\"width: 50%\">Waga: </td><td style=\"width: 50%\" id='weight' class='darkTheme'>"+json['WEIGHT']+"</td></tr>");
 				$tbody.append("<tr><td style=\"width: 50%\">Data urodzenia: </td><td style=\"width: 50%\" class='darkTheme'>"+json['BIRTH_DATE']+"</td></tr>");
@@ -257,6 +262,19 @@ function validateInputValue($obj, $button, $objects){
             // wysyłam info żeby usunąć error jesli taki był
             errorService(false, "" , $obj[0].id + "Error");
         }
+	}else if($obj[0].id == 'birthDate'){
+		selectedDate = new Date($obj.val());
+		currentDate = new Date();
+		if(selectedDate > currentDate){
+			$obj.css('background',"#ffa8a8");
+            $objects[$obj[0].id][1] = false;
+			errorService(true, "Pole " + $objects[$obj[0].id][0] + " musi mieć datę wcześniejszą od aktualnej", $obj[0].id + "Error");
+		}else{
+			$obj.css('background',"white");
+            $objects[$obj[0].id][1] = true;
+            // wysyłam info żeby usunąć error jesli taki był
+            errorService(false, "" , $obj[0].id + "Error");
+		}	
 	}else{
         $obj.css('background',"white");
         $objects[$obj[0].id][1] = true;
@@ -385,7 +403,7 @@ $("#btnAddAnimal").on('click', function(){
 	$tbody.append("<tr><td>Imię: </td><td class='darkTheme tdDuringAnimalEdit'><input placeholder='Wpisz imię' id='name' type='text'></td></tr>");
 	$tbody.append("<tr><td>Gatunek: </td><td class='darkTheme tdDuringAnimalEdit'><select id='selectSpecies'></select></td></tr>");
 	$tbody.append("<tr><td>Rasa: </td><td class='darkTheme tdDuringAnimalEdit'><select id='selectRace'></select></td></tr>");
-	$tbody.append("<tr><td>Płeć: </td><td class='darkTheme tdDuringAnimalEdit'><select id='selectGender'><option>MALE</option><option>FEMALE</option></select></td></tr>");
+	$tbody.append("<tr><td>Płeć: </td><td class='darkTheme tdDuringAnimalEdit'><select id='selectGender'><option>Samiec</option><option>Samica</option></select></td></tr>");
 	$tbody.append("<tr><td>Wzrost: </td><td class='darkTheme tdDuringAnimalEdit'><input  placeholder='Podaj wzrost' id='height' type='text'></td></tr>");
 	$tbody.append("<tr><td>Waga: </td><td class='darkTheme tdDuringAnimalEdit'><input placeholder='Podaj wagę' id='weight' type='text'></td></tr>");
 	$tbody.append("<tr><td>Data urodzenia: </td><td class='darkTheme tdDuringAnimalEdit'><input id='birthDate' type='date'></td></tr>");
@@ -523,7 +541,10 @@ function collectDataFromAddForm(){
 			animalData.race = animalsRaces[i]['ANI_RAC_ID'];
 		}
 	}
-	animalData.gender = $( "#selectGender option:selected" ).text();
+	if($( "#selectGender option:selected" ).text() === 'Samiec')
+		animalData.gender = 'MALE';
+	else
+		animalData.gender = 'FEMALE';
 	animalData.height = $("#height").val();
 	animalData.weight = $("#weight").val();
 	animalData.birthDate = $("#birthDate").val();
@@ -581,6 +602,7 @@ function showModalComponent($titleText, $messageText){
 		'height':'100%',
 		'background':'rgba(255, 255, 255, 0.6)'
 	});	
+
 	$('body').append($container);
 
 	// div wyśrodkowany w pionie i poziomie na tytuł i treść
@@ -598,7 +620,7 @@ function showModalComponent($titleText, $messageText){
 		'border-radius': '5px',
 		'box-shadow': '0px 0px 5px 0px rgba(0,0,0,0.75)'
 	});	
-	$container.append($content);
+	$container.append($content).hide().fadeIn(100);
 
 	// tytuł modala
 	$title = $('<div></div>');
@@ -643,12 +665,12 @@ function showModalComponent($titleText, $messageText){
 
 	// po kliknięciu gdziekolwiek poza content znika modal
 	$container.on('click', function(){
-		$container.remove();
+		$container.fadeOut(100,function(){$container.remove();});
 	}).children().click(function() {
 		return false;
 	});
 	
 	$closeButton.on('click', function(){
-		$container.remove();
-	});
+		$container.fadeOut(100,function(){$container.remove();});
+	})
 }

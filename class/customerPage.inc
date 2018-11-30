@@ -37,6 +37,13 @@
                     "href" => "#",
                     "class" => "btn btnMenu",
                     "iClass" => "fas fa-plus-square"
+                ),
+            5 => Array
+                (
+                    "text" => "Usługi",
+                    "href" => "services.php",
+                    "class" => "btn btnMenu",
+                    "iClass" => "fas fa-clipboard-list"
                 )
         );
         private $styles = Array("mainStyles.css","customerStyles.css");

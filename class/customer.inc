@@ -231,5 +231,48 @@
 			}
 			return $retVal;
 		}
+
+		// Pobieranie listy wszystkich usług
+		public function getServices(){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$services = Array();											
+			$idx=0;
+			$db->query("SET NAMES utf8 COLLATE utf8_polish_ci");
+			if(mysqli_connect_errno())
+				$services[$idx]=1;											
+			else{
+				$query="SELECT * FROM service ORDER BY NAME";		
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$services[$idx]=0;																		
+				else{
+					while($row=$result->fetch_assoc())
+						$services[$idx++] = $row;															
+				}
+			}
+			return $services;
+		}
+
+		public function getServicesWithPhrase($phrase){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$services = Array();											
+			$idx=0;
+			$db->query("SET NAMES utf8 COLLATE utf8_polish_ci");
+			if(mysqli_connect_errno())
+				$services[$idx]=1;											
+			else{
+				$query="SELECT * FROM service WHERE NAME LIKE '%".$phrase."%' ORDER BY NAME";		
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$services[$idx]=0;																		
+				else{
+					while($row=$result->fetch_assoc())
+						$services[$idx++] = $row;															
+				}
+			}
+			return $services;
+		}
 	}
 ?>

@@ -40,9 +40,9 @@ function showDoctorsList(){
 				$tbody=$("#doctorsListTbody");
 				for(let i=0;i<json.length;i++){
 					$tr=$("<tr></tr>");
-					$tr.html("<td>"+json[i]['FIRST_NAME']+"</td><td>"+
+					$tr.html("<td style='width: 35%'>"+json[i]['FIRST_NAME']+"</td><td style='width: 35%'>"+
 					json[i]['LAST_NAME']+"</td>"+
-					"<td><button class='btnShowDoctorDetails'><i class='fas fa-info-circle' style='margin-right: 10px'></i>Pokaż szczegóły</button></td>");
+					"<td style='width: 30%'><button class='btnShowDoctorDetails'><i class='fas fa-info-circle' style='margin-right: 10px'></i>Szczegóły</button></td>");
 					$tbody.append($tr);
 				};
 				createShowDoctorDetailsEvent();	
@@ -154,9 +154,9 @@ function showDoctorsWithPhrase(phrase){
 				$tbody=$("#doctorsListTbody");
 				for(let i=0;i<json.length;i++){
 					$tr=$("<tr></tr>");
-					$tr.html("<td>"+json[i]['FIRST_NAME']+"</td><td>"+
+					$tr.html("<td style='width: 35%'>"+json[i]['FIRST_NAME']+"</td><td style='width: 35%'>"+
 					json[i]['LAST_NAME']+"</td>"+
-					"<td><button class='btnShowDoctorDetails'><i class='fas fa-caret-square-down' style='margin-right: 10px'></i>Pokaż szczegóły</button></td>");
+					"<td style='width: 30%'><button class='btnShowDoctorDetails'><i class='fas fa-info-circle' style='margin-right: 10px'></i>Szczegóły</button></td>");
 					$tbody.append($tr);
 				};
 				createShowDoctorDetailsEvent();
@@ -174,7 +174,6 @@ function showDoctorsWithPhrase(phrase){
 
 // funkcja do tworzenia komponentu modala
 function showModalComponent($titleText, $detailedDoctorData){
-	console.log($detailedDoctorData);
 	// przezroczysty div na cały ekran
 	$container=$('<div></div>');
 	$container.prop('id','modalContainer');
@@ -203,7 +202,7 @@ function showModalComponent($titleText, $detailedDoctorData){
 		'border-radius': '5px',
 		'box-shadow': '0px 0px 5px 0px rgba(0,0,0,0.75)'
 	});	
-	$container.append($content);
+	$container.append($content).hide().fadeIn(100);
 
 	// tytuł modala
 	$title = $('<div></div>');
@@ -245,15 +244,14 @@ function showModalComponent($titleText, $detailedDoctorData){
 	});
 	
 	// dane do wyświetlenia
-	$div = ('<div style="float:left; width: 50%; padding: 10px 0px">Numer telefonu:</div>');
-	$div2 = ('<div style="float:left; width: 50%; padding: 10px 0px">' + $detailedDoctorData['PHONE_NUMBER'] + '</div>');
+	$div = ('<div style="text-align: center; float:left; width: 50%; padding: 10px 0px">Numer telefonu:</div>');
+	$div2 = ('<div style="text-align: center; float:left; width: 50%; padding: 10px 0px">' + $detailedDoctorData['PHONE_NUMBER'] + '</div>');
 	$message.append($div);
 	$message.append($div2);
-	$div = ('<div style="float:left; width: 50%; padding: 10px 0px">Tytuł akademicki:</div>');
-	$div2 = ('<div style="float:left; width: 50%; padding: 10px 0px">' + $detailedDoctorData['ACADEMIC_TITLE'] + '</div>');
+	$div = ('<div style="text-align: center; float:left; width: 50%; padding: 10px 0px">Tytuł akademicki:</div>');
+	$div2 = ('<div style="text-align: center; float:left; width: 50%; padding: 10px 0px">' + $detailedDoctorData['ACADEMIC_TITLE'] + '</div>');
 	$message.append($div);
 	$message.append($div2);
-		
 
 	// godziny przyjęć do wyświetlenia
 	$clear = ('<div class="clear"></div>');
@@ -266,6 +264,7 @@ function showModalComponent($titleText, $detailedDoctorData){
 	$friday = ('<div class="admissionHours">Piątek:</div>');
 	$saturday = ('<div class="admissionHours">Sobota:</div>');
 	$sunday = ('<div class="admissionHours">Niedziela:</div>');
+	// jeśli jest puste (czyli nie ma godzin), to trzeba wyświetlić Brak przyjęć
 	if($detailedDoctorData['MONDAY'] === '' || $detailedDoctorData['MONDAY'] === undefined)
 		$detailedDoctorData['MONDAY'] = 'Brak przyjęć';
 	if($detailedDoctorData['TUESDAY'] === '' || $detailedDoctorData['TUESDAY'] === undefined)
@@ -302,18 +301,18 @@ function showModalComponent($titleText, $detailedDoctorData){
 	$message.append($div6);
 	$message.append($sunday);
 	$message.append($div7);
-
 	
+	// wrzucam dane i godziny przyjęć do wyświetlenia
 	$content.append($message);
 
 	// po kliknięciu gdziekolwiek poza content znika modal
 	$container.on('click', function(){
-		$container.remove();
+		$container.fadeOut(150,function(){$container.remove();});
 	}).children().click(function() {
 		return false;
 	});
-	
+	// po kliknięciu 'X' także znika
 	$closeButton.on('click', function(){
-		$container.remove();
-	});
+		$container.fadeOut(150,function(){$container.remove();});
+	})
 }
