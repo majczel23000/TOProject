@@ -579,7 +579,7 @@ function showModalComponent($titleText, $messageText){
 		'left':'0px',
 		'width':'100%',
 		'height':'100%',
-		'background':'rgba(255, 236, 204, 0.5)'
+		'background':'rgba(255, 255, 255, 0.6)'
 	});	
 	$('body').append($container);
 

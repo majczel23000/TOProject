@@ -264,6 +264,15 @@ body{
     color: #333;
 }
 
+.admissionHours{
+    text-align: center;
+    float:left; 
+    width: 50%; 
+    padding: 10px 0px; 
+    background: #f6f6f6; 
+    color: #333;
+}
+
 /*=====ERRORSTYLES=====*/
 .edit-data-error{
 	display:block;

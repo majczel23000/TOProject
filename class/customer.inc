@@ -69,14 +69,27 @@
 			if(mysqli_connect_errno())
 				return 1;											
 			else{
-				$query="SELECT PHONE_NUMBER, ACADEMIC_TITLE FROM DOCTOR WHERE EMAIL LIKE '".$email."'";		
+				$query="SELECT DOC_ID, PHONE_NUMBER, ACADEMIC_TITLE FROM DOCTOR WHERE EMAIL LIKE '".$email."'";		
 				$result=$db->query($query);
 				$num_rows=$result->num_rows;
 				if($num_rows!=1){
 					$result->free();
 					return 0;
 				} else {
-					return $result->fetch_assoc();
+					$result = $result->fetch_assoc();
+					$query2="SELECT * FROM ADMISSION_HOURS WHERE ADM_H_ID = ".$result['DOC_ID']."";
+					$result2=$db->query($query2);
+					$num_rows2=$result2->num_rows;
+					if($num_rows2!=1){
+						$result2->free();
+						return $result;
+					} else{
+						$result2 = $result2->fetch_assoc();
+						unset($result['DOC_ID']);
+						unset($result2['ADM_H_ID']);
+						$result = array_merge($result, $result2);
+						return $result;
+					}
 				}																
 			}
 		}
