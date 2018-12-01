@@ -33,10 +33,10 @@
                 ),
             4 => Array
                 (
-                    "text" => "Umów wizytę",
-                    "href" => "#",
+                    "text" => "Wizyty",
+                    "href" => "visits.php",
                     "class" => "btn btnMenu",
-                    "iClass" => "fas fa-plus-square"
+                    "iClass" => "fas fa-eye"
                 ),
             5 => Array
                 (
