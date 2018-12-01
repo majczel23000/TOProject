@@ -35,7 +35,7 @@ $('#editUserInfoButton').on('click', function(e){
 			$tableAH.addClass("editAH");								
 			$trAH=$("<tr></tr>");
 			$inputCheckbox=$('<input>');								//input z checkboxem
-			$inputCheckbox.attr('id',dayID+'Checkbox');	//dajemy mu id 
+			$inputCheckbox.attr('id',dayID+'Checkbox');					//dajemy mu id 
 			$val=$(this).html();
 			if($val=="Brak Przyjęć"){									//jesli nie było godzin przyjeć to uznajemy, ze w tym dniu nie ma przyjęć
 				$tdAH=$('<td></td>');									//tworzymy td
@@ -54,10 +54,12 @@ $('#editUserInfoButton').on('click', function(e){
 				$tdAH1=$('<td></td>');									//tworzymy td
 				$tdAH1.html('Od');
 				$tdAH1.addClass('can-remove');							//potrzebny przy klikaniu w checkbox
+				$tdAH1.attr('style','font-size:13px');							
 				$trAH.append($tdAH1);									//wstawiamy go do tr
 				
 				$inputSh=$('<input>');									//input z godzinami startowymi
-				$inputSh.attr('type','text');
+				$inputSh.attr('type','time');
+				$inputSh.attr('required','true');
 				$inputSh.attr('id',dayID+'S');
 				$inputSh.attr('value',startH);
 				$tdAH2=$('<td></td>');									//td z inputem z godzinami startowymi
@@ -66,12 +68,14 @@ $('#editUserInfoButton').on('click', function(e){
 				$trAH.append($tdAH2);
 				
 				$tdAH3=$('<td></td>');									//tworzymy td
-				$tdAH3.html('Do');
+				$tdAH3.html('do');
+				$tdAH3.attr('style','font-size:13px');		
 				$tdAH3.addClass('can-remove');
 				$trAH.append($tdAH3);									//wstawiamy go do tr
 				
 				$inputFh=$('<input>');									//input z godzinami finiszowymi
-				$inputFh.attr('type','text');
+				$inputFh.attr('type','time');
+				$inputFh.attr('required','true');
 				$inputFh.attr('id',dayID+'F');
 				$inputFh.attr('value',finishH);
 				$tdAH4=$('<td></td>');									//td z inputem
@@ -96,20 +100,22 @@ $('#editUserInfoButton').on('click', function(e){
 					$("#"+id+" .can-remove ").remove();	
 					
 					$input2=$('<input>');									
-					$input2.attr('type','text');
+					$input2.attr('type','time');
 					$input2.attr('id',dayID+'F');
+					$input2.attr('required','true');
 					$td4=$('<td></td>');									
 					$td4.addClass('can-remove');
 					$td4.append($input2);
 					$("#"+id+" > tbody > tr").prepend($td4);
 					
 					$td3=$('<td></td>');								
-					$td3.html('Do');
+					$td3.html('do');
 					$td3.addClass('can-remove');
 					$("#"+id+" > tbody > tr").prepend($td3);
 					
 					$input1=$('<input>');								
-					$input1.attr('type','text');
+					$input1.attr('type','time');
+					$input1.attr('required','true');
 					$input1.attr('id',dayID+'S');
 					$td2=$('<td></td>');								
 					$td2.addClass('can-remove');
@@ -123,7 +129,9 @@ $('#editUserInfoButton').on('click', function(e){
 				}
 			});
 			$tdAH5=$('<td></td>');									//td z checkboxem
+			$tdAH5.css('color','yellow');
 			$tdAH5.append($inputCheckbox);
+			$tdAH5.append('<i style="margin:0" class="far fa-lightbulb hint"></i>');	//dodanie żarówki która, po najechaniu na nią, pokaze podpowiedź
 			$trAH.append($tdAH5);
 			
 			$tbodyAH=$('<tbody></tbody>');
@@ -131,6 +139,34 @@ $('#editUserInfoButton').on('click', function(e){
 			$tableAH.append($tbodyAH);								//wstawiamy tbody do tabeli
 			$(this).html('');
 			$(this).append($tableAH);	
+			$hint=$('.hint');										//pokazanie wskazówki po najechaniu na żarówkę
+			$hint.css('cursor','pointer');
+			$hint.on('mouseover',function(){
+				$(this).removeClass('far');
+				$(this).addClass('fas');
+				$hintDiv=$('<div></div>');
+				$hintDiv.attr('id','hintDiv');
+				$hintDiv.html('Jeśli w tym dniu nie prowadzisz przyjęć zaznacz kwadracik znajdujący się obok żarówki, w przeciwnim razie odznacz go i wprowadź godziny.');
+				$hintDiv.css({
+					'position':'absolute',
+					'background-color':'#d9d9d9',
+					'letter-spacing':'0.7px',
+					'box-shadow':'0 5px 10px rgba(0, 0, 0, 0.1)',
+					'border-radius':'10px',
+					'padding':'10px',
+					'margin-right':'20px',
+					'text-align':'justify',
+					'top':$(this).offset().top - 30,
+					'left':$(this).offset().left + $(this).outerWidth() + 30
+				});
+				$('body').append($hintDiv);
+				
+			});
+			$hint.on('mouseout',function(){
+				$(this).removeClass('fas');
+				$(this).addClass('far');
+				$('#hintDiv').remove();
+			});
 		});
 
         $button.html("Zapisz dane");

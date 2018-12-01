@@ -11,7 +11,7 @@
 		
 		protected function showContent(){															//nadpisana funkcja poakzujaća zawartosc
 			echo "\t\t	<div id=\"doctorSubMenu\">\n";
-			echo "\t\t\t	<a id=\"showDoctorList\" class=\"btn btnMenu\"> <i class=\"fas fa-bars\" style=\"margin-right: 10px\"></i>Pokaż listę wszystkich lekarzy</a>\n";
+			echo "\t\t\t	<a id=\"showDoctorList\" value=\"".$this->user->getAdmType()."\" class=\"btn btnMenu\"> <i class=\"fas fa-bars\" style=\"margin-right: 10px\"></i>Pokaż listę wszystkich lekarzy</a>\n";	//value przekazywane, zeby nie było przycisku edycji dla normalnych lekarzy w szczegółach
 			if($this->user->getAdmType()=="HEAD"){
 				echo "\t\t\t	<a id=\"editDoctorData\" class=\"btn btnMenu\"> <i class=\"fas fa-cogs\" style=\"margin-right: 10px\"></i>Edytuj dane lekarza</a>\n";
 				echo "\t\t\t	<a id=\"addDoctor\" class=\"btn btnMenu\"> <i class=\"fas fa-plus\" style=\"margin-right: 10px\"></i>Dodaj nowego lekarza</a>\n";
