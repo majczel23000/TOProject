@@ -107,7 +107,7 @@ body{
     display: block;
     margin: 0 auto;
     border: none;
-    background:#40bc0f;;
+    background:#40bc0f;
     padding: 20px;
     margin-bottom:50px;
     transition: 0.1s all;
@@ -145,7 +145,29 @@ body{
     cursor: pointer;
     background:#8ab3f5;
 }
-
+.btnAddVisit{
+    display: block;
+    margin: 0 auto;
+    border: none;
+    padding: 20px;
+    margin-bottom: 20px;
+    background:#40bc0f;
+    transition: 0.1s all;
+}
+.btnAddVisit:hover{
+    cursor: pointer;
+    background: #4ec41f;
+}
+.btnAddVisitDisabled{
+    border: none;
+    background: #eee;  
+    color: #888;
+}
+.btnAddVisitDisabled:hover{
+    background: #eee;  
+    color: #888;
+    cursor: not-allowed !important;
+}
 
 /*=====TABLEINFOSTYLES=====*/
 #userInfo{
@@ -305,6 +327,31 @@ body{
     padding: 0px !important;
 }
 
+#addVisitList{
+    background: #f6f6f6;
+    border-radius:3px;
+    border-collapse: collapse;
+    margin: auto;
+    padding:5px;
+    width: 100%;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 50px;
+}
+#addVisitList thead{
+    color: #f6f6f6;
+    background: #333;
+}
+#addVisitList thead th{
+    padding: 20px;
+}
+#addVisitList td{
+    padding: 20px;
+}
+#addVisitList tr:hover td{
+    background: #eaeaea;
+    color: #333;
+}
 
 .admissionHours{
     text-align: center;
@@ -336,4 +383,13 @@ body{
     border: none;
     width: 95%;
 	box-shadow: 1px 1px 1px 1px #ccc;
+}
+
+/*=====VISITSUBMENU=====*/
+#visitSubMenu{
+	text-align:center;
+}
+#visitSubMenu > .btnMenu{
+	float:none;
+	display:inline-block;
 }

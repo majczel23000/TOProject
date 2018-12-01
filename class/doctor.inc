@@ -171,5 +171,100 @@
 			@$db->close();
 			return $customer;
 		}
+				
+		public function getAllDoctors(){								
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$doctors = Array();											//tworzymy tablice
+			$idx=0;
+			if(mysqli_connect_errno())
+				$doctors[$idx]=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query="SELECT DOC_ID,FIRST_NAME, LAST_NAME, EMAIL, ADDRESS, PHONE_NUMBER, ACADEMIC_TITLE, ADM_TYPE FROM DOCTOR ORDER BY LAST_NAME, FIRST_NAME";		//pobieramy dane
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$doctors[$idx]=0;																		//jesli 0 wierszy to zwracamy 0
+				else{
+					while($row=$result->fetch_assoc()){
+						$doctors[$idx++] = $row;															//wkładamy pacjentów do tabeli
+						$adissionalQuery="SELECT * FROM ADMISSION_HOURS WHERE ADM_H_ID=".$row['DOC_ID'];	//pobieramy godziny
+						$adiResult=$db->query($adissionalQuery);
+						if($adiResult->num_rows!=1){												//jesli nie ma go w tabeli przyjęć, to go dodajemy
+							$tmp = $idx-1; 															//bo wczesniej zinkrementowalismy
+							$doctors[$tmp]['MONDAY']	='Brak Przyjęć';
+							$doctors[$tmp]['TUESDAY']	='Brak Przyjęć';
+							$doctors[$tmp]['WEDNESDAY']	='Brak Przyjęć';
+							$doctors[$tmp]['THURSDAY']	='Brak Przyjęć';
+							$doctors[$tmp]['FRIDAY']	='Brak Przyjęć';
+							$doctors[$tmp]['SATURDAY']	='Brak Przyjęć';
+							$doctors[$tmp]['SUNDAY']	='Brak Przyjęć';
+						}
+						else{
+							$arr=$adiResult->fetch_assoc();
+							foreach($arr as $key=>$val){							//jesli wiersz jest pusty to znaczy, ze nie ma przyjęć w danym dniu
+								if($val==null){
+									$arr[$key]="Brak Przyjęć";
+								}
+							}
+							$tmp = $idx-1; 															//bo wczesniej zinkrementowalismy
+							$doctors[$tmp]['MONDAY']=$arr['MONDAY'];
+							$doctors[$tmp]['TUESDAY']=$arr['TUESDAY'];
+							$doctors[$tmp]['WEDNESDAY']=$arr['WEDNESDAY'];
+							$doctors[$tmp]['THURSDAY']=$arr['THURSDAY'];
+							$doctors[$tmp]['FRIDAY']=$arr['FRIDAY'];
+							$doctors[$tmp]['SATURDAY']=$arr['SATURDAY'];
+							$doctors[$tmp]['SUNDAY']=$arr['SUNDAY'];
+						}
+					}
+				}		
+			}
+			return $doctors;
+		}
+		public function getDetailDoctorData($e){
+			$doctor=-1;
+			require('../connect.php');		
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				$doctor=1;
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query="SELECT * FROM DOCTOR WHERE EMAIL='".$e."'";
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$doctor=0;																		//jesli 0 wierszy to zwracamy 0
+				else{
+					$doctor=$result->fetch_assoc();													//else to zapisujemy go do zmiennej
+					$adissionalQuery="SELECT * FROM ADMISSION_HOURS WHERE ADM_H_ID=".$doctor['DOC_ID'];	//pobieramy godziny
+					$adiResult=$db->query($adissionalQuery);
+					if($adiResult->num_rows!=1){												//jesli nie ma go w tabeli przyjęć, to go dodajemy
+						$doctor['MONDAY']	='Brak Przyjęć';
+						$doctor['TUESDAY']	='Brak Przyjęć';
+						$doctor['WEDNESDAY']	='Brak Przyjęć';
+						$doctor['THURSDAY']	='Brak Przyjęć';
+						$doctor['FRIDAY']	='Brak Przyjęć';
+						$doctor['SATURDAY']	='Brak Przyjęć';
+						$doctor['SUNDAY']	='Brak Przyjęć';
+					}
+					else{
+						$arr=$adiResult->fetch_assoc();
+						foreach($arr as $key=>$val){							//jesli wiersz jest pusty to znaczy, ze nie ma przyjęć w danym dniu
+							if($val==null){
+								$arr[$key]="Brak Przyjęć";
+							}
+						}
+						$doctor['MONDAY']=$arr['MONDAY'];
+						$doctor['TUESDAY']=$arr['TUESDAY'];
+						$doctor['WEDNESDAY']=$arr['WEDNESDAY'];
+						$doctor['THURSDAY']=$arr['THURSDAY'];
+						$doctor['FRIDAY']=$arr['FRIDAY'];
+						$doctor['SATURDAY']=$arr['SATURDAY'];
+						$doctor['SUNDAY']=$arr['SUNDAY'];
+					}
+				}
+			}
+			@$db->close();
+			return $doctor;
+		}
 	}
 ?>

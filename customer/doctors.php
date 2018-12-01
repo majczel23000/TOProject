@@ -20,8 +20,8 @@
             echo "\t\t\t <table id=\"doctorsList\"> \n";
             echo "\t\t\t\t <thead> \n";
             echo "\t\t\t\t\t <tr> \n";
-            echo "\t\t\t\t\t\t <th>First Name</th> \n";
-            echo "\t\t\t\t\t\t <th>Last Name</th> \n";
+            echo "\t\t\t\t\t\t <th>Imię</th> \n";
+            echo "\t\t\t\t\t\t <th>Nazwisko</th> \n";
             echo "\t\t\t\t\t\t <th></th> \n";
             echo "\t\t\t\t\t </tr> \n";
             echo "\t\t\t\t </thead> \n";
