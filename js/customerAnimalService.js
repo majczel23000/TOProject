@@ -397,16 +397,17 @@ $("#btnAddAnimal").on('click', function(){
 	$("#contentTitle").html("<h1><i class='fas fa-plus'></i> Dodaj zwierzaka </h1>");
 	$thead = $("#animalListThead");
 	$tbody = $("#animalsListTbody");
+	$tbody.addClass('tbodyAddAnimal');
 	$thead.empty();
 	$tbody.empty();
 	// wyswietlanie formularza
-	$tbody.append("<tr><td>Imię: </td><td class='darkTheme tdDuringAnimalEdit'><input placeholder='Wpisz imię' id='name' type='text'></td></tr>");
-	$tbody.append("<tr><td>Gatunek: </td><td class='darkTheme tdDuringAnimalEdit'><select id='selectSpecies'></select></td></tr>");
-	$tbody.append("<tr><td>Rasa: </td><td class='darkTheme tdDuringAnimalEdit'><select id='selectRace'></select></td></tr>");
-	$tbody.append("<tr><td>Płeć: </td><td class='darkTheme tdDuringAnimalEdit'><select id='selectGender'><option>Samiec</option><option>Samica</option></select></td></tr>");
-	$tbody.append("<tr><td>Wzrost: </td><td class='darkTheme tdDuringAnimalEdit'><input  placeholder='Podaj wzrost' id='height' type='text'></td></tr>");
-	$tbody.append("<tr><td>Waga: </td><td class='darkTheme tdDuringAnimalEdit'><input placeholder='Podaj wagę' id='weight' type='text'></td></tr>");
-	$tbody.append("<tr><td>Data urodzenia: </td><td class='darkTheme tdDuringAnimalEdit'><input id='birthDate' type='date'></td></tr>");
+	$tbody.append("<tr><td class='tdAddAnimalSelect'>Imię: </td><td class='tdAddAnimal'><input class='inputAddAnimal' placeholder='Wpisz imię' id='name' type='text'></td></tr>");
+	$tbody.append("<tr><td class='tdAddAnimalSelect'>Gatunek: </td><td class='tdAddAnimalSelect'><select class='inputAddAnimal' id='selectSpecies'></select></td></tr>");
+	$tbody.append("<tr><td class='tdAddAnimalSelect'>Rasa: </td><td class='tdAddAnimalSelect'><select class='inputAddAnimal' id='selectRace'></select></td></tr>");
+	$tbody.append("<tr><td class='tdAddAnimalSelect'>Płeć: </td><td class='tdAddAnimalSelect'><select class='inputAddAnimal' id='selectGender'><option>Samiec</option><option>Samica</option></select></td></tr>");
+	$tbody.append("<tr><td class='tdAddAnimalSelect'>Wzrost: </td><td class='tdAddAnimal'><input class='inputAddAnimal' placeholder='Podaj wzrost' id='height' type='text'></td></tr>");
+	$tbody.append("<tr><td class='tdAddAnimalSelect'>Waga: </td><td class='tdAddAnimal'><input class='inputAddAnimal' placeholder='Podaj wagę' id='weight' type='text'></td></tr>");
+	$tbody.append("<tr><td class='tdAddAnimalSelect'>Data urodzenia: </td><td class='tdAddAnimal'><input class='inputAddAnimal' id='birthDate' type='date'></td></tr>");
 	$button = $("<button id='btnConfirmAddAnimal' class='saveAnimalButtonDisabled'><i class='fas fa-plus' style='margin-right: 10px'></i>Dodaj zwierzaka</button>");
 	$content = $("#content");
 	$content.append($button);
@@ -674,3 +675,22 @@ function showModalComponent($titleText, $messageText){
 		$container.fadeOut(100,function(){$container.remove();});
 	})
 }
+
+$("#btnStatsAnimal").on('click', function(){
+	$(".btnBackToAnimalList").remove();
+	showBackButton();
+	$("#btnConfirmAddAnimal").remove();
+	$("#btnEditAnimalInfo").remove();
+	$("#contentTitle").empty();
+	$("#contentTitle").html("<h1><i class='fas fa-poll'></i> Statystyki </h1>");
+	$thead = $("#animalListThead");
+	$tbody = $("#animalsListTbody");
+	$tbody.addClass('tbodyAddAnimal');
+	$thead.empty();
+	$tbody.empty();
+	$tbody.append("<tr><td style=\"width: 70%\">Liczba posiadanych zwierząt: </td><td style=\"width: 30%\" class='darkTheme'>Brak danych</td></tr>");
+	$tbody.append("<tr><td style=\"width: 70%\">Liczba odbytych wizyt zwierząt: </td><td style=\"width: 30%\" class='darkTheme'>Brak danych</td></tr>");
+	$tbody.append("<tr><td style=\"width: 70%\">Najstarsze zwierzę: </td><td style=\"width: 30%\" class='darkTheme'>Brak danych</td></tr>");
+	$tbody.append("<tr><td style=\"width: 70%\">Najmłodsze zwierzę: </td><td style=\"width: 30%\" class='darkTheme'>Brak danych</td></tr>");
+	$tbody.append("<tr><td style=\"width: 70%\">Procent klientów z większą ilością zwierząt: </td><td style=\"width: 30%\" class='darkTheme'>Brak danych</td></tr>");
+});
