@@ -221,7 +221,7 @@
 			}
 			return $doctors;
 		}
-		public function getDetailDoctorData($e){
+		public function getDetailDoctorData($e){												//przyjmuje mail
 			$doctor=-1;
 			require('../connect.php');		
 			@$db=new mysqli($server,$user,$password,$dataBase);
@@ -265,6 +265,47 @@
 			}
 			@$db->close();
 			return $doctor;
+		}
+		public function editDoctorsData($doctorData){			//przyjmuje tabele z danymi
+			$retVal=-1;
+			require('../connect.php');		
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				$retVal=1;
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query = "UPDATE DOCTOR SET FIRST_NAME='".$_POST['firstName']."', LAST_NAME='".$_POST['lastName']."', ADDRESS='".$_POST['address']."', PHONE_NUMBER='".$_POST['phoneNumber']."', ACADEMIC_TITLE='".$_POST['academicTitle']."', ADM_TYPE='".$_POST['adminType']."' WHERE EMAIL='".$_POST['mail']."'";
+				$db->query($query);
+				//zminamy godziny przyjęć
+				$admH = Array(	"MONDAY"	=>$_POST['mondayHours'],
+								"TUESDAY"	=>$_POST['tuesdayHours'],
+								"WEDNESDAY"	=>$_POST['wednesdayHours'],
+								"THURSDAY"	=>$_POST['thursdayHours'],
+								"FRIDAY"	=>$_POST['fridayHours'],
+								"SATURDAY"	=>$_POST['saturdayHours'],
+								"SUNDAY"	=>$_POST['sundayHours']
+								);
+				foreach($admH as $key=>$val){						//jesli jest "" to musimy wprowadzic NULL do tabeli, ale bez apostrofów, zeby wprowadziło sie jako NULL, a nie jako 
+					if($val==""){																											//string z wartością NULL
+						$admH[$key]="NULL";
+					}
+					else{
+						$admH[$key]="'".$val."'";					//w przeciwnym razie wprowadzamy godziny z apostrofami
+					}
+				}
+				$query = "UPDATE ADMISSION_HOURS SET 
+														MONDAY=".$admH['MONDAY'].", 
+														TUESDAY=".$admH['TUESDAY'].", 
+														WEDNESDAY=".$admH['WEDNESDAY'].", 
+														THURSDAY=".$admH['THURSDAY'].", 
+														FRIDAY=".$admH['FRIDAY'].", 
+														SATURDAY=".$admH['SATURDAY'].", 
+														SUNDAY=".$admH['SUNDAY']." WHERE ADM_H_ID=(SELECT DOC_ID FROM DOCTOR WHERE EMAIL='".$_POST['mail']."')";
+				$db->query($query);
+				$retVal=0;	
+			}
+			@$db->close();
+			return $retVal;
 		}
 	}
 ?>

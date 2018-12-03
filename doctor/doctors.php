@@ -25,7 +25,7 @@
 	}
 
 	$doctors = new DoctorsList("Obsługa lekarzy",unserialize($_SESSION['DOCTOR']));
-	$scripts = Array("jquery-3.3.1.min.js","doctorDoctorsService.js","logout.js");
+	$scripts = Array("jquery-3.3.1.min.js","doctorDoctorsService.js","logout.js","messages.js");
 	$doctors->setScripts($scripts);
 	$doctors->showPage();
 ?>

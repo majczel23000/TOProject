@@ -89,13 +89,13 @@ body{
 #userInfo tr:nth-child(2n),#customerDetail tr:nth-child(2n),,#doctorDetail tr:nth-child(2n){
 	opacity:0.97;
 }
-#userInfo > tbody > tr:hover > td:nth-child(odd),#customerDetail tr:hover td:nth-child(odd) ,#doctorDetail tr:hover td:nth-child(odd){
+#userInfo > tbody > tr:hover > td:nth-child(odd),#customerDetail tr:hover td:nth-child(odd) ,#doctorDetail > tbody > tr:hover > td:nth-child(odd){
     background: #e6e6e6;
 }
-#userInfo > tbody > tr:hover > td,#customerDetail tr:hover td,#doctorDetail tr:hover td {
+#userInfo > tbody > tr:hover > td,#customerDetail tr:hover td,#doctorDetail > tbody > tr:hover > td {
     background:#444;
 }
-#userInfo > tbody > tr > td, #customerDetail td,#doctorDetail td {
+#userInfo > tbody > tr > td, #customerDetail td,#doctorDetail > tbody > tr > td {
     background:#f0f0f0;
     padding:20px;
     text-align:left;
@@ -104,7 +104,7 @@ body{
     overflow: hidden;
     width: 50%;
 }
-#userInfo > tbody > tr > td:nth-child(even), #customerDetail td:nth-child(even),#doctorDetail td:nth-child(even){
+#userInfo > tbody > tr > td:nth-child(even), #customerDetail td:nth-child(even),#doctorDetail > tbody > tr > td:nth-child(even){
     background: #333;
     color: #f6f6f6;
 }
@@ -142,6 +142,7 @@ table.editAH > tbody > tr > td{
 	padding:0px;
 	width:20%;
 	text-align:center;
+	background-color:inherit;
 }
 table.editAH > tbody > tr > td:last-child{
 	text-align:right;
@@ -152,7 +153,6 @@ table.editAH input[type=text]{
 	text-align:center;
 	font-size:1.1rem;
 }
-
 /*=====SUBMENUDOCTOR=====*/
 #doctorSubMenu{
 	text-align:center;

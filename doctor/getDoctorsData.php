@@ -8,5 +8,8 @@
 		else if($_POST['returnVal'] == "detail"){
 			echo json_encode(unserialize($_SESSION['DOCTOR'])->getDetailDoctorData($_POST['mail']));	//zwracamy tabele					
 		}
+		else if($_POST['returnVal'] == "editDoctors"){
+			echo json_encode(unserialize($_SESSION['DOCTOR'])->editDoctorsData($_POST));	//zwracamy tabele					
+		}
 	}
 ?>

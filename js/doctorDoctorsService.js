@@ -88,8 +88,6 @@ function showDoctorList(){
 				}
 				$table.append($tbody);
 				$("#contentDescription").append($table);														//wstawiamy na strone tabele juz pelną
-				
-				console.log(json);
 			}
 			$('body').css('opacity','1');
 			$('body').css('cursor','default');
@@ -102,7 +100,7 @@ function showDoctorList(){
 		}
 	});
 }
-
+//pokazuje szczegółowe dane lekarza po kliknięciu na niego
 function showDoctorDetail(doctor){
 	// przezroczysty div na cały ekran
 	$container=$('<div></div>');
@@ -221,7 +219,6 @@ function showDoctorDetail(doctor){
 	$message.append($sunday);
 	$message.append($div7);
 	$message.append($clear);
-
 	
 	$doctorDetail.append($message);
 	$editButton=$("<span style=\"display:block;text-align:center;margin:auto\" class=\"btnEdit\">Edytuj</span>");
@@ -244,7 +241,7 @@ function showDoctorDetail(doctor){
 		$container.remove();
 	});
 }
-
+//funkcja, któa wsiwietla pola do edycji danych
 function editDoctorData(val){																//parametr przyjmowany, gdy kliknieto w lekarza w liscie
 	$("#contentTitle").append("<hr>");																			//dajemy se kreske 
 	$("#contentTitle").append("<h1><i class=\"fas fa-cogs\"></i> Edycja danych lekarza</h1>");		//ustawiamy tytuł
@@ -263,34 +260,10 @@ function editDoctorData(val){																//parametr przyjmowany, gdy kliknie
 	$("#contentDescription").append($searchButton);
 	isSomeoneActive=true;
 }
-	
+//pobranie danych i wyswietlenie je w formularzu
 function getDoctorData(doctor){											//jesli przekazujemy dane z tabeli z lekarzami, to wprowadzamy ten paramtert
-	if(doctor!=null){
-		let $table=$("<table></table>");																//tworzymy tabele
-		$table.attr("id","doctorDetail");																//dajemy jej id
-		$table.append("<thead><tr><th colspan=\"2\">Dane lekarza: "+doctor['EMAIL']+"</tr></thead>");		//wstawiamy do niej thead
-		$tbody=$("<tbody></tbody>");
-		$tbody.append("<tr><td>First Name: </td><td class=\"tdDuringEdit\"><input type=\"text\" value=\""+doctor['FIRST_NAME']+"\"></td></tr>");	//i poszczególne dane
-		$tbody.append("<tr><td>Last Name: </td><td class=\"tdDuringEdit\"><input type=\"text\" value=\""+doctor['LAST_NAME']+"\"></td></tr>");
-		$tbody.append("<tr><td>Address: </td><td class=\"tdDuringEdit\"><input type=\"text\" value=\""+doctor['ADDRESS']+"\"></td></tr>");
-		$tbody.append("<tr><td>Phone Number: </td><td class=\"tdDuringEdit\"><input type=\"text\" value=\""+doctor['PHONE_NUMBER']+"\"></td></tr>");
-		$tbody.append("<tr><td>Academic title: </td><td class=\"tdDuringEdit\"><input type=\"text\" value=\""+doctor['ACADEMIC_TITLE']+"\"></td></tr>");
-		$tbody.append("<tr><td>Admin Type: </td><td class=\"tdDuringEdit\"><input type=\"text\" value=\""+doctor['ADM_TYPE']+"\"></td></tr>");
-		$tbody.append("<tr><td>Monday: </td><td>"+doctor['MONDAY']+"</td></tr>");
-		$tbody.append("<tr><td>Tuesday: </td><td>"+doctor['TUESDAY']+"</td></tr>");
-		$tbody.append("<tr><td>Wednesday: </td><td>"+doctor['WEDNESDAY']+"</td></tr>");
-		$tbody.append("<tr><td>Thursday: </td><td>"+doctor['THURSDAY']+"</td></tr>");
-		$tbody.append("<tr><td>Friday: </td><td>"+doctor['FRIDAY']+"</td></tr>");
-		$tbody.append("<tr><td>Satruday: </td><td>"+doctor['SATURDAY']+"</td></tr>");
-		$tbody.append("<tr><td>Sunday: </td><td>"+doctor['SUNDAY']+"</td></tr>");
-		
-		$table.append($tbody);
-		$("#contentDescription").append($table);														//wstawiamy na strone tabele juz pelną
-		
-		$('html, body').animate({
-			scrollTop: $("#doctorDetail").offset().top
-		}, 1000);
-	}
+	if(doctor!=null)
+		drawTable(doctor);
 	else {
 		const mailReg = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/					//regularne dla maila
 		if($("#doctorDetail").length>0)
@@ -337,32 +310,8 @@ function getDoctorData(doctor){											//jesli przekazujemy dane z tabeli z l
 						$table.append($tbody);
 						$("#contentDescription").append($table);
 					}
-					else{
-						let $table=$("<table></table>");																//tworzymy tabele
-						$table.attr("id","doctorDetail");																//dajemy jej id
-						$table.append("<thead><tr><th colspan=\"2\">Dane lekarza: "+json['EMAIL']+"</tr></thead>");		//wstawiamy do niej thead
-						$tbody=$("<tbody></tbody>");
-						$tbody.append("<tr><td>First Name: </td><td>"+json['FIRST_NAME']+"</td></tr>");					//i poszczególne dane
-						$tbody.append("<tr><td>Last Name: </td><td>"+json['LAST_NAME']+"</td></tr>");
-						$tbody.append("<tr><td>Address: </td><td>"+json['ADDRESS']+"</td></tr>");
-						$tbody.append("<tr><td>Phone Number: </td><td>"+json['PHONE_NUMBER']+"</td></tr>");
-						$tbody.append("<tr><td>Academic Title </td><td>"+json['ACADEMIC_TITLE']+"</td></tr>");
-						$tbody.append("<tr><td>Admin Type</td><td>"+json['ADM_TYPE']+"</td></tr>");
-						$tbody.append("<tr><td>Monday: </td><td>"+json['MONDAY']+"</td></tr>");
-						$tbody.append("<tr><td>Tuesday: </td><td>"+json['TUESDAY']+"</td></tr>");
-						$tbody.append("<tr><td>Wednesday: </td><td>"+json['WEDNESDAY']+"</td></tr>");
-						$tbody.append("<tr><td>Thursday: </td><td>"+json['THURSDAY']+"</td></tr>");
-						$tbody.append("<tr><td>Friday: </td><td>"+json['FRIDAY']+"</td></tr>");
-						$tbody.append("<tr><td>Satruday: </td><td>"+json['SATURDAY']+"</td></tr>");
-						$tbody.append("<tr><td>Sunday: </td><td>"+json['SUNDAY']+"</td></tr>");
-						
-						$table.append($tbody);
-						$("#contentDescription").append($table);														//wstawiamy na strone tabele juz pelną
-						
-						$('html, body').animate({
-							scrollTop: $("#doctorDetail").offset().top
-						}, 1000);
-					}
+					else
+						drawTable(json);
 					$('body').css('opacity','1');
 					$('body').css('cursor','default');
 				},
@@ -375,8 +324,251 @@ function getDoctorData(doctor){											//jesli przekazujemy dane z tabeli z l
 		}
 	}
 }
+//funcja tworząca tabele do edycji danych
+function drawTable(doctorData){
+	let $table=$("<table></table>");																//tworzymy tabele
+	$table.attr("id","doctorDetail");																//dajemy jej id
+	$table.append("<thead><tr><th colspan=\"2\" id=\"addressMail\" mail=\""+doctorData['EMAIL']+"\">Dane lekarza: "+doctorData['EMAIL']+"</tr></thead>");		//wstawiamy do niej thead
+	$tbody=$("<tbody></tbody>");
+	$tbody.append("<tr><td>First Name: </td><td class=\"tdDuringEdit\"><input id=\"firstN\" type=\"text\" value=\""+doctorData['FIRST_NAME']+"\"></td></tr>");	//i poszczególne dane
+	$tbody.append("<tr><td>Last Name: </td><td class=\"tdDuringEdit\"><input id=\"lastN\" type=\"text\" value=\""+doctorData['LAST_NAME']+"\"></td></tr>");
+	$tbody.append("<tr><td>Address: </td><td class=\"tdDuringEdit\"><input id=\"address\" type=\"text\" value=\""+doctorData['ADDRESS']+"\"></td></tr>");
+	$tbody.append("<tr><td>Phone Number: </td><td class=\"tdDuringEdit\"><input id=\"phoneN\" type=\"text\" value=\""+doctorData['PHONE_NUMBER']+"\"></td></tr>");
+	$tbody.append("<tr><td>Academic Title </td><td class=\"tdDuringEdit\"><input id=\"academicT\" type=\"text\" value=\""+doctorData['ACADEMIC_TITLE']+"\"></td></tr>");
+	$tbody.append("<tr><td>Admin Type</td><td class=\"tdDuringEdit\"><input id=\"adminT\" type=\"text\" value=\""+doctorData['ADM_TYPE']+"\"></td></tr>");
+	$tbody.append("<tr><td>Monday: </td><td id=\"mondayAH\"></td></tr>");
+	$tbody.append("<tr><td>Tuesday: </td><td id=\"tuesdayAH\"></td></tr>");
+	$tbody.append("<tr><td>Wednesday: </td><td id=\"wednesdayAH\"></td></tr>");
+	$tbody.append("<tr><td>Thursday: </td><td id=\"thursdayAH\"></td></tr>");
+	$tbody.append("<tr><td>Friday: </td><td id=\"fridayAH\"></td></tr>");
+	$tbody.append("<tr><td>Satruday: </td><td id=\"saturdayAH\"></td></tr>");
+	$tbody.append("<tr><td>Sunday: </td><td id=\"sundayAH\"></td></tr>");
+	
+	$table.append($tbody);
+	$("#contentDescription").append($table);														//wstawiamy na strone tabele juz pelną
+	drawAdmissionHours(doctorData['MONDAY'],"monday");
+	drawAdmissionHours(doctorData['TUESDAY'],"tuesday");
+	drawAdmissionHours(doctorData['WEDNESDAY'],"wednesday");
+	drawAdmissionHours(doctorData['THURSDAY'],"thursday");
+	drawAdmissionHours(doctorData['FRIDAY'],"friday");
+	drawAdmissionHours(doctorData['SATURDAY'],"saturday");
+	drawAdmissionHours(doctorData['SUNDAY'],"sunday");
+	$butt=$("<span></span>");
+	$cancel=$("<span></span>");
+	$butt.addClass('search-button');
+	$cancel.addClass('search-button');
+	$butt.css({
+		'width':'25%',
+		'display':'inline-block',
+		'margin-right':'1%'
+	});
+	$cancel.css({
+		'width':'25%',
+		'display':'inline-block'
+	});
+	$butt.attr('id','saveDoctorEdit');									//przycisk do zapisu danych
+	$cancel.attr('id','calcelEdit');									//przycisk do cofniecia zmian
+	$butt.html('<i class="far fa-save"></i> Zapisz zmiany');
+	$cancel.html('<i class="fas fa-reply"></i> Cofnij zmiany');
+	$butt.on('click',function(){										//jesli nacisnie przycisk wyslij to odpalamy funkcje do wysyłania
+		sendEditedData();
+	});
+	$cancel.on('click',function(){												//jesli nacisnie przycisk do cofnieca to znowy rysujemy tę samą tabele
+		deleteContent("editDoctorData", doctorData['EMAIL']);					//przesłamy email tego lekarza
+		$("#editDoctorData").attr('class','btn btnMenu active-btn');			//ustawiamy aktywny przycisk
+		getDoctorData(doctorData);
+	});
+	$("#contentDescription").append($butt);
+	$("#contentDescription").append($cancel);
+	$('html, body').animate({
+		scrollTop: $("#doctorDetail").offset().top
+	}, 1000);
+}
+//funkcja tworząca pola do edycji danych o godzinach
+function drawAdmissionHours(hours,day){
+	$tableAH= $('<table></table>');								//tworzymy tabele;
+	$tableAH.attr('id',day+'Table');
+	$tableAH.addClass("editAH");								
+	$trAH=$("<tr></tr>");
+	$inputCheckbox=$('<input>');								//input z checkboxem
+	$inputCheckbox.attr('id',day+'Checkbox');					//dajemy mu id 
+	if(hours=="Brak Przyjęć"){									//jesli nie było godzin przyjeć to uznajemy, ze w tym dniu nie ma przyjęć
+		$tdAH=$('<td></td>');									//tworzymy td
+		$tdAH.attr('colspan','4');							
+		$tdAH.css('width','80%');
+		$tdAH.addClass('can-remove');							//potrzebny przy klikaniu w checkbox
+		$tdAH.html('Dzień bez przyjęć');
+		$trAH.append($tdAH);									//wstawiamy go do tr
+		$inputCheckbox.attr('checked','true');					//zaznaczymy inputa
+	}
+	else{
+		var splited = hours.split("-");							//w przeciwnym razie rozdzielamy godziny na startową i końcową
+		startH=splited[0];
+		finishH=splited[1];								
+		//dodajemy tabele do uzupełnienia danych edycji
+		$tdAH1=$('<td></td>');									//tworzymy td
+		$tdAH1.html('Od');
+		$tdAH1.addClass('can-remove');							//potrzebny przy klikaniu w checkbox
+		$tdAH1.attr('style','font-size:13px');							
+		$trAH.append($tdAH1);									//wstawiamy go do tr
+		
+		$inputSh=$('<input>');									//input z godzinami startowymi
+		$inputSh.attr('type','time');
+		$inputSh.attr('required','true');
+		$inputSh.attr('id',day+'S');
+		$inputSh.attr('value',startH);
+		$tdAH2=$('<td></td>');									//td z inputem z godzinami startowymi
+		$tdAH2.addClass('can-remove');
+		$tdAH2.append($inputSh);
+		$trAH.append($tdAH2);
+		
+		$tdAH3=$('<td></td>');									//tworzymy td
+		$tdAH3.html('do');
+		$tdAH3.attr('style','font-size:13px');		
+		$tdAH3.addClass('can-remove');
+		$trAH.append($tdAH3);									//wstawiamy go do tr
+		
+		$inputFh=$('<input>');									//input z godzinami finiszowymi
+		$inputFh.attr('type','time');
+		$inputFh.attr('required','true');
+		$inputFh.attr('id',day+'F');
+		$inputFh.attr('value',finishH);
+		$tdAH4=$('<td></td>');									//td z inputem
+		$tdAH4.addClass('can-remove');
+		$tdAH4.append($inputFh);
+		$trAH.append($tdAH4);
+	}	
+	
+	$inputCheckbox.attr('type','checkbox');
+	$inputCheckbox.on('click',function(){										//przy zaznaczaniu albo pokazujemy godziny, albo je zamykamy
+		const id = $(this).parent().parent().parent().parent().attr('id');		//bo chcemy sie dostać do id tabeli, zeby sprawdzic jaki dzien został klikniety
+		if($(this).is(':checked')){												//gdy został zaznaczony
+			$("#"+id+" .can-remove ").remove();									//usuwamy komórki oprócz checkboxa			
+			$td=$('<td></td>');									
+			$td.attr('colspan','4');
+			$td.addClass('can-remove');					
+			$td.css('width','80%');
+			$td.html('Dzień bez przyjęć');
+			$("#"+id+" > tbody > tr").prepend($td);				
+		}
+		else{																	//to samo co wczesniej, ale idziemy od tyłu, zeby prepend pasowało
+			$("#"+id+" .can-remove ").remove();	
+			
+			$input2=$('<input>');									
+			$input2.attr('type','time');
+			$input2.attr('id',day+'F');
+			$input2.attr('required','true');
+			$td4=$('<td></td>');									
+			$td4.addClass('can-remove');
+			$td4.append($input2);
+			$("#"+id+" > tbody > tr").prepend($td4);
+			
+			$td3=$('<td></td>');								
+			$td3.html('do');
+			$td3.addClass('can-remove');
+			$("#"+id+" > tbody > tr").prepend($td3);
+			
+			$input1=$('<input>');								
+			$input1.attr('type','time');
+			$input1.attr('required','true');
+			$input1.attr('id',day+'S');
+			$td2=$('<td></td>');								
+			$td2.addClass('can-remove');
+			$td2.append($input1);
+			$("#"+id+" > tbody > tr").prepend($td2);
 
-
+			$td1=$('<td></td>');									
+			$td1.html('Od');
+			$td1.addClass('can-remove');							
+			$("#"+id+" > tbody > tr").prepend($td1);	
+		}
+	});
+	$tdAH5=$('<td></td>');									//td z checkboxem
+	$tdAH5.append($inputCheckbox);
+	$trAH.append($tdAH5);
+	
+	$tbodyAH=$('<tbody></tbody>');
+	$tbodyAH.append($trAH);									//wstawiamy tr do tbody
+	$tableAH.append($tbodyAH);								//wstawiamy tbody do tabeli
+	$("#"+day+"AH").css('padding','10px');
+	$("#"+day+"AH").append($tableAH);						//wstawiamy do komórki
+}
+//funkcja wysyłajaća zedytowane dane lekarza
+function sendEditedData(){
+	//pobieramy dane o godzinach
+	let mondayHours="";let tuesdayHours="";let wednesdayHours="";let thursdayHours="";let fridayHours="";let saturdayHours="";let sundayHours="";
+	if(!$("#mondayCheckbox").is(':checked')){
+		mondayHours=$("#mondayS").val()+"-"+$("#mondayF").val();
+	}
+	if(!$("#tuesdayCheckbox").is(':checked')){
+		tuesdayHours=$("#tuesdayS").val()+"-"+$("#tuesdayF").val();
+	}
+	if(!$("#wednesdayCheckbox").is(':checked')){
+		wednesdayHours=$("#wednesdayS").val()+"-"+$("#wednesdayF").val();
+	}
+	if(!$("#thursdayCheckbox").is(':checked')){
+		thursdayHours=$("#thursdayS").val()+"-"+$("#thursdayF").val();
+	}
+	if(!$("#fridayCheckbox").is(':checked')){
+		fridayHours=$("#fridayS").val()+"-"+$("#fridayF").val();
+	}
+	if(!$("#saturdayCheckbox").is(':checked')){
+		saturdayHours=$("#saturdayS").val()+"-"+$("#saturdayF").val();
+	}
+	if(!$("#sundayCheckbox").is(':checked')){
+		sundayHours=$("#sundayS").val()+"-"+$("sundayF").val();
+	}
+	
+	$.ajax({
+		type:"post",
+		url:"getDoctorsData.php",
+		dataType:"json",
+		data:{
+			accType:"doctor",
+			returnVal:"editDoctors",
+			mail: $('#addressMail').attr('mail'),
+			firstName: $('#firstN').val(),
+			lastName: $('#lastN').val(),
+			address: $('#address').val(),
+			phoneNumber: $('#phoneN').val(),
+			academicTitle: $('#academicT').val(),
+			adminType: $('#adminT').val(),
+			mondayHours:mondayHours,
+			tuesdayHours:tuesdayHours,
+			wednesdayHours:wednesdayHours,
+			thursdayHours:thursdayHours,
+			fridayHours:fridayHours,
+			saturdayHours:saturdayHours,
+			sundayHours:sundayHours
+		},
+		beforeSend: function(){
+			$('body').css('opacity','0.6');
+			$('body').css('cursor','progress');
+		},
+		success: function(json){
+			console.log(json);
+			switch(json){
+				case 0:
+					$("#contentTitle").html("");											//czyścimy środek tytułu
+					$("#contentDescription").html("Dane zostały pomyślnie zedytowane.");										//piszemy, ze ok
+					$('html, body').animate({
+						scrollTop: $("body").offset().top
+					}, 1000);
+					break;
+				default:
+					console.log('Default success response');
+					break;
+			}
+			$('body').css('opacity','1');
+			$('body').css('cursor','default');
+		},
+		error: function(e){
+			console.warn(e);
+			$('body').css('opacity','1');
+			$('body').css('cursor','default');
+		}
+	});
+}
 function addDoctor(){
 	$("#contentTitle").append("<hr>");																//dajemy se kreske 
 	$("#contentTitle").append("<h1><i class=\"fas fa-list-ul\"></i> Dodanie lekarza</h1>");	//ustawiamy tytuł
