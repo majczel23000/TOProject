@@ -123,6 +123,7 @@
 			if(mysqli_connect_errno())
 				$animals[$idx]=1;											
 			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`");
 				$query="SELECT CUS_ANI_ID, SPECIES, RACE, NAME FROM customer_animal JOIN animal_race USING(ANI_RAC_ID) JOIN animal_species USING(ANI_SPE_ID) WHERE CUS_ID=".$this->idUser;		
 				$result=$db->query($query);																
 				if($result->num_rows==0)
@@ -232,6 +233,43 @@
 			return $retVal;
 		}
 
+		// gneruje statystyki zwierząt customera
+		public function getAnimalStats(){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$stats = Array();											
+			$idx=0;
+			$db->query("SET NAMES utf8 COLLATE utf8_polish_ci");
+			if(mysqli_connect_errno())
+				$stats[$idx]=1;											
+			else{
+				$query1="SELECT COUNT(CUS_ANI_ID) FROM customer_animal WHERE CUS_ID=".$this->idUser;		
+				$animalCount=$db->query($query1);																
+				if($animalCount->num_rows==0)
+					$stats["ANIMAL_COUNT"]=0;																		
+				else{
+					$stats["ANIMAL_COUNT"] = $animalCount->fetch_assoc()['COUNT(CUS_ANI_ID)'];
+					
+					$query2="SELECT NAME FROM customer_animal WHERE CUS_ID=".$this->idUser." ORDER BY BIRTH_DATE LIMIT 1";	
+					$oldestAnimal=$db->query($query2);
+					$stats["OLDEST_ANIMAL"] = $oldestAnimal->fetch_assoc()['NAME'];
+					
+					$query3="SELECT NAME FROM customer_animal WHERE CUS_ID=".$this->idUser." ORDER BY BIRTH_DATE DESC LIMIT 1";	
+					$youngestAnimal=$db->query($query3);
+					$stats["YOUNGEST_ANIMAL"] = $youngestAnimal->fetch_assoc()['NAME'];
+					
+					$query4="SELECT COUNT(*) FROM customer_animal GROUP BY CUS_ID HAVING COUNT(*) > ".$stats["ANIMAL_COUNT"];
+					$moreAnimals=$db->query($query4);
+					$stats["MORE_ANIMALS"] = $moreAnimals->num_rows;
+
+					$query5="SELECT COUNT(*) FROM customer";
+					$customerNumber=$db->query($query5);
+					$stats["CUSTOMER_NUMBER"] = $customerNumber->fetch_assoc()['COUNT(*)'];
+				}
+			}
+			return $stats;
+		}
+
 		// Pobieranie listy wszystkich usług
 		public function getServices(){
 			require('../connect.php');        
@@ -254,6 +292,7 @@
 			return $services;
 		}
 
+		// Pobieranie listy usług podczas filtrowania po nazwie
 		public function getServicesWithPhrase($phrase){
 			require('../connect.php');        
 			@$db=new mysqli($server,$user,$password,$dataBase);

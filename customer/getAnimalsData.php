@@ -10,6 +10,8 @@
             echo json_encode(unserialize($_SESSION['CUSTOMER'])->getAnimalsSpecies());
         } else if(isset($_POST['ANI_SPE_ID']) && $_POST['returnVal'] == "racesData"){
             echo json_encode(unserialize($_SESSION['CUSTOMER'])->getAnimalsRaces($_POST['ANI_SPE_ID']));
+        } else if($_POST['returnVal'] == "stats"){
+            echo json_encode(unserialize($_SESSION['CUSTOMER'])->getAnimalStats());
         }
 	}
 ?>

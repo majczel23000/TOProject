@@ -688,9 +688,37 @@ $("#btnStatsAnimal").on('click', function(){
 	$tbody.addClass('tbodyAddAnimal');
 	$thead.empty();
 	$tbody.empty();
-	$tbody.append("<tr><td style=\"width: 70%\">Liczba posiadanych zwierząt: </td><td style=\"width: 30%\" class='darkTheme'>Brak danych</td></tr>");
-	$tbody.append("<tr><td style=\"width: 70%\">Liczba odbytych wizyt zwierząt: </td><td style=\"width: 30%\" class='darkTheme'>Brak danych</td></tr>");
-	$tbody.append("<tr><td style=\"width: 70%\">Najstarsze zwierzę: </td><td style=\"width: 30%\" class='darkTheme'>Brak danych</td></tr>");
-	$tbody.append("<tr><td style=\"width: 70%\">Najmłodsze zwierzę: </td><td style=\"width: 30%\" class='darkTheme'>Brak danych</td></tr>");
-	$tbody.append("<tr><td style=\"width: 70%\">Procent klientów z większą ilością zwierząt: </td><td style=\"width: 30%\" class='darkTheme'>Brak danych</td></tr>");
+	$.ajax({									
+		type:"post",
+		url:"getAnimalsData.php",
+		dataType:"json",
+		data:{
+			accType:"customer",
+			returnVal:"stats"
+		},
+		success: function(json){
+			// w przypadku braku wyników
+			if(json[0]==0){
+				showMessage('Wystąpił błąd w trakcie pobierania statystyk', false);		
+			}
+			else if(json[0]==1){
+				showMessage('Wystąpił błąd w trakcie pobierania statystyk', false);		
+				console.warn("BŁĄD POŁĄCZENIA");
+			}
+			else{
+				console.log(json);
+				if(json['OLDEST_ANIMAL'] == null)
+					json['OLDEST_ANIMAL'] = 'Brak zwierząt';
+				if(json['YOUNGEST_ANIMAL'] == null)
+					json['YOUNGEST_ANIMAL'] = 'Brak zwierząt';
+				$tbody.append("<tr><td style=\"width: 70%\">Liczba posiadanych zwierząt: </td><td style=\"width: 30%\" class='darkTheme'>" + json['ANIMAL_COUNT'] + "</td></tr>");
+				$tbody.append("<tr><td style=\"width: 70%\">Najstarsze zwierzę: </td><td style=\"width: 30%\" class='darkTheme'>" + json['OLDEST_ANIMAL'] + "</td></tr>");
+				$tbody.append("<tr><td style=\"width: 70%\">Najmłodsze zwierzę: </td><td style=\"width: 30%\" class='darkTheme'>" + json['YOUNGEST_ANIMAL'] + "</td></tr>");
+				$tbody.append("<tr><td style=\"width: 70%\">Procent klientów z większą ilością zwierząt: </td><td style=\"width: 30%\" class='darkTheme'>" + (json['MORE_ANIMALS']/json['CUSTOMER_NUMBER'])*100 + "%</td></tr>");
+			}
+		},
+		error: function(e){
+			console.warn(e);
+		}
+	});
 });
