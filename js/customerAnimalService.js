@@ -549,6 +549,7 @@ function collectDataFromAddForm(){
 	animalData.height = $("#height").val();
 	animalData.weight = $("#weight").val();
 	animalData.birthDate = $("#birthDate").val();
+	console.log(animalData.birthDate);
 	addNewAnimal(animalData);
 }
 

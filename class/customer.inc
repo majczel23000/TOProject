@@ -313,5 +313,64 @@
 			}
 			return $services;
 		}
+
+		// pobiera liste godzin przyjęć każdego lekarza z danego dnia
+		public function getAdmissionHoursFromDay($day){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$hours = Array();											
+			$idx=0;
+			$db->query("SET NAMES utf8 COLLATE utf8_polish_ci");
+			if(mysqli_connect_errno())
+				$hours[$idx]=1;											
+			else{
+				$query="SELECT ".$day.", FIRST_NAME, LAST_NAME, ADM_H_ID FROM admission_hours JOIN doctor ON doctor.DOC_ID=admission_hours.ADM_H_ID";		
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$hours[$idx]=0;																		
+				else{
+					while($row=$result->fetch_assoc())
+						$hours[$idx++] = $row;															
+				}
+			}
+			return $hours;
+		}
+
+		// zapisuje nową wizytę w tabeli o statusie 'PLANNED'
+		public function makeAppointment($CUS_ANI_ID, $DOC_ID, $DATE, $HOUR){
+			$retVal;
+			require('../connect.php');
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$db->query("SET NAMES utf8 COLLATE utf8_polish_ci");
+			if(mysqli_connect_errno())
+            	$retVal = 1;
+			else{
+				$query = "INSERT INTO VISIT (DOC_ID, DATE, CUS_ANI_ID, STATUS, HOUR) VALUES(".$DOC_ID.",'".$DATE."','".$CUS_ANI_ID."','PLANNED','".$HOUR."')";
+				$db->query($query);
+				$retVal = 0;
+			}
+			return $retVal;
+		}
+
+		public function getAppointmentsHoursFromDayWithStatus($date, $status, $doc_id){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$hours = Array();											
+			$idx=0;
+			$db->query("SET NAMES utf8 COLLATE utf8_polish_ci");
+			if(mysqli_connect_errno())
+				$hours[$idx]=1;											
+			else{
+				$query="SELECT HOUR FROM VISIT WHERE DATE LIKE '".$date."' AND STATUS LIKE '".$status."' AND DOC_ID LIKE '".$doc_id."'";		
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$hours[$idx]=0;																		
+				else{
+					while($row=$result->fetch_assoc())
+						$hours[$idx++] = $row['HOUR'];															
+				}
+			}
+			return $hours;
+		}
 	}
 ?>
