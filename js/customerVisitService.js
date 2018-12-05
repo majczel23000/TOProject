@@ -9,6 +9,7 @@ visitDataToAdd = {
     HOUR: ""
 };
 
+// selectedDay - zapisuje wybrany dzień z kalendarza
 let selectedDay;
 let days = ["SUNDAY","MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
 
@@ -31,6 +32,8 @@ function updateContent($title, $iconClass){
     $('#visitSubMenu a').each(function(){
 		$(this).attr('class','btn btnMenu');
     });
+    $visitFiltersContainer = $("#visitFiltersContainer");
+    $visitFiltersContainer.empty();
     $("#contentTitle").empty();
     $("#contentDescription").empty();
     $("#btnAddVisit").remove();
@@ -56,27 +59,26 @@ function showAddVisitForm(){
     $("#content").append($addButton);
     // pobranie listy zwierząt z bazy
     getCustomerAnimals();
-
     // change event przy zmianie daty
     $('#date').change(function(){
         selectedDate = new Date($(this).val());
         currentDate = new Date();
+        $('#trWithDoctors').remove();
+        $('#trWithHours').remove();
+        // gdy wybrana data dotyczy przeszłosci lub tego samego dnia to błąd
         if(selectedDate < currentDate){
             $(this).css('background',"#ffa8a8");
             errorService(true, "Data nie może być z przeszłości", $(this).id + "Error");
             $addButton.addClass("btnAddVisitDisabled");
         } else {
             $(this).css('background',"white");
-            // wysyłam info żeby usunąć error jesli taki był
             errorService(false, "" , $(this).id + "Error");
             $addButton.removeClass("btnAddVisitDisabled");
             visitDataToAdd['DATE'] = $("#date").val();
             selectedDay = days[selectedDate.getDay()];
             getDoctorsListWorkingOnSelectedDay();
-            //getAllAdmissionHoursFromSelectedDay(days[selectedDay]);
         }
     });
-
     // click event dla zapisania danych wizyty
     $addButton.on('click', function(){
         if(!$(this).hasClass('btnAddVisitDisabled')){
@@ -84,10 +86,6 @@ function showAddVisitForm(){
             makeAnAppointment();
         } 
     })
-}
-
-function showHistoryVisits(){
-   
 }
 
 // pobiera liste zwierząt klienta (wywietla imiona zwierząt w select)
@@ -101,12 +99,13 @@ function getCustomerAnimals(){
 			returnVal:"fullData" // parametr określa że chcemy liste zwierząt
 		},
 		success: function(json){
-			// w przypadku braku wyników
 			if(json[0]==0){
+                // brak wyników
 				$option=$("<option>Brak zwierząt<option>");
 				$("#animals").append($option);			
 			}
 			else if(json[0]==1){
+                // błąd połączenia
 				$option=$("<option>Brak zwierząt<option>");
 				$("#animals").append($option);	
 				console.warn("BŁĄD POŁĄCZENIA");
@@ -119,7 +118,6 @@ function getCustomerAnimals(){
 					$option.html(json[i]['NAME']);
 					$("#animals").append($option);
                 };
-                
                 // dodaje change event, który po każdej zmianie w select'ie zapisze CUS_ANI_ID wybranego zwierzaka
 				$("#animals").change(function () {
                     $("#animals option:selected" ).each(function() {
@@ -133,56 +131,54 @@ function getCustomerAnimals(){
 			}
 		},
 		error: function(e){
-			console.warn(e);
+			console.warn("Error pobierania listy zwierząt klienta: ", e);
 		}
 	});
 }
 
-// pobiera liste lekarzy przyjmujących w wybranym dniu
+// pobiera liste lekarzy przyjmujących w wybranym dniu (selectedDay)
 function getDoctorsListWorkingOnSelectedDay(){
     $.ajax({									
 		type:"post",
-		url:"admissionHoursService.php",
+		url:"visitService.php",
 		dataType:"json",
 		data:{
 			accType:"customer",
-			returnVal:"selectedDay", // parametr określa że chcemy lekarzy i godziny przyjęć z dnia selectedDay
+			returnVal:"selectedDay", // parametr określa że chcemy lekarzy i godziny przyjęć z dnia selectedDay (np: MONDAY)
             day: selectedDay
         },
 		success: function(json){
-			// w przypadku braku wyników
 			if(json[0]==0){
-                // wstawiam błąd na strone że brak przyjęć w tym dniu
+                // brak wyników
 				$('#date').css('background',"#ffa8a8");
                 errorService(true, "Brak przyjęć w wybranym dniu", $('#date').id + "Error");
                 $addButton.addClass("btnAddVisitDisabled");		
 			}
 			else if(json[0]==1){
-				// wstawiam błąd na strone że błąd połączenia
+				// błąd połączenia
 				$('#date').css('background',"#ffa8a8");
                 errorService(true, "Błąd połączenia, spróbuj ponownie", $('#date').id + "Error");
                 $addButton.addClass("btnAddVisitDisabled");	
 			}
 			else{
-                console.log(json);
                 $('#date').css('background',"white");
-                // wysyłam info żeby usunąć error jesli taki był
                 errorService(false, "" , $('#date').id + "Error");
                 $addButton.removeClass("btnAddVisitDisabled");
                 createAvailableHours(json);
 			}
 		},
 		error: function(e){
-			console.warn(e);
+			console.warn("Error pobierania listy lekarzy i godzin przyjęć: ", e);
 		}
 	});
 }
 
 // tworzy liste możliwych godzin, oraz wypisuje je na ekranie 
 function createAvailableHours(data){
+    // jesli wczesniej już były selecty z lekarzami i godzinami, to je usuwam, żeby nie dodawało kolejnych
     $('#trWithDoctors').remove();
     $('#trWithHours').remove();
-    // dodaje wierz do tabeli z godzinami
+    // dodaje wierz do tabeli z lekarzami
     $tbody = $("#addVisitListTbody");
     $tr = $("<tr></tr>");
     $tr.attr('id','trWithDoctors');
@@ -194,31 +190,41 @@ function createAvailableHours(data){
     $doctorSelect = $("<select></select>");
     $doctorSelect.attr('id','doctorSelect');
     $doctorSelect.attr('class','inputAddAnimal');
-    $secondTd.append($doctorSelect);
-    $tr.append($firstTd);
-    $tr.append($secondTd);
-    $tbody.append($tr);
     
-    // dodaje option (lekarzy)
+    // dodaje option (lekarzy) pod warunkiem że mają wpisane godziny przyjęć
+    let isSomeoneWorking = false;
     for(let i = 0; i < data.length; i++){
         if(data[i][selectedDay] !== ''){
             $option=$("<option></option>");
             $option.html(data[i]['FIRST_NAME']+ " " + data[i]['LAST_NAME']);
             $option.attr('ADM_H_ID', data[i]['ADM_H_ID']);
             $doctorSelect.append($option);
+            isSomeoneWorking = true;
         }
     }
-
-    // dodaje change event, który po każdej zmianie w select'ie lekarza wywietli jego wolne terminy godzin przyjec 
-    $doctorSelect.change(function () {
-        $("#doctorSelect option:selected" ).each(function() {
-            $('#trWithHours').remove();
-            visitDataToAdd['DOC_ID'] = $(this).attr('ADM_H_ID');
-            showAvailableHoursList($(this).attr('ADM_H_ID'), data);
-        });
-    }).change();
+    // jesli jest przynajmniej jeden lekarz który przyjmuje w danym dniu
+    if(isSomeoneWorking){
+        $secondTd.append($doctorSelect);
+        $tr.append($firstTd);
+        $tr.append($secondTd);
+        $tbody.append($tr);
+        // dodaje change event, który po każdej zmianie w select'ie lekarza wywietli jego wolne terminy godzin przyjec
+        $doctorSelect.change(function () {
+            $("#doctorSelect option:selected" ).each(function() {
+                $('#trWithHours').remove();
+                visitDataToAdd['DOC_ID'] = $(this).attr('ADM_H_ID');
+                showAvailableHoursList($(this).attr('ADM_H_ID'), data);
+            });
+        }).change();
+    } else { // jesli nie ma żadnego lekarza w wybranym dniu
+        $('#date').css('background',"#ffa8a8");
+        errorService(true, "Brak przyjęć w wybranym dniu", $('#date').id + "Error");
+        $addButton.addClass("btnAddVisitDisabled");	
+    }
+    
 }
 
+// wyswietlanie listy możliwych godzin do wyboru
 function showAvailableHoursList(adm_h_id, data){
     // szukam najwczesniejszej i najpóźniejszej godziny od której będą prowadzone przyjęcia w wybranym dniu dla wybranego lekarza
     for(let i = 0; i < data.length; i++){
@@ -231,7 +237,7 @@ function showAvailableHoursList(adm_h_id, data){
     busyHours = []; // tablica na zajęte już godziny
     $.ajax({									
 		type:"post",
-		url:"admissionHoursService.php",
+		url:"visitService.php",
 		dataType:"json",
 		data:{
 			accType:"customer",
@@ -241,9 +247,8 @@ function showAvailableHoursList(adm_h_id, data){
             doc_id: adm_h_id
         },
 		success: function(json){
-			// w przypadku braku wyników
+			// w przypadku braku wyników, czyli nie ma jeszcze umówionych wizyt w danym dniu
 			if(json[0]==0){
-                // gdy nie ma jeszcze umówionych wizyt w danym dniu, wyswietlam wszystkie możliwe godziny
                 availableHours = [];
                 for(let i = minimum; i < maksimum; i++){
                     if(i<10){
@@ -276,7 +281,6 @@ function showAvailableHoursList(adm_h_id, data){
                     $option.html(availableHours[i]);
                     $hoursSelect.append($option);
                 };
-
                 // dodaje change event, który po każdej zmianie w select'ie zapisze wybrane HOUR 
                 $hoursSelect.change(function () {
                     $("#hoursSelect option:selected" ).each(function() {
@@ -293,6 +297,7 @@ function showAvailableHoursList(adm_h_id, data){
                 availableHours = [];
                 existFull = false;
                 existHalf = false;
+                // te fory wyglądają strasznie, ale robią robotę :) 
                 for(let i = minimum; i < maksimum; i++){
                     for(let j = 0; j < busyHours.length; j++){
                         if(i<10){
@@ -323,7 +328,6 @@ function showAvailableHoursList(adm_h_id, data){
                     existFull = false;
                     existHalf = false;
                 }
-
                 // dodaje je na strone
                 $tbody = $("#addVisitListTbody");
                 $tr = $("<tr></tr>");
@@ -345,7 +349,6 @@ function showAvailableHoursList(adm_h_id, data){
                     $option.html(availableHours[i]);
                     $hoursSelect.append($option);
                 };
-
                 // dodaje change event, który po każdej zmianie w select'ie zapisze wybrane HOUR 
                 $hoursSelect.change(function () {
                     $("#hoursSelect option:selected" ).each(function() {
@@ -355,7 +358,7 @@ function showAvailableHoursList(adm_h_id, data){
 			}
 		},
 		error: function(e){
-			console.warn(e);
+			console.warn("Error pobierania godzin juz zajętych: ", e);
 		}
 	});
 }
@@ -364,7 +367,7 @@ function showAvailableHoursList(adm_h_id, data){
 function makeAnAppointment(){
     $.ajax({									
 		type:"post",
-		url:"admissionHoursService.php",
+		url:"visitService.php",
 		dataType:"json",
 		data:{
 			accType:"customer",
@@ -383,14 +386,120 @@ function makeAnAppointment(){
 			else if(json==0){
                 showMessage('Wizyta została dodana!', true);
                 $('#trWithHours').remove();
+                $('#trWithDoctors').remove();
                 $("#date").val("");
                 $("#btnAddVisit").addClass("btnAddVisitDisabled");
+                visitDataToAdd.DOC_ID = "";
+                visitDataToAdd.DATE = "";
+                visitDataToAdd.HOUR = "";
 			}
 		},
 		error: function(e){
-			console.warn(e);
+			console.warn("Error dodawania wizyty: ", e);
 		}
 	});
+}
+
+// pokazuje widok historii wizyt customera
+function showHistoryVisits(){
+    let $table=$("<table></table>");
+    $table.attr("id","visitHistoryList");
+    $thead = $("<thead></thead>");
+    $thead.attr('id', 'visitHistoryListThead');
+    $thead.html("<tr><th>Data</th><th>Godzina</th><th>Zwierzę</th><th>Status</th></tr>");
+    $tbody=$("<tbody></tbody>");
+    $tbody.attr('id','visitHistoryListTbody');
+    $table.append($thead);
+    $table.append($tbody);
+    $("#contentDescription").append($table);
+    showHistoryFilterButtons();
+    getMyVisits("ALL");
+}
+
+// pobiera liste wizyt i je wyswietla
+function getMyVisits($status){
+    $.ajax({									
+		type:"post",
+		url:"visitService.php",
+		dataType:"json",
+		data:{
+			accType:"customer",
+			returnVal:"getVisits", // parametr określa że chcemy liste wizyt
+            status: $status // parametr okresla że chcemy liste wizyt z konkretnym statusem
+        },
+		success: function(json){
+			if(json[0]==0){
+                // brak wyników
+                $("#visitHistoryListTbody").empty();
+                $tr = $("<tr><td colspan='4'>Brak wizyt</td></tr>");
+                $("#visitHistoryListTbody").append($tr);
+				console.log('brak wyników');	
+			}
+			else if(json[0]==1){
+                // błąd połączenia
+                $("#visitHistoryListTbody").empty();
+                $tr = $("<tr><td colspan='4'>Brak wizyt</td></tr>");
+                $("#visitHistoryListTbody").append($tr);
+				console.log('Błąd połączenia');
+			}
+			else{
+                console.log(json);
+                $("#visitHistoryListTbody").empty();
+                for(let i = 0; i < json.length; i++){
+                    $status = "";
+                    if(json[i]['STATUS'] === 'PLANNED')
+                        $status = 'Zaplanowana';
+                    else
+                        $status = 'Zamknięta';
+                    $tr = $("<tr></tr>");
+                    $tdDate = $("<td>" + json[i]['DATE'] + "</td>");
+                    $tdHour = $("<td>" + json[i]['HOUR'] + "</td>");
+                    $tdName = $("<td>" + json[i]['NAME'] + "</td>");
+                    $tdStatus = $("<td>" + $status + "</td>");
+                    $tr.append($tdDate);
+                    $tr.append($tdHour);
+                    $tr.append($tdName);
+                    $tr.append($tdStatus);
+                    $("#visitHistoryListTbody").append($tr);
+                }
+                
+			}
+		},
+		error: function(e){
+			console.warn("Error pobierania historii wizyt: ", e);
+		}
+	});
+}
+
+// tworzy i wyswietla buttony do filtrowania wyników historii
+function showHistoryFilterButtons(){
+    $visitFiltersContainer = $("#visitFiltersContainer");
+    $visitFiltersContainer.empty();
+    $buttonAll = $("<button></button>");
+    $buttonAll.attr('id','visitFilterAll');
+    $buttonAll.html('Wszystkie');
+    $buttonPlanned = $("<button></button>");
+    $buttonPlanned.attr('id','visitFilterPlanned');
+    $buttonPlanned.html('Zaplanowane');
+    $buttonFinished = $("<button></button>");
+    $buttonFinished.attr('id','visitFilterFinished');
+    $buttonFinished.html('Zamknięte');
+    $clear = $("<div class='clear'></div>")
+    $visitFiltersContainer.append($buttonAll);
+    $visitFiltersContainer.append($buttonPlanned);
+    $visitFiltersContainer.append($buttonFinished);
+    $visitFiltersContainer.append($clear);
+
+    // clisk eventy dla kazdego przycisku filtrującego wyniki
+    $buttonAll.on('click', function(){
+        getMyVisits("ALL");
+    });
+    $buttonPlanned.on('click', function(){
+        getMyVisits("PLANNED");
+    });
+    $buttonFinished.on('click', function(){
+        getMyVisits("FINISHED");
+    });
 }
 
 // wyswietlanie bledow

@@ -352,6 +352,7 @@
 			return $retVal;
 		}
 
+		// pobiera liste godzin z danego dnia z podanym statusem
 		public function getAppointmentsHoursFromDayWithStatus($date, $status, $doc_id){
 			require('../connect.php');        
 			@$db=new mysqli($server,$user,$password,$dataBase);
@@ -371,6 +372,31 @@
 				}
 			}
 			return $hours;
+		}
+
+		// pobiera liste wizyt z podanym statusem (status "ALL" pobiera wszystkie)
+		public function getVisits($status){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$visits = Array();											
+			$idx=0;
+			$db->query("SET NAMES utf8 COLLATE utf8_polish_ci");
+			if(mysqli_connect_errno())
+				$visits[$idx]=1;											
+			else{
+				if($status !== 'ALL')
+					$query="SELECT DATE, HOUR, NAME, STATUS FROM VISIT JOIN customer_animal USING(CUS_ANI_ID) WHERE CUS_ID=".$this->idUser." AND STATUS LIKE '".$status."'";
+				else
+					$query="SELECT DATE, HOUR, NAME, STATUS FROM VISIT JOIN customer_animal USING(CUS_ANI_ID) WHERE CUS_ID=".$this->idUser;		
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$visits[$idx]=0;																		
+				else{
+					while($row=$result->fetch_assoc())
+						$visits[$idx++] = $row;															
+				}
+			}
+			return $visits;
 		}
 	}
 ?>

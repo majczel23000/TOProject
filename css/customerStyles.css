@@ -352,7 +352,6 @@ body{
     background: #eaeaea;
     color: #333;
 }
-
 .admissionHours{
     text-align: center;
     float:left; 
@@ -360,6 +359,50 @@ body{
     padding: 10px 0px; 
     background: #f6f6f6; 
     color: #333;
+}
+
+#visitHistoryList{
+    background: #f6f6f6;
+    border-radius:3px;
+    border-collapse: collapse;
+    margin: auto;
+    padding:5px;
+    width: 100%;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 50px;
+}
+#visitHistoryList thead{
+    color: #f6f6f6;
+    background: #333;
+}
+#visitHistoryList thead th{
+    padding: 20px;
+    width: 25%;
+}
+#visitHistoryList td{
+    padding: 20px;
+}
+#visitHistoryList tr:hover td{
+    background: #eaeaea;
+    color: #333;
+}
+
+/*=====VISITFILTERS====*/
+#visitFiltersContainer{
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+#visitFiltersContainer button{
+    border:none;
+    display: inline-block;
+    padding: 20px;
+    margin: 10px 10px 20px 10px;
+    float: none;
+}
+#visitFiltersContainer button:hover{
+    cursor: pointer;
 }
 
 /*=====ERRORSTYLES=====*/

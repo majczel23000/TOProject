@@ -17,6 +17,8 @@
             echo "\t\t <div id=\"contentTitle\">\n";
 			// echo "\t\t\t<h1><i class=\"fas fa-eye\"></i> Wizyty</h1>\n";
 			echo "\t\t </div>\n";
+			echo "\t\t <div id=\"visitFiltersContainer\">\n";
+            echo "\t\t </div>\n";
             echo "\t\t <div id=\"contentDescription\">\n";
             echo "\t\t </div>\n";
         }		
