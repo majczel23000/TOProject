@@ -205,7 +205,7 @@ $('#editUserInfoButton').on('click', function(e){
 			saturdayHours=$("#saturdayAHS").val()+"-"+$("#saturdayAHF").val();
 		}
 		if(!$("#sundayAHCheckbox").is(':checked')){
-			sundayHours=$("#sundayAHS").val()+"-"+$("sundayAHF").val();
+			sundayHours=$("#sundayAHS").val()+"-"+$("#sundayAHF").val();
 		}
 			
         $.ajax({

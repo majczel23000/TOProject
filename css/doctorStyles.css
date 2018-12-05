@@ -135,6 +135,12 @@ body{
     padding: 31px 10%;
     width: 80%;
 }
+.tdDuringEdit select{
+    font-size: 1rem;
+	border:none;
+    padding: 31px 10%;
+    width: 100%;
+}
 table.editAH{
 	width:100%;
 }

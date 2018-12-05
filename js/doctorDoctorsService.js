@@ -263,7 +263,7 @@ function editDoctorData(val){																//parametr przyjmowany, gdy kliknie
 //pobranie danych i wyswietlenie je w formularzu
 function getDoctorData(doctor){											//jesli przekazujemy dane z tabeli z lekarzami, to wprowadzamy ten paramtert
 	if(doctor!=null)
-		drawTable(doctor);
+		drawTable(doctor,"edit");
 	else {
 		const mailReg = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/					//regularne dla maila
 		if($("#doctorDetail").length>0)
@@ -311,7 +311,7 @@ function getDoctorData(doctor){											//jesli przekazujemy dane z tabeli z l
 						$("#contentDescription").append($table);
 					}
 					else
-						drawTable(json);
+						drawTable(json,"edit");
 					$('body').css('opacity','1');
 					$('body').css('cursor','default');
 				},
@@ -324,18 +324,30 @@ function getDoctorData(doctor){											//jesli przekazujemy dane z tabeli z l
 		}
 	}
 }
-//funcja tworząca tabele do edycji danych
-function drawTable(doctorData){
+//funcja tworząca tabele do edycji danych, przyjmuje lekarza oraz typ operacji: edit - edycja, add-dodanie, od tego zalezy przycisk na końcu
+function drawTable(doctorData,operationType){
 	let $table=$("<table></table>");																//tworzymy tabele
 	$table.attr("id","doctorDetail");																//dajemy jej id
-	$table.append("<thead><tr><th colspan=\"2\" id=\"addressMail\" mail=\""+doctorData['EMAIL']+"\">Dane lekarza: "+doctorData['EMAIL']+"</tr></thead>");		//wstawiamy do niej thead
+	if(operationType=="edit")
+		$table.append("<thead><tr><th colspan=\"2\" id=\"addressMail\" mail=\""+doctorData['EMAIL']+"\">Dane lekarza: "+doctorData['EMAIL']+"</tr></thead>");	//wstawiamy do niej thead
+	else if(operationType=="add")
+		$table.append("<thead><tr><th colspan=\"2\" \">Dodanie nowego lekarza</tr></thead>");
 	$tbody=$("<tbody></tbody>");
+	if(operationType=="add"){
+		$tbody.append("<tr><td>Email Address: </td><td class=\"tdDuringEdit\"><input id=\"emailAddress\" type=\"text\"></td></tr>");
+		$tbody.append("<tr><td>Password: </td><td class=\"tdDuringEdit\"><input id=\"password\" type=\"text\"></td></tr>");
+	}
 	$tbody.append("<tr><td>First Name: </td><td class=\"tdDuringEdit\"><input id=\"firstN\" type=\"text\" value=\""+doctorData['FIRST_NAME']+"\"></td></tr>");	//i poszczególne dane
 	$tbody.append("<tr><td>Last Name: </td><td class=\"tdDuringEdit\"><input id=\"lastN\" type=\"text\" value=\""+doctorData['LAST_NAME']+"\"></td></tr>");
 	$tbody.append("<tr><td>Address: </td><td class=\"tdDuringEdit\"><input id=\"address\" type=\"text\" value=\""+doctorData['ADDRESS']+"\"></td></tr>");
 	$tbody.append("<tr><td>Phone Number: </td><td class=\"tdDuringEdit\"><input id=\"phoneN\" type=\"text\" value=\""+doctorData['PHONE_NUMBER']+"\"></td></tr>");
 	$tbody.append("<tr><td>Academic Title </td><td class=\"tdDuringEdit\"><input id=\"academicT\" type=\"text\" value=\""+doctorData['ACADEMIC_TITLE']+"\"></td></tr>");
-	$tbody.append("<tr><td>Admin Type</td><td class=\"tdDuringEdit\"><input id=\"adminT\" type=\"text\" value=\""+doctorData['ADM_TYPE']+"\"></td></tr>");
+	let select="";
+	if(doctorData['ADM_TYPE']=="NORMAL")
+		select="<select id=\"adminT\"><option>NORMAL</option><option>HEAD</option></select>";
+	else
+		select="<select id=\"adminT\"><option>HEAD</option><option>NORMAL</option></select>";
+	$tbody.append("<tr><td>Admin Type</td><td class=\"tdDuringEdit\">"+select+"</td></tr>");
 	$tbody.append("<tr><td>Monday: </td><td id=\"mondayAH\"></td></tr>");
 	$tbody.append("<tr><td>Tuesday: </td><td id=\"tuesdayAH\"></td></tr>");
 	$tbody.append("<tr><td>Wednesday: </td><td id=\"wednesdayAH\"></td></tr>");
@@ -366,23 +378,51 @@ function drawTable(doctorData){
 		'width':'25%',
 		'display':'inline-block'
 	});
-	$butt.attr('id','saveDoctorEdit');									//przycisk do zapisu danych
-	$cancel.attr('id','calcelEdit');									//przycisk do cofniecia zmian
-	$butt.html('<i class="far fa-save"></i> Zapisz zmiany');
-	$cancel.html('<i class="fas fa-reply"></i> Cofnij zmiany');
-	$butt.on('click',function(){										//jesli nacisnie przycisk wyslij to odpalamy funkcje do wysyłania
-		sendEditedData();
-	});
-	$cancel.on('click',function(){												//jesli nacisnie przycisk do cofnieca to znowy rysujemy tę samą tabele
-		deleteContent("editDoctorData", doctorData['EMAIL']);					//przesłamy email tego lekarza
-		$("#editDoctorData").attr('class','btn btnMenu active-btn');			//ustawiamy aktywny przycisk
-		getDoctorData(doctorData);
-	});
+	if(operationType=="edit"){
+		$butt.attr('id','saveDoctorEdit');									//przycisk do zapisu danych
+		$cancel.attr('id','calcelEdit');									//przycisk do cofniecia zmian
+		$butt.html('<i class="far fa-save"></i> Zapisz zmiany');
+		$cancel.html('<i class="fas fa-reply"></i> Cofnij zmiany');
+		$butt.on('click',function(){										//jesli nacisnie przycisk wyslij to odpalamy funkcje do wysyłania
+			sendEditedData();
+		});
+		$cancel.on('click',function(){												//jesli nacisnie przycisk do cofnieca to znowy rysujemy tę samą tabele
+			deleteContent("editDoctorData", doctorData['EMAIL']);					//przesłamy email tego lekarza
+			$("#editDoctorData").attr('class','btn btnMenu active-btn');			//ustawiamy aktywny przycisk
+			getDoctorData(doctorData);
+		});
+		if($("#saveDoctorEdit").length>0)											//jesli są juz przyciski to usuwamy, bo czasami zostawały
+			$("#saveDoctorEdit").remove();
+		if($("#calcelEdit").length>0)
+			$("#calcelEdit").remove();
+	}
+	else if(operationType=="add"){
+		$butt.attr('id','addDoctorButton');									//przycisk do zapisu danych
+		$cancel.attr('id','calcelAdd');									//przycisk do cofniecia zmian
+		$butt.html('<i class="fas fa-plus"></i> Dodaj lekarza');
+		$cancel.html('<i class="fas fa-times"></i> Anuluj dodawanie');
+		$butt.on('click',function(){										//jesli nacisnie przycisk wyslij to odpalamy funkcje do wysyłania
+			sendNewDoctor();
+		});
+		$cancel.on('click',function(){												//jesli nacisnie przycisk do cofnieca to rysujemy tabele od nowa
+			deleteContent("addDoctor");												
+			$("#addDoctor").attr('class','btn btnMenu active-btn');					//ustawiamy aktywny przycisk
+			$('html, body').animate({
+				scrollTop: $("body").offset().top
+			}, 1000);
+		});
+		if($("#addDoctorButton").length>0)											//jesli są juz przyciski to usuwamy, bo czasami zostawały
+			$("#addDoctorButton").remove();
+		if($("#calcelAdd").length>0)
+			$("#calcelAdd").remove();
+	}
 	$("#contentDescription").append($butt);
 	$("#contentDescription").append($cancel);
-	$('html, body').animate({
-		scrollTop: $("#doctorDetail").offset().top
-	}, 1000);
+	if(operationType=="edit"){
+		$('html, body').animate({
+			scrollTop: $("#doctorDetail").offset().top
+		}, 1000);
+	}
 }
 //funkcja tworząca pola do edycji danych o godzinach
 function drawAdmissionHours(hours,day){
@@ -516,7 +556,7 @@ function sendEditedData(){
 		saturdayHours=$("#saturdayS").val()+"-"+$("#saturdayF").val();
 	}
 	if(!$("#sundayCheckbox").is(':checked')){
-		sundayHours=$("#sundayS").val()+"-"+$("sundayF").val();
+		sundayHours=$("#sundayS").val()+"-"+$("#sundayF").val();
 	}
 	
 	$.ajax({
@@ -571,13 +611,129 @@ function sendEditedData(){
 }
 function addDoctor(){
 	$("#contentTitle").append("<hr>");																//dajemy se kreske 
-	$("#contentTitle").append("<h1><i class=\"fas fa-list-ul\"></i> Dodanie lekarza</h1>");	//ustawiamy tytuł
+	$("#contentTitle").append("<h1><i class=\"fas fa-plus\"></i> Dodanie lekarza</h1>");	//ustawiamy tytuł
 	$h3=$("<h3>Brak Lekarzy</h3>");
-	$h3.css({
-		'display':'block',
-		'width':'20%',
-		'margin':'auto'
-	});
-	$("#contentDescription").append($h3);	
+	//tworzymy pustego lekarza, aby przekazać go do funckji
+	const emptyDoctor= {
+		"EMAIL":"",
+		"FIRST_NAME":"",
+		"LAST_NAME":"",
+		"ADDRESS":"",
+		"ACADEMIC_TITLE":"",
+		"PHONE_NUMBER":"",
+		"ADM_TYPE":"NORMAL",
+		"MONDAY":"Brak Przyjęć",
+		"TUESDAY":"Brak Przyjęć",
+		"WEDNESDAY":"Brak Przyjęć",
+		"THURSDAY":"Brak Przyjęć",
+		"FRIDAY":"Brak Przyjęć",
+		"SATURDAY":"Brak Przyjęć",
+		"SUNDAY":"Brak Przyjęć"
+	};
+	drawTable(emptyDoctor,"add");
 	isSomeoneActive=true;
 }
+//funckja wysyłajaca dane nowego lekarza do dodania do bazy
+function sendNewDoctor(){
+	//obiekty do walidacji
+	//id elementu z którego sie pobiera wartosc: nazwa któa wyswietla sie przy błędzie, typ walidacj (same litery, mail, hasło etc), czy poprawna wartosc
+	//default znaczy, ze litery i kopka, i myslnik
+	/*let objectsForVal={			
+		'emailAddress'	: ['Adres mailowy','mail', true],
+		'password'		: ['Hasło','password', true],
+		'firstN'		: ['Imię','default', true],
+		'lastN'			: ['Nazwisko','default', true],
+		'address'		: ['Adres','noSpecialChars', true],
+		'phoneN'		: ['Numer telefonu','phoneNumber', true],
+		'academicT'		: ['Numer telefonu','default', true],
+		'adminT'		: ['Typ administratora','adminType', true]
+	}*/
+	let mondayHours="";let tuesdayHours="";let wednesdayHours="";let thursdayHours="";let fridayHours="";let saturdayHours="";let sundayHours="";
+	if(!$("#mondayCheckbox").is(':checked')){
+		mondayHours=$("#mondayS").val()+"-"+$("#mondayF").val();
+	}
+	if(!$("#tuesdayCheckbox").is(':checked')){
+		tuesdayHours=$("#tuesdayS").val()+"-"+$("#tuesdayF").val();
+	}
+	if(!$("#wednesdayCheckbox").is(':checked')){
+		wednesdayHours=$("#wednesdayS").val()+"-"+$("#wednesdayF").val();
+	}
+	if(!$("#thursdayCheckbox").is(':checked')){
+		thursdayHours=$("#thursdayS").val()+"-"+$("#thursdayF").val();
+	}
+	if(!$("#fridayCheckbox").is(':checked')){
+		fridayHours=$("#fridayS").val()+"-"+$("#fridayF").val();
+	}
+	if(!$("#saturdayCheckbox").is(':checked')){
+		saturdayHours=$("#saturdayS").val()+"-"+$("#saturdayF").val();
+	}
+	if(!$("#sundayCheckbox").is(':checked')){
+		sundayHours=$("#sundayS").val()+"-"+$("#sundayF").val();
+	}
+	validation(objectsForVal);
+	$.ajax({
+		type:"post",
+		url:"getDoctorsData.php",
+		dataType:"json",
+		data:{
+			accType:"doctor",
+			returnVal:"addDoctor",
+			mail: $("#emailAddress").val(),
+			password: $("#password").val(),
+			firstName: $('#firstN').val(),
+			lastName: $('#lastN').val(),
+			address: $('#address').val(),
+			phoneNumber: $('#phoneN').val(),
+			academicTitle: $('#academicT').val(),
+			adminType: $('#adminT').val(),
+			mondayHours:mondayHours,
+			tuesdayHours:tuesdayHours,
+			wednesdayHours:wednesdayHours,
+			thursdayHours:thursdayHours,
+			fridayHours:fridayHours,
+			saturdayHours:saturdayHours,
+			sundayHours:sundayHours
+		},
+		beforeSend: function(){
+			$('body').css('opacity','0.6');
+			$('body').css('cursor','progress');
+		},
+		success: function(json){
+			switch(json){
+				case 0:
+					$("#contentTitle").html("");																				//czyścimy środek tytułu
+					$("#contentDescription").html("Lekarz został dodany.");														//piszemy, ze ok
+					$('html, body').animate({
+						scrollTop: $("body").offset().top
+					}, 1000);
+					break;
+				default:
+					console.log('Default success response');
+					break;
+			}
+			$('body').css('opacity','1');
+			$('body').css('cursor','default');
+		},
+		error: function(e){
+			console.warn(e);
+			$('body').css('opacity','1');
+			$('body').css('cursor','default');
+		}
+	});
+}
+//funkcja waliduje kolejne pola obiektu, który zostanie przekazany, generuje błędy i zwraca false jeśli cos poszło nie tak
+function validation(objectsForVal){
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+

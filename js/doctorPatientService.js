@@ -176,7 +176,6 @@ function getCustomerData(){
 					$tbody.append("<tr><td>Suffessful Login Number: </td><td>"+json['LOGIN_NUM_A']+"</td></tr>");
 					$tbody.append("<tr><td>Failed Login Number: </td><td>"+json['LOGIN_NUM_D']+"</td></tr>");
 					$tbody.append("<tr><td>Pets Number: </td><td>"+json['PET_NUM']+"</td></tr>");
-					$tbody.append("<tr><td>Pets Name: </td><td>"+json['PET_NAMES']+"</td></tr>");
 					$tbody.append("<tr><td>Last Visit: </td><td>"+json['VISIT_PREV']+"</td></tr>");
 					$tbody.append("<tr><td>Next Visit: </td><td>"+json['VISIT_NEXT']+"</td></tr>");
 					$tbody.append("<tr><td>Visits number: </td><td>"+json['VISIT_NUM']+"</td></tr>");

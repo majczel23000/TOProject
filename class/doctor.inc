@@ -148,24 +148,56 @@
 				else
 					$customer=$result->fetch_assoc();													//else to zapisujemy go do zmiennej
 				if($customer!=0){													//jesli wierszy było wiecej niż 0 to pobieramy inne dane
+					//ilosc poprawnych logowac
 					$query="SELECT COUNT(CUS_ID) AS LOGIN_NUM FROM LOGIN_HISTORY WHERE CUS_ID=".$customer['CUS_ID']." AND RESULT='ACCESS'";
-					$accessNum=$db->query($query);														//ilosc poprawnych logowac
+					$accessNum=$db->query($query);														
 					$customer['LOGIN_NUM_A'] = $accessNum->fetch_assoc()['LOGIN_NUM'];
+					//ilosc niepoprawnych
 					$query="SELECT COUNT(CUS_ID) AS LOGIN_NUM FROM LOGIN_HISTORY WHERE CUS_ID=".$customer['CUS_ID']." AND RESULT='DENIED'";
-					$deniedNum=$db->query($query);														//ilosc niepoprawnych
+					$deniedNum=$db->query($query);														
 					$customer['LOGIN_NUM_D'] = $deniedNum->fetch_assoc()['LOGIN_NUM'];
+					//ostatnie logowanie poprawne
 					$query="SELECT DATE FROM LOGIN_HISTORY WHERE CUS_ID=".$customer['CUS_ID']." AND RESULT='ACCESS' ORDER BY DATE DESC LIMIT 1";
-					$accessLast=$db->query($query);														//ostatnie logowanie poprawne
-					$customer['LOGIN_LAST_A'] = $accessLast->fetch_assoc()['DATE'];
+					$accessLast=$db->query($query);														
+					if($accessLast->num_rows==0)
+						$customer['LOGIN_LAST_A'] = "<span style=\"color:gray\">Brak udanych logowań</span>";
+					else
+						$customer['LOGIN_LAST_A'] = $accessLast->fetch_assoc()['DATE'];
+					//ostatnie niepoprawen
 					$query="SELECT DATE FROM LOGIN_HISTORY WHERE CUS_ID=".$customer['CUS_ID']." AND RESULT='DENIED' ORDER BY DATE DESC LIMIT 1";
-					$deniedLast=$db->query($query);														//ostatnie niepoprawen
-					$customer['LOGIN_LAST_D'] = $deniedLast->fetch_assoc()['DATE'];
-					
-					$customer['PET_NUM']="B/D";															//pozostałe dane, ale jeszcze nie ma bazy
-					$customer['PET_NAMES']="B/D";
-					$customer['VISIT_NEXT']="B/D";
-					$customer['VISIT_PREV']="B/D";
-					$customer['VISIT_NUM']="B/D";
+					$deniedLast=$db->query($query);														
+					if($deniedLast->num_rows==0)
+						$customer['LOGIN_LAST_D'] = "<span style=\"color:gray\">Brak nieudanych logowań</span>";
+					else
+						$customer['LOGIN_LAST_D'] = $deniedLast->fetch_assoc()['DATE'];
+					//ilosc zwierzaków
+					$query="SELECT COUNT(CUS_ANI_ID) AS PETS_NUM FROM CUSTOMER_ANIMAL WHERE CUS_ID=".$customer['CUS_ID'];
+					$petsNum=$db->query($query);														
+					$customer['PET_NUM'] = $petsNum->fetch_assoc()['PETS_NUM'];
+					//ilosc wizyt
+					$query="SELECT COUNT(VIS_ID) AS VISIT_NUM FROM VISIT WHERE CUS_ANI_ID = ANY(SELECT CUS_ANI_ID FROM CUSTOMER_ANIMAL WHERE CUS_ID=".$customer['CUS_ID'].") AND (DATE<CURDATE() OR DATE=CURDATE() AND HOUR<CURTIME())";
+					$visitNum=$db->query($query);														
+					$customer['VISIT_NUM'] = $visitNum->fetch_assoc()['VISIT_NUM'];
+					//ostatna wizyta
+					$query="SELECT DATE, HOUR FROM VISIT WHERE 	CUS_ANI_ID = ANY(SELECT CUS_ANI_ID FROM CUSTOMER_ANIMAL WHERE CUS_ID=".$customer['CUS_ID'].") AND 
+																(DATE<CURDATE() OR DATE=CURDATE() AND HOUR<CURTIME()) ORDER BY DATE DESC, HOUR DESC LIMIT 1";
+					$prevVisit=$db->query($query);														
+					if($prevVisit->num_rows==0)
+						$customer['VISIT_PREV'] = "<span style=\"color:gray\">Brak poprzednich wizyt</span>";
+					else{
+						$tmp=$prevVisit->fetch_assoc();
+						$customer['VISIT_PREV'] = $tmp['DATE']." ".$tmp['HOUR'];
+					}
+					//następna wizyta
+					$query="SELECT DATE, HOUR FROM VISIT WHERE 	CUS_ANI_ID = ANY(SELECT CUS_ANI_ID FROM CUSTOMER_ANIMAL WHERE CUS_ID=".$customer['CUS_ID'].") AND 
+																(DATE>CURDATE() OR DATE=CURDATE() AND HOUR>CURTIME()) ORDER BY DATE ASC, HOUR ASC LIMIT 1";
+					$nextVisit=$db->query($query);														
+					if($nextVisit->num_rows==0)
+						$customer['VISIT_NEXT'] = "<span style=\"color:gray\">Brak następnych wizyt</span>";
+					else{
+						$tmp=$nextVisit->fetch_assoc();
+						$customer['VISIT_NEXT'] = $tmp['DATE']." ".$tmp['HOUR'];
+					}
 				}
 			}
 			@$db->close();
@@ -274,16 +306,16 @@
 				$retVal=1;
 			else{
 				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
-				$query = "UPDATE DOCTOR SET FIRST_NAME='".$_POST['firstName']."', LAST_NAME='".$_POST['lastName']."', ADDRESS='".$_POST['address']."', PHONE_NUMBER='".$_POST['phoneNumber']."', ACADEMIC_TITLE='".$_POST['academicTitle']."', ADM_TYPE='".$_POST['adminType']."' WHERE EMAIL='".$_POST['mail']."'";
+				$query = "UPDATE DOCTOR SET FIRST_NAME='".$doctorData['firstName']."', LAST_NAME='".$doctorData['lastName']."', ADDRESS='".$doctorData['address']."', PHONE_NUMBER='".$doctorData['phoneNumber']."', ACADEMIC_TITLE='".$doctorData['academicTitle']."', ADM_TYPE='".$doctorData['adminType']."' WHERE EMAIL='".$doctorData['mail']."'";
 				$db->query($query);
 				//zminamy godziny przyjęć
-				$admH = Array(	"MONDAY"	=>$_POST['mondayHours'],
-								"TUESDAY"	=>$_POST['tuesdayHours'],
-								"WEDNESDAY"	=>$_POST['wednesdayHours'],
-								"THURSDAY"	=>$_POST['thursdayHours'],
-								"FRIDAY"	=>$_POST['fridayHours'],
-								"SATURDAY"	=>$_POST['saturdayHours'],
-								"SUNDAY"	=>$_POST['sundayHours']
+				$admH = Array(	"MONDAY"	=>$doctorData['mondayHours'],
+								"TUESDAY"	=>$doctorData['tuesdayHours'],
+								"WEDNESDAY"	=>$doctorData['wednesdayHours'],
+								"THURSDAY"	=>$doctorData['thursdayHours'],
+								"FRIDAY"	=>$doctorData['fridayHours'],
+								"SATURDAY"	=>$doctorData['saturdayHours'],
+								"SUNDAY"	=>$doctorData['sundayHours']
 								);
 				foreach($admH as $key=>$val){						//jesli jest "" to musimy wprowadzic NULL do tabeli, ale bez apostrofów, zeby wprowadziło sie jako NULL, a nie jako 
 					if($val==""){																											//string z wartością NULL
@@ -300,7 +332,49 @@
 														THURSDAY=".$admH['THURSDAY'].", 
 														FRIDAY=".$admH['FRIDAY'].", 
 														SATURDAY=".$admH['SATURDAY'].", 
-														SUNDAY=".$admH['SUNDAY']." WHERE ADM_H_ID=(SELECT DOC_ID FROM DOCTOR WHERE EMAIL='".$_POST['mail']."')";
+														SUNDAY=".$admH['SUNDAY']." WHERE ADM_H_ID=(SELECT DOC_ID FROM DOCTOR WHERE EMAIL='".$doctorData['mail']."')";
+				$db->query($query);
+				$retVal=0;	
+			}
+			@$db->close();
+			return $retVal;
+		}
+		public function addNewDoctor($doctorData){
+			$retVal=-1;
+			require('../connect.php');		
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				$retVal=1;
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query = "INSERT INTO DOCTOR(FIRST_NAME,LAST_NAME,PASSWORD,ADDRESS,PHONE_NUMBER,ACADEMIC_TITLE,EMAIL,ADM_TYPE) VALUES ('".$doctorData['firstName']."','".$doctorData['lastName']."','".password_hash($doctorData['password'],PASSWORD_DEFAULT)."','".$doctorData['address']."','".$doctorData['phoneNumber']."','".$doctorData['academicTitle']."','".$doctorData['mail']."','".$doctorData['adminType']."')";							//dodanie do tabelu lekarza
+				$db->query($query);
+				//dodanie do tabeli z godzinami przyjeć
+				$admH = Array(	"MONDAY"	=>$doctorData['mondayHours'],
+								"TUESDAY"	=>$doctorData['tuesdayHours'],
+								"WEDNESDAY"	=>$doctorData['wednesdayHours'],
+								"THURSDAY"	=>$doctorData['thursdayHours'],
+								"FRIDAY"	=>$doctorData['fridayHours'],
+								"SATURDAY"	=>$doctorData['saturdayHours'],
+								"SUNDAY"	=>$doctorData['sundayHours']
+								);
+				foreach($admH as $key=>$val){						//jesli jest "" to musimy wprowadzic NULL do tabeli, ale bez apostrofów, zeby wprowadziło sie jako NULL, a nie jako 
+					if($val==""){																											//string z wartością NULL
+						$admH[$key]="NULL";
+					}
+					else{
+						$admH[$key]="'".$val."'";					//w przeciwnym razie wprowadzamy godziny z apostrofami
+					}
+				}
+				$query = "INSERT INTO ADMISSION_HOURS VALUES(
+														(SELECT DOC_ID FROM DOCTOR WHERE EMAIL='".$doctorData['mail']."'),
+														".$admH['MONDAY'].", 
+														".$admH['TUESDAY'].", 
+														".$admH['WEDNESDAY'].", 
+														".$admH['THURSDAY'].", 
+														".$admH['FRIDAY'].", 
+														".$admH['SATURDAY'].", 
+														".$admH['SUNDAY'].")";
 				$db->query($query);
 				$retVal=0;	
 			}
