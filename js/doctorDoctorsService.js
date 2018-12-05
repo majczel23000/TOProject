@@ -334,27 +334,27 @@ function drawTable(doctorData,operationType){
 		$table.append("<thead><tr><th colspan=\"2\" \">Dodanie nowego lekarza</tr></thead>");
 	$tbody=$("<tbody></tbody>");
 	if(operationType=="add"){
-		$tbody.append("<tr><td>Email Address: </td><td class=\"tdDuringEdit\"><input id=\"emailAddress\" type=\"text\"></td></tr>");
-		$tbody.append("<tr><td>Password: </td><td class=\"tdDuringEdit\"><input id=\"password\" type=\"text\"></td></tr>");
+		$tbody.append("<tr><td>Adres mailowy: </td><td class=\"tdDuringEdit\"><input id=\"emailAddress\" type=\"text\"></td></tr>");
+		$tbody.append("<tr><td>Hasło: </td><td class=\"tdDuringEdit\"><input id=\"password\" type=\"text\"></td></tr>");
 	}
-	$tbody.append("<tr><td>First Name: </td><td class=\"tdDuringEdit\"><input id=\"firstN\" type=\"text\" value=\""+doctorData['FIRST_NAME']+"\"></td></tr>");	//i poszczególne dane
-	$tbody.append("<tr><td>Last Name: </td><td class=\"tdDuringEdit\"><input id=\"lastN\" type=\"text\" value=\""+doctorData['LAST_NAME']+"\"></td></tr>");
-	$tbody.append("<tr><td>Address: </td><td class=\"tdDuringEdit\"><input id=\"address\" type=\"text\" value=\""+doctorData['ADDRESS']+"\"></td></tr>");
-	$tbody.append("<tr><td>Phone Number: </td><td class=\"tdDuringEdit\"><input id=\"phoneN\" type=\"text\" value=\""+doctorData['PHONE_NUMBER']+"\"></td></tr>");
-	$tbody.append("<tr><td>Academic Title </td><td class=\"tdDuringEdit\"><input id=\"academicT\" type=\"text\" value=\""+doctorData['ACADEMIC_TITLE']+"\"></td></tr>");
+	$tbody.append("<tr><td>Imie: </td><td class=\"tdDuringEdit\"><input id=\"firstN\" type=\"text\" value=\""+doctorData['FIRST_NAME']+"\"></td></tr>");	//i poszczególne dane
+	$tbody.append("<tr><td>Nazwsiko: </td><td class=\"tdDuringEdit\"><input id=\"lastN\" type=\"text\" value=\""+doctorData['LAST_NAME']+"\"></td></tr>");
+	$tbody.append("<tr><td>Adres: </td><td class=\"tdDuringEdit\"><input id=\"address\" type=\"text\" value=\""+doctorData['ADDRESS']+"\"></td></tr>");
+	$tbody.append("<tr><td>Numer telefonu: </td><td class=\"tdDuringEdit\"><input id=\"phoneN\" type=\"text\" value=\""+doctorData['PHONE_NUMBER']+"\"></td></tr>");
+	$tbody.append("<tr><td>Tytuł naukowy </td><td class=\"tdDuringEdit\"><input id=\"academicT\" type=\"text\" value=\""+doctorData['ACADEMIC_TITLE']+"\"></td></tr>");
 	let select="";
 	if(doctorData['ADM_TYPE']=="NORMAL")
 		select="<select id=\"adminT\"><option>NORMAL</option><option>HEAD</option></select>";
 	else
 		select="<select id=\"adminT\"><option>HEAD</option><option>NORMAL</option></select>";
-	$tbody.append("<tr><td>Admin Type</td><td class=\"tdDuringEdit\">"+select+"</td></tr>");
-	$tbody.append("<tr><td>Monday: </td><td id=\"mondayAH\"></td></tr>");
-	$tbody.append("<tr><td>Tuesday: </td><td id=\"tuesdayAH\"></td></tr>");
-	$tbody.append("<tr><td>Wednesday: </td><td id=\"wednesdayAH\"></td></tr>");
-	$tbody.append("<tr><td>Thursday: </td><td id=\"thursdayAH\"></td></tr>");
-	$tbody.append("<tr><td>Friday: </td><td id=\"fridayAH\"></td></tr>");
-	$tbody.append("<tr><td>Satruday: </td><td id=\"saturdayAH\"></td></tr>");
-	$tbody.append("<tr><td>Sunday: </td><td id=\"sundayAH\"></td></tr>");
+	$tbody.append("<tr><td>Typ administatora</td><td class=\"tdDuringEdit\">"+select+"</td></tr>");
+	$tbody.append("<tr><td>Poniedziałek: </td><td id=\"mondayAH\"></td></tr>");
+	$tbody.append("<tr><td>Wtorek: </td><td id=\"tuesdayAH\"></td></tr>");
+	$tbody.append("<tr><td>Środa: </td><td id=\"wednesdayAH\"></td></tr>");
+	$tbody.append("<tr><td>Czwartek: </td><td id=\"thursdayAH\"></td></tr>");
+	$tbody.append("<tr><td>Piątek: </td><td id=\"fridayAH\"></td></tr>");
+	$tbody.append("<tr><td>Sobota: </td><td id=\"saturdayAH\"></td></tr>");
+	$tbody.append("<tr><td>Niedziela: </td><td id=\"sundayAH\"></td></tr>");
 	
 	$table.append($tbody);
 	$("#contentDescription").append($table);														//wstawiamy na strone tabele juz pelną
@@ -558,56 +558,75 @@ function sendEditedData(){
 	if(!$("#sundayCheckbox").is(':checked')){
 		sundayHours=$("#sundayS").val()+"-"+$("#sundayF").val();
 	}
-	
-	$.ajax({
-		type:"post",
-		url:"getDoctorsData.php",
-		dataType:"json",
-		data:{
-			accType:"doctor",
-			returnVal:"editDoctors",
-			mail: $('#addressMail').attr('mail'),
-			firstName: $('#firstN').val(),
-			lastName: $('#lastN').val(),
-			address: $('#address').val(),
-			phoneNumber: $('#phoneN').val(),
-			academicTitle: $('#academicT').val(),
-			adminType: $('#adminT').val(),
-			mondayHours:mondayHours,
-			tuesdayHours:tuesdayHours,
-			wednesdayHours:wednesdayHours,
-			thursdayHours:thursdayHours,
-			fridayHours:fridayHours,
-			saturdayHours:saturdayHours,
-			sundayHours:sundayHours
-		},
-		beforeSend: function(){
-			$('body').css('opacity','0.6');
-			$('body').css('cursor','progress');
-		},
-		success: function(json){
-			console.log(json);
-			switch(json){
-				case 0:
-					$("#contentTitle").html("");											//czyścimy środek tytułu
-					$("#contentDescription").html("Dane zostały pomyślnie zedytowane.");										//piszemy, ze ok
-					$('html, body').animate({
-						scrollTop: $("body").offset().top
-					}, 1000);
-					break;
-				default:
-					console.log('Default success response');
-					break;
+	//obiekty do walidacji
+	//podtabele: [id elementu z którego sie pobiera wartosc, nazwa któa wyswietla sie przy błędzie, typ walidacj (same litery, mail, hasło etc), czy poprawna wartosc]
+	//default znaczy, ze litery i kopka, i myslnik
+	let objectsForVal=[		
+		['firstN','Imię','default'],
+		['lastN','Nazwisko','default'],
+		['address','Adres','noSpecialChars'],
+		['phoneN','Numer telefonu','phoneNumber'],
+		['academicT','Tytuł naukowy','default'],
+		['adminT','Typ administratora','adminType']
+	];
+	if(validation(objectsForVal)){				//jesli walidacja ok, to wysyłamy						
+		$.ajax({
+			type:"post",
+			url:"getDoctorsData.php",
+			dataType:"json",
+			data:{
+				accType:"doctor",
+				returnVal:"editDoctors",
+				mail: $('#addressMail').attr('mail'),
+				firstName: $('#firstN').val(),
+				lastName: $('#lastN').val(),
+				address: $('#address').val(),
+				phoneNumber: $('#phoneN').val(),
+				academicTitle: $('#academicT').val(),
+				adminType: $('#adminT').val(),
+				mondayHours:mondayHours,
+				tuesdayHours:tuesdayHours,
+				wednesdayHours:wednesdayHours,
+				thursdayHours:thursdayHours,
+				fridayHours:fridayHours,
+				saturdayHours:saturdayHours,
+				sundayHours:sundayHours
+			},
+			beforeSend: function(){
+				$('body').css('opacity','0.6');
+				$('body').css('cursor','progress');
+			},
+			success: function(json){
+				console.log(json);
+				switch(json){
+					case 0:
+						$("#contentTitle").html("");											//czyścimy środek tytułu
+						$("#contentDescription").html("Dane zostały pomyślnie zedytowane.");										//piszemy, ze ok
+						$('html, body').animate({
+							scrollTop: $("body").offset().top
+						}, 1000);
+						break;
+					default:
+						console.log('Default success response');
+						break;
+				}
+				$('body').css('opacity','1');
+				$('body').css('cursor','default');
+			},
+			error: function(e){
+				console.warn(e);
+				$('body').css('opacity','1');
+				$('body').css('cursor','default');
 			}
-			$('body').css('opacity','1');
-			$('body').css('cursor','default');
-		},
-		error: function(e){
-			console.warn(e);
-			$('body').css('opacity','1');
-			$('body').css('cursor','default');
-		}
-	});
+		});
+	}
+	else{
+		$('html, body').animate({
+			scrollTop: $("#contentDescription").offset().top							//i podnosimy strone jesli są błędy
+		}, 1000);
+	}
+	/*
+	*/
 }
 function addDoctor(){
 	$("#contentTitle").append("<hr>");																//dajemy se kreske 
@@ -635,19 +654,6 @@ function addDoctor(){
 }
 //funckja wysyłajaca dane nowego lekarza do dodania do bazy
 function sendNewDoctor(){
-	//obiekty do walidacji
-	//id elementu z którego sie pobiera wartosc: nazwa któa wyswietla sie przy błędzie, typ walidacj (same litery, mail, hasło etc), czy poprawna wartosc
-	//default znaczy, ze litery i kopka, i myslnik
-	/*let objectsForVal={			
-		'emailAddress'	: ['Adres mailowy','mail', true],
-		'password'		: ['Hasło','password', true],
-		'firstN'		: ['Imię','default', true],
-		'lastN'			: ['Nazwisko','default', true],
-		'address'		: ['Adres','noSpecialChars', true],
-		'phoneN'		: ['Numer telefonu','phoneNumber', true],
-		'academicT'		: ['Numer telefonu','default', true],
-		'adminT'		: ['Typ administratora','adminType', true]
-	}*/
 	let mondayHours="";let tuesdayHours="";let wednesdayHours="";let thursdayHours="";let fridayHours="";let saturdayHours="";let sundayHours="";
 	if(!$("#mondayCheckbox").is(':checked')){
 		mondayHours=$("#mondayS").val()+"-"+$("#mondayF").val();
@@ -670,70 +676,158 @@ function sendNewDoctor(){
 	if(!$("#sundayCheckbox").is(':checked')){
 		sundayHours=$("#sundayS").val()+"-"+$("#sundayF").val();
 	}
-	validation(objectsForVal);
-	$.ajax({
-		type:"post",
-		url:"getDoctorsData.php",
-		dataType:"json",
-		data:{
-			accType:"doctor",
-			returnVal:"addDoctor",
-			mail: $("#emailAddress").val(),
-			password: $("#password").val(),
-			firstName: $('#firstN').val(),
-			lastName: $('#lastN').val(),
-			address: $('#address').val(),
-			phoneNumber: $('#phoneN').val(),
-			academicTitle: $('#academicT').val(),
-			adminType: $('#adminT').val(),
-			mondayHours:mondayHours,
-			tuesdayHours:tuesdayHours,
-			wednesdayHours:wednesdayHours,
-			thursdayHours:thursdayHours,
-			fridayHours:fridayHours,
-			saturdayHours:saturdayHours,
-			sundayHours:sundayHours
-		},
-		beforeSend: function(){
-			$('body').css('opacity','0.6');
-			$('body').css('cursor','progress');
-		},
-		success: function(json){
-			switch(json){
-				case 0:
-					$("#contentTitle").html("");																				//czyścimy środek tytułu
-					$("#contentDescription").html("Lekarz został dodany.");														//piszemy, ze ok
-					$('html, body').animate({
-						scrollTop: $("body").offset().top
-					}, 1000);
-					break;
-				default:
-					console.log('Default success response');
-					break;
+	//obiekty do walidacji
+	//podtabele: [id elementu z którego sie pobiera wartosc, nazwa któa wyswietla sie przy błędzie, typ walidacj (same litery, mail, hasło etc), czy poprawna wartosc]
+	//default znaczy, ze litery i kopka, i myslnik
+	let objectsForVal=[		
+		['emailAddress','Adres mailowy','mail'],
+		['password','Hasło','password'],
+		['firstN','Imię','default'],
+		['lastN','Nazwisko','default'],
+		['address','Adres','noSpecialChars'],
+		['phoneN','Numer telefonu','phoneNumber'],
+		['academicT','Tytuł naukowy','default'],
+		['adminT','Typ administratora','adminType']
+	]
+	if(validation(objectsForVal)){				//jesli walidacja ok, to wysyłamy						
+		$.ajax({
+			type:"post",
+			url:"getDoctorsData.php",
+			dataType:"json",
+			data:{
+				accType:"doctor",
+				returnVal:"addDoctor",
+				mail: $("#emailAddress").val(),
+				password: $("#password").val(),
+				firstName: $('#firstN').val(),
+				lastName: $('#lastN').val(),
+				address: $('#address').val(),
+				phoneNumber: $('#phoneN').val(),
+				academicTitle: $('#academicT').val(),
+				adminType: $('#adminT').val(),
+				mondayHours:mondayHours,
+				tuesdayHours:tuesdayHours,
+				wednesdayHours:wednesdayHours,
+				thursdayHours:thursdayHours,
+				fridayHours:fridayHours,
+				saturdayHours:saturdayHours,
+				sundayHours:sundayHours
+			},
+			beforeSend: function(){
+				$('body').css('opacity','0.6');
+				$('body').css('cursor','progress');
+			},
+			success: function(json){
+				switch(json){
+					case 0:
+						$("#contentTitle").html("");																				//czyścimy środek tytułu
+						$("#contentDescription").html("Lekarz został dodany.");														//piszemy, ze ok
+						$('html, body').animate({
+							scrollTop: $("body").offset().top
+						}, 1000);
+						break;
+					default:
+						console.log('Default success response');
+						break;
+				}
+				$('body').css('opacity','1');
+				$('body').css('cursor','default');
+			},
+			error: function(e){
+				console.warn(e);
+				$('body').css('opacity','1');
+				$('body').css('cursor','default');
 			}
-			$('body').css('opacity','1');
-			$('body').css('cursor','default');
-		},
-		error: function(e){
-			console.warn(e);
-			$('body').css('opacity','1');
-			$('body').css('cursor','default');
-		}
-	});
+		});
+	}
+	else{
+		$('html, body').animate({
+			scrollTop: $("#contentDescription").offset().top							//i podnosimy strone jesli są błędy
+		}, 1000);
+	}
 }
 //funkcja waliduje kolejne pola obiektu, który zostanie przekazany, generuje błędy i zwraca false jeśli cos poszło nie tak
 function validation(objectsForVal){
-	
+	successful=true;
+	for(let i=0;i<objectsForVal.length;i++){
+		let text="";
+		const val=$('#'+objectsForVal[i][0]).val();
+		if(val=="")																//jesli jest pole puste
+			text="Pole "+objectsForVal[i][1]+" nie może być puste!";
+		switch (objectsForVal[i][2]){
+			case 'default':
+				const defaultReg = /^([a-zA-ZąćęłńóśźżĄĘŁŃÓŚŹŻ.-\s]){2,25}$/	
+				if(text=="" && !defaultReg.test(val))
+					text="Pole "+objectsForVal[i][1]+" może zawierać tylko litery i myślnik oraz musi składać się z conajmniej dwóch znaków!-";
+				break;
+			case 'mail':
+				const mailReg = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/	
+				if(text=="" && !mailReg.test(val))
+					text="Pole "+objectsForVal[i][1]+" musi zawierać mail!";
+				break;
+			case 'password':
+				if(val.length<5)
+					text = "Pole "+objectsForVal[i][1]+" musi zawierać conajmniej 5 znaków!";
+				break;
+			case 'noSpecialChars':
+				const noSpecialCharsReg = /^([a-zA-Z0-9ąćęłńóśźżĄĘŁŃÓŚŹŻ_.+-\/\s])+$/	
+				if(text=="" && !noSpecialCharsReg.test(val))
+					text = "Pole "+objectsForVal[i][1]+" posiada niepoprawny format!";
+				break;
+			case 'phoneNumber':
+				if(isNaN(val) || val.length!=9)
+					text = "Pole "+objectsForVal[i][1]+" musi zawierać 9 cyfr!";
+				break;
+			default:
+				break;
+		}
+		
+		if(text!=""){															//jeśli tekst jest inny niż "" to znaczy, ze jest jakis bład
+			erroreService(objectsForVal[i],text);								//wiec pokazujemy ten błąd
+			let id='#'+objectsForVal[i][0];										//zapisujemy id elementu
+			if($._data( $(id)[0], "events" )===undefined)						//jesli nie ma na elemencie jeszcze keyup
+				$(id).on('keyup',function(){validation([objectsForVal[i]])});	//to dodajemy walidacje tego elmentu na zdarzenie keyup
+			successful=false;													//i zmieniamy succesfull na false :(
+		}
+		else{																
+			$('#'+objectsForVal[i][0]).css('background-color','white');			//jsli nie ma to usuwamy błędy
+			if($("#"+objectsForVal[i][0]+'Info').length>0)
+				$("#"+objectsForVal[i][0]+'Info').remove();
+			if($("#"+objectsForVal[i][0]+'Err').length>0)
+				$("#"+objectsForVal[i][0]+'Err').remove();	
+		}
+	}
+	return successful;
 }
-
-
-
-
-
-
-
-
-
-
-
-
+function erroreService(obj,text){
+	if($("#"+obj[0]+'Info').length>0)
+		$("#"+obj[0]+'Info').remove();
+	$('#'+obj[0]).css('background-color','#ffcccc');
+	$errorInfo=$('<span></span>');													//tworzymy wykrzyknik i nadajemy odpowiednie paramatery i właściwości
+	$errorInfo.prop('class','doctor-service-error-info');
+	$errorInfo.prop('id',obj[0]+'Info');
+	$errorInfo.html('!');
+	$errorInfo.css({
+		'top':$("#"+obj[0]).offset().top,
+		'left':$("#"+obj[0]).offset().left + $("#"+obj[0]).outerWidth() + 10,
+		'width':$("#"+obj[0]).outerHeight() - 10,
+		'height':$("#"+obj[0]).outerHeight() - 25,
+		'font-size':$("#"+obj[0]).outerHeight() - 30,
+	});	
+	$errorInfo.on('mouseover',function(){											//po najechaniu pokazuje nam się treśc błędu
+		$error = $('<span></span>');
+		$error.prop('class','doctor-service-error');
+		$error.prop('id',obj[0]+'Err');
+		$error.css({
+			'top':$('#'+obj[0]+'Info').offset().top - 30,
+			'left':$('#'+obj[0]+'Info').offset().left + $('#'+obj[0]+'Info').outerWidth() + 30
+		});	
+		$error.html(text);
+		$('#contentDescription').append($error);
+	})
+	$errorInfo.on('mouseout',function(){											//a po zjechaniu usuwa
+		if($('#'+obj[0]+'Err'))
+			$('#'+obj[0]+'Err').remove();
+	})
+	$('#contentDescription').append($errorInfo);													//i dodajemy błąd do strony
+}
