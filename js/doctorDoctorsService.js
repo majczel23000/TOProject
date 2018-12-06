@@ -559,7 +559,7 @@ function sendEditedData(){
 		sundayHours=$("#sundayS").val()+"-"+$("#sundayF").val();
 	}
 	//obiekty do walidacji
-	//podtabele: [id elementu z którego sie pobiera wartosc, nazwa któa wyswietla sie przy błędzie, typ walidacj (same litery, mail, hasło etc), czy poprawna wartosc]
+	//podtabele: [id elementu z którego sie pobiera wartosc, nazwa któa wyswietla sie przy błędzie, typ walidacj (same litery, mail, hasło etc)]
 	//default znaczy, ze litery i kopka, i myslnik
 	let objectsForVal=[		
 		['firstN','Imię','default'],
@@ -567,7 +567,14 @@ function sendEditedData(){
 		['address','Adres','noSpecialChars'],
 		['phoneN','Numer telefonu','phoneNumber'],
 		['academicT','Tytuł naukowy','default'],
-		['adminT','Typ administratora','adminType']
+		['adminT','Typ administratora','adminType'],
+		['mondayS','Poniedziałek','hour'],['mondayF','Poniedziałek','hour'],
+		['tuesdayS','Wtorek','hour'],['tuesdayF','Wtorek','hour'],
+		['wednesdayS','Środa','hour'],['wednesdayF','Środa','hour'],
+		['thursdayS','Czwartek','hour'],['thursdayF','Czwartek','hour'],
+		['fridayS','Piątek','hour'],['fridayF','Piątek','hour'],
+		['saturdayS','Sobota','hour'],['saturdayF','Sobota','hour'],
+		['sundayS','Niedziela','hour'],['sundayF','Niedziela','hour']
 	];
 	if(validation(objectsForVal)){				//jesli walidacja ok, to wysyłamy						
 		$.ajax({
@@ -677,7 +684,7 @@ function sendNewDoctor(){
 		sundayHours=$("#sundayS").val()+"-"+$("#sundayF").val();
 	}
 	//obiekty do walidacji
-	//podtabele: [id elementu z którego sie pobiera wartosc, nazwa któa wyswietla sie przy błędzie, typ walidacj (same litery, mail, hasło etc), czy poprawna wartosc]
+	//podtabele: [id elementu z którego sie pobiera wartosc, nazwa któa wyswietla sie przy błędzie, typ walidacj (same litery, mail, hasło etc)]
 	//default znaczy, ze litery i kopka, i myslnik
 	let objectsForVal=[		
 		['emailAddress','Adres mailowy','mail'],
@@ -687,7 +694,14 @@ function sendNewDoctor(){
 		['address','Adres','noSpecialChars'],
 		['phoneN','Numer telefonu','phoneNumber'],
 		['academicT','Tytuł naukowy','default'],
-		['adminT','Typ administratora','adminType']
+		['adminT','Typ administratora','adminType'],
+		['mondayS','Poniedziałek','hour'],['mondayF','Poniedziałek','hour'],
+		['tuesdayS','Wtorek','hour'],['tuesdayF','Wtorek','hour'],
+		['wednesdayS','Środa','hour'],['wednesdayF','Środa','hour'],
+		['thursdayS','Czwartek','hour'],['thursdayF','Czwartek','hour'],
+		['fridayS','Piątek','hour'],['fridayF','Piątek','hour'],
+		['saturdayS','Sobota','hour'],['saturdayF','Sobota','hour'],
+		['sundayS','Niedziela','hour'],['sundayF','Niedziela','hour']
 	]
 	if(validation(objectsForVal)){				//jesli walidacja ok, to wysyłamy						
 		$.ajax({
@@ -752,7 +766,7 @@ function validation(objectsForVal){
 	for(let i=0;i<objectsForVal.length;i++){
 		let text="";
 		const val=$('#'+objectsForVal[i][0]).val();
-		if(val=="")																//jesli jest pole puste
+		if(val=="")															//jesli jest pole puste
 			text="Pole "+objectsForVal[i][1]+" nie może być puste!";
 		switch (objectsForVal[i][2]){
 			case 'default':
@@ -764,6 +778,8 @@ function validation(objectsForVal){
 				const mailReg = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/	
 				if(text=="" && !mailReg.test(val))
 					text="Pole "+objectsForVal[i][1]+" musi zawierać mail!";
+				else if(text=="" && !isMailAvaliable(val))
+					text="Adres mailowy jest już zajęty!";
 				break;
 			case 'password':
 				if(val.length<5)
@@ -777,6 +793,11 @@ function validation(objectsForVal){
 			case 'phoneNumber':
 				if(isNaN(val) || val.length!=9)
 					text = "Pole "+objectsForVal[i][1]+" musi zawierać 9 cyfr!";
+				break;
+			case 'hour':
+				const hourReg = /^([0-9]){2}:([0-9]){2}$/	
+				if(text=="" && val!=undefined && !hourReg.test(val))
+					text="Pole "+objectsForVal[i][1]+" nie jest godziną!";
 				break;
 			default:
 				break;
@@ -829,5 +850,26 @@ function erroreService(obj,text){
 		if($('#'+obj[0]+'Err'))
 			$('#'+obj[0]+'Err').remove();
 	})
-	$('#contentDescription').append($errorInfo);													//i dodajemy błąd do strony
+	if(obj[2]!="hour")																//jesli to nie godzina to dodajemy błąd do storny
+		$('#contentDescription').append($errorInfo);
+}
+function isMailAvaliable(val){
+	result = false;
+	$.ajax({
+		type:"post",
+		async: false,																//potrzebne zeby czekało na wynik i wykonywało sie szeregowo
+		url:"../ismailavailable.php",
+		dataType:"json",
+		data:{
+			email:val
+		},
+		success: function(json){
+			result=json;
+		},
+		error: function(e){
+			console.warn(e);
+			result= false;
+		}
+	});
+	return result;
 }
