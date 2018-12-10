@@ -66,13 +66,13 @@ function showCustomerList(){												//tutaj funkcja pobierająca dane o klie
 				$("#contentTitle").append("<h1><i class=\"fas fa-list-ul\"></i> Lista Klientów kliniki</h1>");	//ustawiamy tytuł
 				let $table=$("<table></table>");																//tworzymy tabele
 				$table.attr("id","customerList");																//dajemy jej id
-				$table.append("<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Address</th><th>Phone Number</th></tr></thead>");	//wstawiamy do niej thead
+				$table.append("<thead><tr><th>Nazwisko</th><th>Imię</th><th>Email</th><th>Adres</th><th>Numer telefonu</th></tr></thead>");	//wstawiamy do niej thead
 				$tbody=$("<tbody></tbody>");
 				for(let i=0;i<json.length;i++){
 					$tr=$("<tr></tr>");
 					$tr.attr("value",json[i]['EMAIL']);			//wpisujemy do value mail, aby potem łatwo było odczytać, w które się kliknęło
 					$tr.on('click',function(){sendMailToInputDetail($(this))});	//i na zdarzenie klikniecia ustawiamy funkcje z przekazaniem tego obj
-					$tr.html("<td>"+json[i]['FIRST_NAME']+"</td><td>"+json[i]['LAST_NAME']+"</td><td>"+json[i]['EMAIL']+"</td><td>"+json[i]['ADDRESS']+"</td><td>"+json[i]['PHONE_NUMBER']+"</td>");
+					$tr.html("<td>"+json[i]['LAST_NAME']+"</td><td>"+json[i]['FIRST_NAME']+"</td><td>"+json[i]['EMAIL']+"</td><td>"+json[i]['ADDRESS']+"</td><td>"+json[i]['PHONE_NUMBER']+"</td>");
 					$tbody.append($tr);
 				}
 				$table.append($tbody);
@@ -167,18 +167,18 @@ function getCustomerData(){
 					$table.attr("id","customerDetail");																//dajemy jej id
 					$table.append("<thead><tr><th colspan=\"2\">Dane klienta: "+json['EMAIL']+"</tr></thead>");		//wstawiamy do niej thead
 					$tbody=$("<tbody></tbody>");
-					$tbody.append("<tr><td>First Name: </td><td>"+json['FIRST_NAME']+"</td></tr>");					//i poszczególne dane
-					$tbody.append("<tr><td>Last Name: </td><td>"+json['LAST_NAME']+"</td></tr>");
-					$tbody.append("<tr><td>Address: </td><td>"+json['ADDRESS']+"</td></tr>");
-					$tbody.append("<tr><td>Phone Number: </td><td>"+json['PHONE_NUMBER']+"</td></tr>");
-					$tbody.append("<tr><td>Last Successful Login: </td><td>"+json['LOGIN_LAST_A']+"</td></tr>");
-					$tbody.append("<tr><td>Last Failed Login: </td><td>"+json['LOGIN_LAST_D']+"</td></tr>");
-					$tbody.append("<tr><td>Suffessful Login Number: </td><td>"+json['LOGIN_NUM_A']+"</td></tr>");
-					$tbody.append("<tr><td>Failed Login Number: </td><td>"+json['LOGIN_NUM_D']+"</td></tr>");
-					$tbody.append("<tr><td>Pets Number: </td><td>"+json['PET_NUM']+"</td></tr>");
-					$tbody.append("<tr><td>Last Visit: </td><td>"+json['VISIT_PREV']+"</td></tr>");
-					$tbody.append("<tr><td>Next Visit: </td><td>"+json['VISIT_NEXT']+"</td></tr>");
-					$tbody.append("<tr><td>Visits number: </td><td>"+json['VISIT_NUM']+"</td></tr>");
+					$tbody.append("<tr><td>Imię: </td><td>"+json['FIRST_NAME']+"</td></tr>");					//i poszczególne dane
+					$tbody.append("<tr><td>Naziwsko: </td><td>"+json['LAST_NAME']+"</td></tr>");
+					$tbody.append("<tr><td>Adres: </td><td>"+json['ADDRESS']+"</td></tr>");
+					$tbody.append("<tr><td>Numer telefonu: </td><td>"+json['PHONE_NUMBER']+"</td></tr>");
+					$tbody.append("<tr><td>Liczba udanych logowań </td><td>"+json['LOGIN_LAST_A']+"</td></tr>");
+					$tbody.append("<tr><td>Liczba nieudanych logowań: </td><td>"+json['LOGIN_LAST_D']+"</td></tr>");
+					$tbody.append("<tr><td>Ostatnie udane logowanie: </td><td>"+json['LOGIN_NUM_A']+"</td></tr>");
+					$tbody.append("<tr><td>Ostatnie nieudane logowanie: </td><td>"+json['LOGIN_NUM_D']+"</td></tr>");
+					$tbody.append("<tr><td>Liczba zwierząt: </td><td>"+json['PET_NUM']+"</td></tr>");
+					$tbody.append("<tr><td>Ostatnia wizyta: </td><td>"+json['VISIT_PREV']+"</td></tr>");
+					$tbody.append("<tr><td>Następa wizyta: </td><td>"+json['VISIT_NEXT']+"</td></tr>");
+					$tbody.append("<tr><td>Liczba wizyt: </td><td>"+json['VISIT_NUM']+"</td></tr>");
 					
 					$table.append($tbody);
 					$("#contentDescription").append($table);														//wstawiamy na strone tabele juz pelną

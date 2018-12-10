@@ -77,13 +77,13 @@ function showDoctorList(){
 				$("#contentTitle").append("<h1><i class=\"fas fa-list-ul\"></i> Lista Lekarzy kliniki</h1>");	//ustawiamy tytuł
 				let $table=$("<table></table>");																//tworzymy tabele
 				$table.attr("id","doctorList");																//dajemy jej id
-				$table.append("<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Phone Number</th><th>Details</th></tr></thead>");	//wstawiamy do niej thead
+				$table.append("<thead><tr><th>Nazwisko</th><th>Imię</th><th>Email</th><th>Numer telefonu</th><th>Szczegóły</th></tr></thead>");	//wstawiamy do niej thead
 				$tbody=$("<tbody></tbody>");
 				for(let i=0;i<json.length;i++){
 					$tr=$("<tr></tr>");
 					$tr.attr("value",i);			//wpisujemy do value id lekarza, które siedzi w JSON
 					$tr.on('click',function(){showDoctorDetail(json[$(this).attr('value')])});	//i na zdarzenie klikniecia ustawiamy funkcje z przekazaniem tego wiersza z JSON, aby nie pobierać znowu z bazy
-					$tr.html("<td>"+json[i]['FIRST_NAME']+"</td><td>"+json[i]['LAST_NAME']+"</td><td>"+json[i]['EMAIL']+"</td><td>"+json[i]['PHONE_NUMBER']+"</td><td><i class=\"fas fa-info-circle\"></i></td>");
+					$tr.html("<td>"+json[i]['LAST_NAME']+"</td><td>"+json[i]['FIRST_NAME']+"</td><td>"+json[i]['EMAIL']+"</td><td>"+json[i]['PHONE_NUMBER']+"</td><td><i class=\"fas fa-info-circle\"></i></td>");
 					$tbody.append($tr);
 				}
 				$table.append($tbody);
@@ -638,7 +638,6 @@ function sendEditedData(){
 function addDoctor(){
 	$("#contentTitle").append("<hr>");																//dajemy se kreske 
 	$("#contentTitle").append("<h1><i class=\"fas fa-plus\"></i> Dodanie lekarza</h1>");	//ustawiamy tytuł
-	$h3=$("<h3>Brak Lekarzy</h3>");
 	//tworzymy pustego lekarza, aby przekazać go do funckji
 	const emptyDoctor= {
 		"EMAIL":"",

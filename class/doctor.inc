@@ -381,5 +381,26 @@
 			@$db->close();
 			return $retVal;
 		}
+		
+		public function getAllMedicines(){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$medicines = Array();											//tworzymy tablice
+			$idx=0;
+			if(mysqli_connect_errno())
+				$medicines[$idx]=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query="SELECT * FROM MEDICINE ORDER BY NAME";		//pobieramy dane
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$medicines[$idx]=0;																		//jesli 0 wierszy to zwracamy 0
+				else{
+					while($row=$result->fetch_assoc())
+						$medicines[$idx++] = $row;															//wkładamy pacjentów do tabeli
+				}		
+			}
+			return $medicines;
+		}
 	}
 ?>

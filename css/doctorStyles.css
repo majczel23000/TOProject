@@ -153,11 +153,18 @@ table.editAH > tbody > tr > td{
 table.editAH > tbody > tr > td:last-child{
 	text-align:right;
 }
-table.editAH input[type=text]{
+table.editAH input[type=text],.medicine-edit{
 	width:100%;
 	border:none;
 	text-align:center;
 	font-size:1.1rem;
+}
+.select-medicine-edit{
+    font-size: 1.1rem;
+	border:none;
+    padding: 21px 10px;
+    width: 100%;
+	text-align:center;
 }
 /*=====SUBMENUDOCTOR=====*/
 #doctorSubMenu{
@@ -171,7 +178,7 @@ table.editAH input[type=text]{
 	text-align:center;
 }
 /*=====TABLECUSTOMERandDOCTORLIST=====*/
-#customerList,#doctorList{
+#customerList,#doctorList,#medicinesList{
     background: #f6f6f6;
     border-radius:3px;
     border-collapse: collapse;
@@ -182,22 +189,33 @@ table.editAH input[type=text]{
     text-align: center;
     margin-bottom: 50px;
 }
-#customerList tr:nth-child(2n),#doctorList tr:nth-child(2n){
+#customerList tr:nth-child(2n),#doctorList tr:nth-child(2n),#medicinesList tr:nth-child(2n){
 	background-color:#f0f0f0;
 }
-#customerList thead,#doctorList thead{
+#customerList thead,#doctorList thead,#medicinesList thead{
     color: #f6f6f6;
     background: #333;
 }
-#customerList thead th,#doctorList thead th{
+#customerList thead th,#doctorList thead th,#medicinesList thead th{
     padding: 20px;
 }
-#customerList td,#customerDetail td,#doctorList td{
+#customerList td,#customerDetail td,#doctorList td,#medicinesList td{
     padding: 10px 20px;
 }
 #customerList tr:hover td,#doctorList tr:hover td{
     background: #eaeaea;
 	cursor:pointer;
+}
+#medicinesList tr:hover td{
+	background: #eaeaea;
+	cursor:default;
+}
+#medicinesList tr td:last-child:hover{
+	cursor:pointer;
+	color:gray;
+}
+#medicinesList tr td:first-child{
+	font-weight:600;
 }
 .admission-hours{
     text-align: center;

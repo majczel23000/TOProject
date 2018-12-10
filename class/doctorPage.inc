@@ -24,7 +24,7 @@
 											"href" => "doctors.php",
 											//"id" => "logoutButton",
 											"class" => "btn btnMenu",
-											"iClass" => "fas fa-plus-square"
+											"iClass" => "fas fa-user-md"
 										),
 									3 => Array
 										(
@@ -49,6 +49,14 @@
 											//"id" => "logoutButton",
 											"class" => "btn btnMenu",
 											"iClass" => "fas fa-plus-square"
+										),
+									6 => Array
+										(
+											"text" => "Leki",
+											"href" => "medicines.php",
+											//"id" => "logoutButton",
+											"class" => "btn btnMenu",
+											"iClass" => "fas fa-pills"
 										)
 								);
 			private $styles = Array("mainStyles.css","doctorStyles.css");								//nazwy plików ze stylami
