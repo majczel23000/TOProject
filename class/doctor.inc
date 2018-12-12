@@ -381,7 +381,7 @@
 			@$db->close();
 			return $retVal;
 		}
-		
+		//lista lekow
 		public function getAllMedicines(){
 			require('../connect.php');        
 			@$db=new mysqli($server,$user,$password,$dataBase);
@@ -401,6 +401,95 @@
 				}		
 			}
 			return $medicines;
+		}
+		//edycja leku
+		public function editMedicine($m){																	//przyjmuje tablice z wartosciamy do zmiany
+			require('../connect.php');       
+			$retVal=-1;
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				$retVal=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query = "UPDATE MEDICINE SET NAME='".$m['medicineName']."', DOSAGE=".$m['medicineDosage'].", DESCRIPTION='".$m['medicineDescription']."', STATUS='".$m['medicineStatus']."'  WHERE MED_ID=".$m['medicineID'];
+				if($db->query($query))
+					$retVal="success";
+				else
+					$retVal=0;
+			}
+			return $retVal;
+		}
+		//dodanie leku
+		public function addMedicine($m){																	//przyjmuje tablice z wartosciamy do dodania
+			require('../connect.php');       
+			$retVal=-1;
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				$retVal=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query = "INSERT INTO MEDICINE(NAME,DOSAGE,DESCRIPTION) VALUES('".$m['medicineName']."',".$m['medicineDosage'].",'".$m['medicineDescription']."')";
+				if($db->query($query))
+					$retVal="success";
+				else
+					$retVal=0;
+			}
+			return $retVal;
+		}
+		//lista chorób
+		public function getAllDiseases(){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$diseases = Array();											//tworzymy tablice
+			$idx=0;
+			if(mysqli_connect_errno())
+				$diseases[$idx]=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query="SELECT * FROM DISEASE ORDER BY NAME";		//pobieramy dane
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$diseases[$idx]=0;																		//jesli 0 wierszy to zwracamy 0
+				else{
+					while($row=$result->fetch_assoc())
+						$diseases[$idx++] = $row;															//wkładamy pacjentów do tabeli
+				}		
+			}
+			return $diseases;
+		}
+		//edycja choroby
+		public function editDisease($d){																	//przyjmuje tablice z wartosciamy do zmiany
+			require('../connect.php');       
+			$retVal=-1;
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				$retVal=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query = "UPDATE DISEASE SET NAME='".$d['diseaseName']."', SYMPTOMS='".$d['diseaseSymptoms']."', TREATMENT='".$d['diseaseTreatment']."', STATUS='".$d['diseaseStatus']."'  WHERE DIS_ID=".$d['diseaseID'];
+				if($db->query($query))
+					$retVal="success";
+				else
+					$retVal=0;
+			}
+			return $retVal;
+		}
+		//dodanie choroby
+		public function addDisease($d){																	//przyjmuje tablice z wartosciamy do dodania
+			require('../connect.php');       
+			$retVal=-1;
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				$retVal=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query = "INSERT INTO DISEASE(NAME,SYMPTOMS,TREATMENT) VALUES('".$d['diseaseName']."','".$d['diseaseSymptoms']."','".$d['diseaseTreatment']."')";
+				if($db->query($query))
+					$retVal="success";
+				else
+					$retVal=0;
+			}
+			return $retVal;
 		}
 	}
 ?>

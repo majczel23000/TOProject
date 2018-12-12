@@ -1,17 +1,17 @@
 let isSomeoneActive = false;												//czy jest obsługwana jakaś funkcja 
-$("#showMedicinesList").on('click',function(){									//po kliknieciu pokaż liste wszystkich lekarzy
+$("#showDiseasesList").on('click',function(){									//po kliknieciu pokaż liste wszystkich lekarzy
 	if(isSomeoneActive)														//jesli juz jest cos aktywnego
-		deleteContent("showMedicinesList");
+		deleteContent("showDiseasesList");
 	else
-		showMedicinesList();													//jesli nie ma nic aktywnego]
+		showDiseasesList();													//jesli nie ma nic aktywnego]
 	$(this).attr('class','btn btnMenu active-btn');							//ustawiamy ten przycisk aktywny
 });
 
-$("#addMedicine").on('click',function(){										//dodanie nowego lekarza
+$("#addDisease").on('click',function(){										//dodanie nowego lekarza
 	if(isSomeoneActive)														
-		deleteContent("addMedicine");
+		deleteContent("addDisease");
 	else
-		addMedicine();												
+		addDisease();												
 	$(this).attr('class','btn btnMenu active-btn');
 });
 
@@ -22,11 +22,11 @@ function deleteContent(name,val){											//funkcja usuwa aktualny kontant, a 
 	$("#contentTitle").html("");											//czyścimy środek tytułu
 	$("#contentDescription").html("");										//to samo dla cotnentu
 	switch (name){															//teraz od name zależy co pokażemy
-		case "showMedicinesList":
-			showMedicinesList();
+		case "showDiseasesList":
+			showDiseasesList();
 			break;
-		case "addMedicine":
-			addMedicine();
+		case "addDisease":
+			addDisease();
 			break;
 		default:
 			console.warn("err");
@@ -34,10 +34,10 @@ function deleteContent(name,val){											//funkcja usuwa aktualny kontant, a 
 	}
 }
 
-function showMedicinesList(){
+function showDiseasesList(){
 	$.ajax({									
 		type:"post",
-		url:"medicinesService.php",
+		url:"diseasesService.php",
 		dataType:"json",
 		data:{
 			accType:"doctor",
@@ -50,8 +50,8 @@ function showMedicinesList(){
 		success: function(json){
 			if(json[0]==0 || json==1){													//jesli zero wyników lub błąd połaczenia (1)
 				$("#contentTitle").append("<hr>");																//dajemy se kreske 
-				$("#contentTitle").append("<h1><i class=\"fas fa-list-ul\"></i> Lista leków</h1>");	//ustawiamy tytuł
-				$h3=$("<h3>Brak leków</h3>");
+				$("#contentTitle").append("<h1><i class=\"fas fa-list-ul\"></i> Lista chorób</h1>");	//ustawiamy tytuł
+				$h3=$("<h3>Brak chorób</h3>");
 				$h3.css({
 					'display':'block',
 					'width':'20%',
@@ -63,20 +63,20 @@ function showMedicinesList(){
 			}
 			else{
 				$("#contentTitle").append("<hr>");																//dajemy se kreske 
-				$("#contentTitle").append("<h1><i class=\"fas fa-list-ul\"></i> Lista leków</h1>");			//ustawiamy tytuł
+				$("#contentTitle").append("<h1><i class=\"fas fa-list-ul\"></i> Lista chorób</h1>");			//ustawiamy tytuł
 				let $table=$("<table></table>");																//tworzymy tabele
-				$table.attr("id","medicinesList");																//dajemy jej id
-				$table.append("<thead><tr><th>Nazwa</th><th>Dawkowanie</th><th>Opis</th><th>Status</th><th>Edytuj</th></tr></thead>");	//wstawiamy do niej thead
+				$table.attr("id","diseasesList");																//dajemy jej id
+				$table.append("<thead><tr><th>Nazwa</th><th>Symptomy</th><th>Leczenie</th><th>Status</th><th>Edytuj</th></tr></thead>");	//wstawiamy do niej thead
 				$tbody=$("<tbody></tbody>");
 				for(let i=0;i<json.length;i++){
-					let tmpStatus="Aktywny";
+					let tmpStatus="Aktywna";																	//zeby było po polsku
 					if(json[i]['STATUS']=="INACTIVE")
-						tmpStatus="Nieaktywny"
+						tmpStatus="Nieaktywna"
 					$tr=$("<tr></tr>");
-					$tr.html("<td>"+json[i]['NAME']+"</td><td>"+json[i]['DOSAGE']+"</td><td>"+json[i]['DESCRIPTION']+"</td><td>"+tmpStatus+"</td>");
+					$tr.html("<td>"+json[i]['NAME']+"</td><td>"+json[i]['SYMPTOMS']+"</td><td>"+json[i]['TREATMENT']+"</td><td>"+tmpStatus+"</td>");
 					$tdEdit = $("<td><i class=\"fas fa-edit\"></i></td>")			//komórka do klikniecia w celu edycji
 					$tdEdit.attr('value',i);						//zapisujemy id, zeby nie pobierać znowu z bazy
-					$tdEdit.on('click',function(){showMedicineDetail(json[$(this).attr('value')])});  
+					$tdEdit.on('click',function(){showDiseaseDetail(json[$(this).attr('value')])});  
 					$tr.append($tdEdit);
 					$tbody.append($tr);
 				}
@@ -92,10 +92,10 @@ function showMedicinesList(){
 			$('body').css('opacity','1');
 			$('body').css('cursor','default');
 		}
-	});													
+	});							
 }
 //pokazuje okienko do edycji leku
-function showMedicineDetail(medicine){
+function showDiseaseDetail(disease){
 	// przezroczysty div na cały ekran
 	$container=$('<div></div>');
 	$container.prop('id','opacityContainer');
@@ -110,9 +110,9 @@ function showMedicineDetail(medicine){
 	$('body').append($container);
 
 	// div wyśrodkowany w pionie i poziomie na tytuł i treść
-	$editingMedicine = $('<div></div>');
-	$editingMedicine.prop('id','editingMedicine');
-	$editingMedicine.css({
+	$editingDisease = $('<div></div>');
+	$editingDisease.prop('id','editingDisease');
+	$editingDisease.css({
 		'position':'absolute',
 		'top':'50%',
 		'left':'50%',
@@ -124,11 +124,11 @@ function showMedicineDetail(medicine){
 		'border-radius': '5px',
 		'box-shadow': '0px 0px 5px 0px rgba(0,0,0,0.75)'
 	});	
-	$container.append($editingMedicine);
+	$container.append($editingDisease);
 
 	// tytuł modala
 	$title = $('<div></div>');
-	$title.prop('id','titleMedicineDetail');
+	$title.prop('id','titleDiseaseDetail');
 	$title.css({
 		'width': '440px',
 		'float': 'left',
@@ -136,8 +136,8 @@ function showMedicineDetail(medicine){
 		'background':'#ff850c',
 		'font-size':'1.3rem'
 	});
-	$title.html("<i class='fas fa-info-circle' style='margin-right: 10px'></i>" + medicine['NAME']);
-	$editingMedicine.append($title);
+	$title.html("<i class='fas fa-info-circle' style='margin-right: 10px'></i>" + disease['NAME']);
+	$editingDisease.append($title);
 
 	// przycisk do zamykania modala
 	$closeButton = $('<div></div>');
@@ -154,11 +154,11 @@ function showMedicineDetail(medicine){
 		);
 	});
 	$closeButton.html("<i class='fas fa-window-close'></i>");
-	$editingMedicine.append($closeButton);
+	$editingDisease.append($closeButton);
 
 	// div na dane do wyswietlenia
 	$message = $('<div></div>');
-	$message.prop('id','messageMedicineDetail');
+	$message.prop('id','messageDiseaseDetail');
 	$message.css({
 		'width': '100%',
 		'height': '100%',
@@ -167,22 +167,22 @@ function showMedicineDetail(medicine){
 	
 	// dane do wyświetlenia
 	$div = ('<div style="float:left; font-weight:600;text-align:center; width: 100%; padding: 10px 0px">Nazwa:</div>');
-	$div2 = ('<div style="float:left; width: 100%;"><input id="medicineName" class="medicine-edit" style="padding: 10px 0px" type="text" value="'+medicine['NAME']+'"></div>');
+	$div2 = ('<div style="float:left; width: 100%;"><input id="diseaseName" class="disease-edit" style="padding: 10px 0px" type="text" value="'+disease['NAME']+'"></div>');
 	$message.append($div);
 	$message.append($div2);
-	$div = ('<div style="float:left; font-weight:600;text-align:center; width: 100%; padding: 10px 0px">Dawkowanie:</div>');
-	$div2 = ('<div style="float:left; width: 100%;"><input id="medicineDosage" class="medicine-edit" style="padding: 10px 0px" type="text" value="'+medicine['DOSAGE']+'"></div>');
+	$div = ('<div style="float:left; font-weight:600;text-align:center; width: 100%; padding: 10px 0px">Objawy:</div>');
+	$div2 = ('<div style="float:left; width: 100%;"><textarea id="diseaseSymptoms" class="disease-edit" rows="4" style="padding: 10px 0px">'+disease['SYMPTOMS']+'</textarea></div>');
 	$message.append($div);
 	$message.append($div2);
-	$div = ('<div style="float:left; font-weight:600;text-align:center; width: 100%; padding: 10px 0px">Opis:</div>');
-	$div2 = ('<div style="float:left; width: 100%;"><textarea id="medicineDescription" class="medicine-edit" rows="6" style="padding: 10px 0px">'+medicine['DESCRIPTION']+'</textarea></div>');
+	$div = ('<div style="float:left; font-weight:600;text-align:center; width: 100%; padding: 10px 0px">Leczenie:</div>');
+	$div2 = ('<div style="float:left; width: 100%;"><textarea id="diseaseTreatment" class="disease-edit" rows="6" style="padding: 10px 0px">'+disease['TREATMENT']+'</textarea></div>');
 	$message.append($div);
 	$message.append($div2);
 	let select="";
-	if(medicine['STATUS']=="ACTIVE")
-		select="<select class=\"select-medicine-edit\" id=\"medicineStatus\"><option value=\"ACTIVE\">Aktywny</option><option value=\"INACTIVE\">Nieaktywny</option></select>";
+	if(disease['STATUS']=="ACTIVE")
+		select="<select class=\"select-disease-edit\" id=\"diseaseStatus\"><option value=\"ACTIVE\">Aktywny</option><option value=\"INACTIVE\">Nieaktywny</option></select>";
 	else
-		select="<select class=\"select-medicine-edit\" id=\"medicineStatus\"><option value=\"INACTIVE\">Nieaktywny</option><option value=\"ACTIVE\">Aktywny</option></select>";
+		select="<select class=\"select-disease-edit\" id=\"diseaseStatus\"><option value=\"INACTIVE\">Nieaktywny</option><option value=\"ACTIVE\">Aktywny</option></select>";
 	$div = ('<div style="float:left; font-weight:600;text-align:center; width: 100%; padding: 10px 0px">Status:</div>');
 	$div2 = ('<div style="float:left; width: 100%;">'+select+'</div>');
 	$message.append($div);
@@ -192,34 +192,34 @@ function showMedicineDetail(medicine){
 	$clear = ('<div class="clear" style="margin-bottom:10px"></div>');
 	$message.append($clear);
 	
-	$editingMedicine.append($message);
+	$editingDisease.append($message);
 	$editButton=$("<span style=\"display:block;text-align:center;margin:auto\" class=\"btnEdit\">Zapisz zmiany</span>");
 	$editButton.on('click',function(){											//przycisk zapisania zmiany		
-		const medicineName=$('#medicineName').val();							//pobieramy wartosci
-		const medicineDosage=$('#medicineDosage').val();
-		const medicineDescription=$('#medicineDescription').val();
-		const medicineStatus=$('#medicineStatus').val();
-		const medicineID=medicine['MED_ID'];
-		
+		const diseaseName=$('#diseaseName').val();							//pobieramy wartosci
+		const diseaseSymptoms=$('#diseaseSymptoms').val();
+		const diseaseTreatment=$('#diseaseTreatment').val();
+		const diseaseStatus=$('#diseaseStatus').val();
+		const diseaseID=disease['DIS_ID'];
+
 		$.ajax({									
 			type:"post",
-			url:"medicinesService.php",
+			url:"diseasesService.php",
 			dataType:"json",
 			data:{
 				accType:"doctor",
-				returnVal:"editingMedicine",											//określa czy chcemy całe czy tylko jeden lek
-				medicineName:medicineName,
-				medicineDosage:medicineDosage,
-				medicineDescription:medicineDescription,
-				medicineStatus:medicineStatus,
-				medicineID:medicineID													//potrzebne, aby wiedzieć, który lek edytujemy
+				returnVal:"editingDisease",											//określa czy chcemy całe czy tylko jeden lek
+				diseaseName:diseaseName,
+				diseaseSymptoms:diseaseSymptoms,
+				diseaseTreatment:diseaseTreatment,
+				diseaseStatus:diseaseStatus,
+				diseaseID:diseaseID													//potrzebne, aby wiedzieć, który lek edytujemy
 			},
 			beforeSend: function(){
 				$('body').css('opacity','0.6');
 				$('body').css('cursor','progress');
 			},
 			success: function(json){
-				//console.log(json);
+				console.log(json);
 				if(json=="success"){
 					$('#opacityContainer').remove();
 					$('#doctorSubMenu a').each(function(){															//resetujemy wszystkie przyciski
@@ -238,7 +238,7 @@ function showMedicineDetail(medicine){
 			}
 		});
 	})
-	$editingMedicine.append($editButton);
+	$editingDisease.append($editButton);
 	// po kliknięciu gdziekolwiek poza content znika modal
 	$container.on('click', function(){
 		$container.remove();
@@ -250,35 +250,35 @@ function showMedicineDetail(medicine){
 		$container.remove();
 	});
 }
-//dodaje lek
-function addMedicine(){
+//dodaje chorobe
+function addDisease(){
 	$("#contentTitle").append("<hr>");																//dajemy se kreske 
-	$("#contentTitle").append("<h1><i class=\"fas fa-plus\"></i> Dodanie leku</h1>");	//ustawiamy tytuł
+	$("#contentTitle").append("<h1><i class=\"fas fa-plus\"></i> Dodanie choroby</h1>");	//ustawiamy tytuł
 	let $table=$("<table></table>");																//tworzymy tabele
-	$table.attr("id","addMedicineTable");																//dajemy jej id
-	$table.append("<thead><tr><th colspan=\"2\" \"><i class=\"fas fa-plus\"></i> Dodanie leku</tr></thead>");		//tworzymy głowe
+	$table.attr("id","addDiseaseTable");																//dajemy jej id
+	$table.append("<thead><tr><th colspan=\"2\" \"><i class=\"fas fa-plus\"></i> Dodanie choroby</tr></thead>");		//tworzymy głowe
 	$tbody=$("<tbody></tbody>");
-	$tbody.append("<tr><td>Nazwa: </td><td class=\"tdDuringEdit\"><input id=\"medicineName\" type=\"text\"></td></tr>");	//i poszczególne inputy
-	$tbody.append("<tr><td>Dawkowanie: </td><td class=\"tdDuringEdit\"><input id=\"medicineDosage\" type=\"text\"></td></tr>");
-	$tbody.append("<tr><td>Opis: </td><td class=\"tdDuringEdit\"><textarea id=\"medicineDescription\" class=\"medicine-edit\" rows=\"6\" style=\"text-align:left;padding: 10px 0px\"></textarea></td></tr>");
+	$tbody.append("<tr><td>Nazwa: </td><td class=\"tdDuringEdit\"><input id=\"diseaseName\" type=\"text\"></td></tr>");	//i poszczególne inputy
+	$tbody.append("<tr><td>Objawy: </td><td class=\"tdDuringEdit\"><textarea id=\"diseaseSymptoms\" class=\"medicine-edit\" rows=\"3\" style=\"width:92%;text-align:left;padding: 10px 4%\"></textarea></td></tr>");
+	$tbody.append("<tr><td>Leczenie: </td><td class=\"tdDuringEdit\"><textarea id=\"diseaseTreatment\" class=\"medicine-edit\" rows=\"6\" style=\"width:92%;text-align:left;padding: 10px 4%\"></textarea></td></tr>");
 	$table.append($tbody);
 	$("#contentDescription").append($table);														//wstawiamy na strone tabele juz pelną	
-	$addButton=$("<span style=\"display:block;width:75%;text-align:center;margin:auto;margin-top:10px;\" class=\"btnEdit\">Dodaj lek</span>");
+	$addButton=$("<span style=\"display:block;width:75%;text-align:center;margin:auto;margin-top:10px;\" class=\"btnEdit\">Dodaj chorobe</span>");
 	$addButton.on('click',function(){											//przycisk zapisania zmiany		
-		const medicineName=$('#medicineName').val();							//pobieramy wartosci
-		const medicineDosage=$('#medicineDosage').val();
-		const medicineDescription=$('#medicineDescription').val();
+		const diseaseName=$('#diseaseName').val();							//pobieramy wartosci
+		const diseaseSymptoms=$('#diseaseSymptoms').val();
+		const diseaseTreatment=$('#diseaseTreatment').val();
 
 		$.ajax({									
 			type:"post",
-			url:"medicinesService.php",
+			url:"diseasesService.php",
 			dataType:"json",
 			data:{
 				accType:"doctor",
-				returnVal:"addingMedicine",											//określa co robimy
-				medicineName:medicineName,
-				medicineDosage:medicineDosage,
-				medicineDescription:medicineDescription								
+				returnVal:"addingDisease",											//określa co robimy
+				diseaseName:diseaseName,
+				diseaseSymptoms:diseaseSymptoms,
+				diseaseTreatment:diseaseTreatment								
 			},
 			beforeSend: function(){
 				$('body').css('opacity','0.6');
@@ -291,7 +291,7 @@ function addMedicine(){
 						$(this).attr('class','btn btnMenu');
 					});
 					$("#contentTitle").html("");																	//czyścimy środek tytułu
-					$("#contentDescription").html("Lek został pomyślnie dodany.");										//to samo dla cotnentu
+					$("#contentDescription").html("Choroba została pomyślnie dodana.");										//to samo dla cotnentu
 				}
 				$('body').css('opacity','1');
 				$('body').css('cursor','default');

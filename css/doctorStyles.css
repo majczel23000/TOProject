@@ -86,7 +86,7 @@ body{
     width: 100%;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
-#userInfo tr:nth-child(2n),#customerDetail tr:nth-child(2n),,#doctorDetail tr:nth-child(2n){
+#userInfo tr:nth-child(2n),#customerDetail tr:nth-child(2n),#doctorDetail tr:nth-child(2n){
 	opacity:0.97;
 }
 #userInfo > tbody > tr:hover > td:nth-child(odd),#customerDetail tr:hover td:nth-child(odd) ,#doctorDetail > tbody > tr:hover > td:nth-child(odd){
@@ -123,6 +123,10 @@ body{
 #customerDetail,#doctorDetail{
 	margin-top:10px;
 }
+#doctorDetail > tbody > tr > td:first-child{
+	letter-spacing:1px;
+	font-weight:600;
+}
 .tdBeforeEdit{
     padding: 20px !important;
 }
@@ -153,16 +157,16 @@ table.editAH > tbody > tr > td{
 table.editAH > tbody > tr > td:last-child{
 	text-align:right;
 }
-table.editAH input[type=text],.medicine-edit{
+table.editAH input[type=text],.medicine-edit,.disease-edit{
 	width:100%;
 	border:none;
 	text-align:center;
 	font-size:1.1rem;
 }
-.select-medicine-edit{
+.select-medicine-edit,.select-disease-edit{
     font-size: 1.1rem;
 	border:none;
-    padding: 21px 10px;
+    padding: 10px 0px;
     width: 100%;
 	text-align:center;
 }
@@ -178,7 +182,7 @@ table.editAH input[type=text],.medicine-edit{
 	text-align:center;
 }
 /*=====TABLECUSTOMERandDOCTORLIST=====*/
-#customerList,#doctorList,#medicinesList{
+#customerList,#doctorList,#medicinesList,#diseasesList{
     background: #f6f6f6;
     border-radius:3px;
     border-collapse: collapse;
@@ -189,32 +193,56 @@ table.editAH input[type=text],.medicine-edit{
     text-align: center;
     margin-bottom: 50px;
 }
-#customerList tr:nth-child(2n),#doctorList tr:nth-child(2n),#medicinesList tr:nth-child(2n){
+#customerList tr:nth-child(2n),#doctorList tr:nth-child(2n),#medicinesList tr:nth-child(2n),#diseasesList tr:nth-child(2n){
 	background-color:#f0f0f0;
 }
-#customerList thead,#doctorList thead,#medicinesList thead{
+#customerList thead,#doctorList thead,#medicinesList thead,#diseasesList thead{
     color: #f6f6f6;
     background: #333;
 }
-#customerList thead th,#doctorList thead th,#medicinesList thead th{
+#customerList thead th,#doctorList thead th,#medicinesList thead th,#diseasesList thead th{
     padding: 20px;
 }
-#customerList td,#customerDetail td,#doctorList td,#medicinesList td{
+#customerList td,#customerDetail td,#doctorList td,#medicinesList td,#diseasesList td{
     padding: 10px 20px;
 }
 #customerList tr:hover td,#doctorList tr:hover td{
     background: #eaeaea;
 	cursor:pointer;
 }
-#medicinesList tr:hover td{
+#medicinesList tr:hover td,#diseasesList tr:hover td{
 	background: #eaeaea;
 	cursor:default;
 }
-#medicinesList tr td:last-child:hover{
+#medicinesList tr td:last-child:hover,#diseasesList tr td:last-child:hover{
 	cursor:pointer;
 	color:gray;
 }
-#medicinesList tr td:first-child{
+#medicinesList tr td:first-child,#diseasesList tr td:first-child{
+	font-weight:600;
+	letter-spacing:1px;
+}
+#addMedicineTable,#addDiseaseTable{
+	cursor:default;
+    background: #f6f6f6;
+    border-radius:3px;
+    border-collapse: collapse;
+    height: 320px;
+    margin: auto;
+    padding:5px;
+    width: 90%;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+#addMedicineTable > tbody > tr:hover > td:nth-child(odd),#addDiseaseTable > tbody > tr:hover > td:nth-child(odd){
+    background: #e6e6e6;
+}
+#addMedicineTable thead th,#addDiseaseTable thead th{
+    color: #f6f6f6;
+    background-color: gray;
+	padding:20px 0px;
+}
+#addMedicineTable > tbody > tr > td:first-child,#addDiseaseTable > tbody > tr > td:first-child{
+	letter-spacing:1px;
 	font-weight:600;
 }
 .admission-hours{

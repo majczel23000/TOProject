@@ -57,6 +57,14 @@
 											//"id" => "logoutButton",
 											"class" => "btn btnMenu",
 											"iClass" => "fas fa-pills"
+										),
+									7 => Array
+										(
+											"text" => "Choroby",
+											"href" => "diseases.php",
+											//"id" => "logoutButton",
+											"class" => "btn btnMenu",
+											"iClass" => "fas fa-book-dead"
 										)
 								);
 			private $styles = Array("mainStyles.css","doctorStyles.css");								//nazwy plików ze stylami
