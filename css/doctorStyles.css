@@ -182,7 +182,7 @@ table.editAH input[type=text],.medicine-edit,.disease-edit{
 	text-align:center;
 }
 /*=====TABLECUSTOMERandDOCTORLIST=====*/
-#customerList,#doctorList,#medicinesList,#diseasesList{
+#customerList,#doctorList,#medicinesList,#diseasesList,#petsList{
     background: #f6f6f6;
     border-radius:3px;
     border-collapse: collapse;
@@ -193,32 +193,32 @@ table.editAH input[type=text],.medicine-edit,.disease-edit{
     text-align: center;
     margin-bottom: 50px;
 }
-#customerList tr:nth-child(2n),#doctorList tr:nth-child(2n),#medicinesList tr:nth-child(2n),#diseasesList tr:nth-child(2n){
+#customerList tr:nth-child(2n),#doctorList tr:nth-child(2n),#medicinesList tr:nth-child(2n),#diseasesList tr:nth-child(2n),#petsList tr:nth-child(2n){
 	background-color:#f0f0f0;
 }
-#customerList thead,#doctorList thead,#medicinesList thead,#diseasesList thead{
+#customerList thead,#doctorList thead,#medicinesList thead,#diseasesList thead, #petsList thead{
     color: #f6f6f6;
     background: #333;
 }
-#customerList thead th,#doctorList thead th,#medicinesList thead th,#diseasesList thead th{
+#customerList thead th,#doctorList thead th,#medicinesList thead th,#diseasesList thead th,#petsList thead th{
     padding: 20px;
 }
-#customerList td,#customerDetail td,#doctorList td,#medicinesList td,#diseasesList td{
+#customerList td,#customerDetail td,#doctorList td,#medicinesList td,#diseasesList td,#petsList td{
     padding: 10px 20px;
 }
 #customerList tr:hover td,#doctorList tr:hover td{
     background: #eaeaea;
 	cursor:pointer;
 }
-#medicinesList tr:hover td,#diseasesList tr:hover td{
+#medicinesList tr:hover td,#diseasesList tr:hover td,#petsList tr:hover td{
 	background: #eaeaea;
 	cursor:default;
 }
-#medicinesList tr td:last-child:hover,#diseasesList tr td:last-child:hover{
+#medicinesList tr td:last-child:hover,#diseasesList tr td:last-child:hover,#petsList tr td:last-child:hover{
 	cursor:pointer;
 	color:gray;
 }
-#medicinesList tr td:first-child,#diseasesList tr td:first-child{
+#medicinesList tr td:first-child,#diseasesList tr td:first-child,#petsList tr td:first-child{
 	font-weight:600;
 	letter-spacing:1px;
 }

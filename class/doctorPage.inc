@@ -37,7 +37,7 @@
 									4 => Array
 										(
 											"text" => "Zwierzęta",
-											"href" => "#",
+											"href" => "pets.php",
 											//"id" => "logoutButton",
 											"class" => "btn btnMenu",
 											"iClass" => "fas fa-paw"

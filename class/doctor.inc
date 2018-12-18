@@ -213,7 +213,7 @@
 				$doctors[$idx]=1;											//jesli błąd bazy to zwracamy 1
 			else{
 				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
-				$query="SELECT DOC_ID,FIRST_NAME, LAST_NAME, EMAIL, ADDRESS, PHONE_NUMBER, ACADEMIC_TITLE, ADM_TYPE FROM DOCTOR ORDER BY LAST_NAME, FIRST_NAME";		//pobieramy dane
+				$query="SELECT DOC_ID,FIRST_NAME, LAST_NAME, EMAIL, ADDRESS, PHONE_NUMBER, ACADEMIC_TITLE, ADM_TYPE FROM DOCTOR WHERE DOC_ID<>".$this->idUser." ORDER BY LAST_NAME, FIRST_NAME";		//pobieramy dane
 				$result=$db->query($query);																
 				if($result->num_rows==0)
 					$doctors[$idx]=0;																		//jesli 0 wierszy to zwracamy 0
@@ -490,6 +490,44 @@
 					$retVal=0;
 			}
 			return $retVal;
+		}
+		//pobranie zwierząt
+		public function getAllPets(){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$pets = Array();											//tworzymy tablice
+			$idx=0;
+			if(mysqli_connect_errno())
+				$pets[$idx]=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query="SELECT * FROM CUSTOMER_ANIMAL ORDER BY CUS_ID, NAME";		//pobieramy dane
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$pets[$idx]=0;																		//jesli 0 wierszy to zwracamy 0
+				else{
+					while($row=$result->fetch_assoc()){
+						$pets[$idx++] = $row;															//wkładamy zwierzaków do tabeli
+						
+						$query2="SELECT FIRST_NAME, LAST_NAME FROM CUSTOMER WHERE CUS_ID=".$row['CUS_ID'];				//dane o własiciwlu
+						$result2=$db->query($query2);	
+						$owner=$result2->fetch_assoc();
+						$pets[$idx-1]['FIRST_NAME_OWNER']=$owner['FIRST_NAME'];
+						$pets[$idx-1]['LAST_NAME_OWNER']=$owner['LAST_NAME'];
+						
+						$query2="SELECT ANI_SPE_ID,RACE FROM ANIMAL_RACE WHERE ANI_RAC_ID=".$row['ANI_RAC_ID'];				//dane o rasie
+						$result2=$db->query($query2);	
+						$race=$result2->fetch_assoc();
+						$pets[$idx-1]['RACE']=$race['RACE'];
+						
+						$query3="SELECT SPECIES FROM ANIMAL_SPECIES WHERE ANI_SPE_ID=".$race['ANI_SPE_ID'];					//dane o gatunku
+						$result3=$db->query($query3);	
+						$species=$result3->fetch_assoc();
+						$pets[$idx-1]['SPECIES']=$species['SPECIES'];
+					}
+				}		
+			}
+			return $pets;
 		}
 	}
 ?>
