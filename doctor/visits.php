@@ -1,7 +1,30 @@
 <?php
 	session_start();
-	require("../class/doctorPage.inc");
 	require("../class/doctor.inc");
-	$visits = new DoctorPage("Wizity",unserialize($_SESSION['DOCTOR']));
+	require("../class/doctorPage.inc");
+	
+	class VisitsService extends DoctorPage{
+		
+		public function __construct($t,$u){
+			parent::__construct($t,$u);
+		}
+		
+		protected function showContent(){															//nadpisana funkcja poakzujaća zawartosc
+			echo "\t\t	<div id=\"doctorSubMenu\">\n";
+			echo "\t\t\t	<a id=\"prevVisits\" class=\"btn btnMenu\"> <i class=\"fas fa-backward\" style=\"margin-right: 10px\"></i>Poprzednie wizyty</a>\n";
+			echo "\t\t\t	<a id=\"todayVisits\" class=\"btn btnMenu\"> <i class=\"fas fa-arrow-down\" style=\"margin-right: 10px\"></i>Dzisiejsze wizyty</a>\n";
+			echo "\t\t\t	<a id=\"nextVisits\" class=\"btn btnMenu\"> <i class=\"fas fa-forward\" style=\"margin-right: 10px\"></i>Przyszłe wizyty</a>\n";
+			echo "\t\t\t	<a id=\"addVisit\" class=\"btn btnMenu\"> <i class=\"fas fa-calendar-plus\" style=\"margin-right: 10px\"></i>Dodaj nową wizytę </a>\n";
+			echo "\t\t	</div>\n";
+			echo "\t\t	<div id=\"contentTitle\">\n";
+			echo "\t\t	</div>\n";
+            echo "\t\t	<div id=\"contentDescription\">\n";
+            echo "\t\t	</div>\n";
+        }
+	}
+
+	$visits = new VisitsService("Obsługa wizyt",unserialize($_SESSION['DOCTOR']));
+	$scripts = Array("jquery-3.3.1.min.js","doctorVisitsService.js","logout.js","messages.js");
+	$visits->setScripts($scripts);
 	$visits->showPage();
 ?>

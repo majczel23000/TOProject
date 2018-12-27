@@ -121,7 +121,7 @@
 				$customers[$idx]=1;											//jesli błąd bazy to zwracamy 1
 			else{
 				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
-				$query="SELECT FIRST_NAME, LAST_NAME, EMAIL, ADDRESS, PHONE_NUMBER FROM CUSTOMER ORDER BY LAST_NAME, FIRST_NAME";		//pobieramy dane
+				$query="SELECT CUS_ID, FIRST_NAME, LAST_NAME, EMAIL, ADDRESS, PHONE_NUMBER FROM CUSTOMER ORDER BY LAST_NAME, FIRST_NAME";		//pobieramy dane
 				$result=$db->query($query);																
 				if($result->num_rows==0)
 					$customers[$idx]=0;																		//jesli 0 wierszy to zwracamy 0
@@ -528,6 +528,101 @@
 				}		
 			}
 			return $pets;
+		}
+		//lista wizyt, parametr określa jakie wizyty (dzisiejsze, wczesniejsze, nastepne)
+		public function getVisits($type){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$visits = Array();											//tworzymy tablice
+			$idx=0;
+			$query="SELECT DATE,VIS_ID,CUS_ANI_ID,HOUR,DESCRIPTION,STATUS FROM VISIT WHERE DOC_ID=".$this->idUser." AND DATE";
+			if($type=="today")
+				$query.="=CURDATE() ORDER BY HOUR"; //dzisiejsze wizyty
+			else if($type=="prev")
+				$query.="<CURDATE() ORDER BY DATE DESC,HOUR DESC"; //poprzednie wizyty
+			else if($type=="next")
+				$query.=">CURDATE() ORDER BY DATE,HOUR"; //następne wizyty
+			if(mysqli_connect_errno())
+				$visits[$idx]=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$visits[$idx]=0;																		//jesli 0 wierszy to zwracamy 0
+				else{
+					while($row=$result->fetch_assoc()){
+						$visits[$idx++] = $row;															//wkładamy wizyty do tabeli
+						$query2="SELECT RACE,LAST_NAME,FIRST_NAME FROM CUSTOMER_ANIMAL JOIN CUSTOMER USING(CUS_ID) JOIN ANIMAL_RACE USING(ANI_RAC_ID) WHERE CUS_ANI_ID=".$row['CUS_ANI_ID'];											//pobieramy dane o włascicielu i rasie
+						$result2=$db->query($query2);	
+						$row2=$result2->fetch_assoc();
+						
+						$visits[$idx-1]['OWNER']=$row2['LAST_NAME']." ".$row2['FIRST_NAME'];
+						$visits[$idx-1]['RACE']=$row2['RACE'];
+					}
+				}		
+			}
+			return $visits;
+		}
+		//zwraca zwierzęta danego klienta
+		public function getCustomerAnimals($cusID){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$pets = Array();											//tworzymy tablice
+			$idx=0;
+			if(mysqli_connect_errno())
+				$pets[$idx]=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query="SELECT * FROM CUSTOMER_ANIMAL WHERE CUS_ID=".$cusID." ORDER BY NAME";		//pobieramy dane
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$pets[$idx]=0;																		//jesli 0 wierszy to zwracamy 0
+				else{
+					while($row=$result->fetch_assoc()){
+						$pets[$idx++] = $row;															//wkładamy zwierzaków do tabeli
+						
+						$query2="SELECT ANI_SPE_ID,RACE FROM ANIMAL_RACE WHERE ANI_RAC_ID=".$row['ANI_RAC_ID'];				//dane o rasie
+						$result2=$db->query($query2);	
+						$race=$result2->fetch_assoc();
+						$pets[$idx-1]['RACE']=$race['RACE'];
+						
+						$query3="SELECT SPECIES FROM ANIMAL_SPECIES WHERE ANI_SPE_ID=".$race['ANI_SPE_ID'];					//dane o gatunku
+						$result3=$db->query($query3);	
+						$species=$result3->fetch_assoc();
+						$pets[$idx-1]['SPECIES']=$species['SPECIES'];
+					}
+				}		
+			}
+			return $pets;
+		}
+		//pobiera dostepne godziny do wizyty
+		public function getAvalibleHours($d,$datee){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$hours="";
+			if(mysqli_connect_errno())
+				$hours=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query="SELECT ".$d." FROM ADMISSION_HOURS WHERE ADM_H_ID=".$this->idUser;		//pobieramy dane
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$hours=0;																	//jesli 0 wierszy to zwracamy 0
+				else{
+					$hours=$result->fetch_assoc();												//jesli w danym dniu jest null, to nie ma przyjeć
+					if($hours[$d]==null)
+						$hours=0;	
+					else{																		//jesli są, to zapisujemy tylko same godziny
+						$hours=$hours[$d];														//hours to np. SUNDAY:9:00-10:00, a my tylko godzine chcem
+						$query2="SELECT HOUR FROM VISIT WHERE DATE='".$datee."' AND DOC_ID=".$this->idUser;		//sprawdzamy czy jest juz umówiona jakas wizyta w tym dniu u tego lekarza
+						$result2=$db->query($query2);	
+						if(!$result2->num_rows==0)
+							while($row=$result2->fetch_assoc())
+								$hours.=",".$row['HOUR'];										//zapisujemy zajete godziny po przecinku
+					}
+				}
+			}
+			return $hours;
 		}
 	}
 ?>

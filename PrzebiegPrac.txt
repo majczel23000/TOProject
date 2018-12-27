@@ -25,6 +25,7 @@ LEK-02 - wyswietlenie listy klientów
 LEK-03 - wyswietlenie szczegó³ów klienta
 LEK-04 - przegl¹d zwierz¹t klienta
 LEK-10 - wyœwietlanie informacji o godzinach przyjêc lekarzy
+LEK-11 - historia przeprowadzonych wizyt
 LEK-12 - obs³uga leków
 LEK-13 - obs³uga chorób
 
@@ -37,7 +38,7 @@ Tego nie ma w wymaganiach, ale jest ju¿ u nas:
 Wszystkich wymagañ w dokumentacji jest 36.
 30% aplikacji to oko³o 11 wymagañ. +
 
-Aktualnie: 24/36
+Aktualnie: 25/36
 
 info
 na profilu lekarza, w liœcie lekarzy, nie wyœwietla siê ten lekarz, który jest zalogowany, bo od tego jest zak³adka "profil"
