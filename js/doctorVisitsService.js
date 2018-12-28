@@ -341,6 +341,8 @@ function drawAnimalToSelect(ownerId){
 						$('#chooseDate').parent().parent().remove();										//usuwamy tr z data i godzina, bo mogły sie
 					if($('#chooseHour').length>0)															//pojawic, a skoro nie ma zwierzecia
 						$('#chooseHour').parent().parent().remove();										//to nie ma co wybierac
+					if($('#addVisitButton').length>0)														//i przycisk
+						$('#addVisitButton').parent().parent().remove();	
 				}
 				else{
 					$('#chooseCustomerAnimal').append('<option value="-2">------------------</option>');
@@ -375,10 +377,13 @@ function drawDateToSelect(){
 			// gdy wybrana data dotyczy przeszłosci lub tego samego dnia to błąd
 			if(selectedDate < currentDate){
 				$(this).css('background',"#ffa8a8");
+				if($('#chooseHour').length>0)															//usuwamy tez selecta z godziną
+					$('#chooseHour').parent().parent().remove();
+				if($('#addVisitButton').length>0)														//i przycisk
+					$('#addVisitButton').parent().parent().remove();
 			} else {
 				$(this).css('background',"white");
 				if(!isNaN(selectedDate.getDay())){
-					//tutaj wyslanie zapytania o godziny przyjęć będzie
 					let days = ["SUNDAY","MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
 					$.ajax({									
 						type:"post",
@@ -387,16 +392,43 @@ function drawDateToSelect(){
 						data:{
 							accType:"doctor",
 							returnVal:"getAvalibleHours",											//określa co chcemy
-							day:days[selectedDate.getDay()],											
-							date:$(this).val()										
+							day:days[selectedDate.getDay()],										//dzien tygodnia							
+							date:$(this).val()														//data						
 						},
 						beforeSend: function(){
 							$('body').css('opacity','0.6');
 							$('body').css('cursor','progress');
 						},
 						success: function(json){	
-							//tworzymy select z wyborem godziny
-							console.log(json);
+							if($("#tdForHour").length==0){
+								$tr=$('<tr></tr>');
+								$td=$('<td>Godzina: </td>');
+								$tr.append($td);
+								$td=$('<td></td>');
+								$td.prop('id','tdForHour');										//komórka dla selecta lub inputa z godziną
+								$tr.append($td);
+								$('#addNewVisit').append($tr);
+							}
+							else{
+								$("#tdForHour").children().remove();
+							}
+							//json zwraca godziny przjec a po przecinku zajete godziny, np: 9:00-11:00,9:30,10:00 
+							//0 gdy w danym dniu nie ma przyjec, 1 gdy błąd z bazą
+							if(json==0 || json==1){												//jesli w danym dniu lekarz nie prowadzi przyjec	
+								$selectHour = $('<input>');
+								$selectHour.prop('type','text');
+								$selectHour.prop('disabled','true');
+								$selectHour.prop('id','chooseHour');
+								$selectHour.prop('value','W tym dniu nie prowadzisz przyjęć');
+								$("#tdForHour").append($selectHour);
+								if($('#addVisitButton').length>0)								//usuwamy przycisk, jesli jest
+									$('#addVisitButton').parent().parent().remove();
+								if(json==1)
+									console.warn("BŁĄD POŁĄCZENIA");
+							}
+							else{
+								createHourSelect(json.split(","));
+							}
 							$('body').css('opacity','1');
 							$('body').css('cursor','default');
 						},
@@ -409,5 +441,100 @@ function drawDateToSelect(){
 				}
 			}
 		});
+	}
+}
+//tworzy select z wyborem godziny, w parametrze przyjmuje podzielone godziny względem ","
+function createHourSelect(splittedHours){												
+	const startEndHours=splittedHours[0].split("-")						//dzielimy na początkową godzine i końcwoą
+	const startHours = startEndHours[0];								//początkowa godzina jako string
+	const endHours = startEndHours[1];									//końcowa godzina jjako string
+	let availableHours=[];												//tabela do możiwych godzin przyjec
+	for(let i=parseInt(startHours);i<parseInt(endHours);i++){			//zrzucamy na inty poczatek i koniec
+		if(i<10){
+			if(i!=parseInt(startHours) || (i==parseInt(startHours) && startHours[3]=='0'))	//if potrzebny jeśli godziny przyjec zaczynaja sie od XX:30
+				availableHours.push("0"+i+":00");											//to, aby nie tworzyło sie wizyt na XX:00
+			availableHours.push("0"+i+":30");
+		}
+		else if(i>=10){
+			if(i!=parseInt(startHours) || (i==parseInt(startHours) && startHours[3]=='0'))	//ten sam if co wyzej
+				availableHours.push(+i+":00");
+			availableHours.push(i+":30");
+		}
+		if(i==parseInt(endHours)-1 && endHours[3]=="3")										//podobne działanie co ostatnie, ale jesli godziny kończą się
+			if((i+1)<10)																	//o YY:30, to aby mozna było umówić na YY:00
+				availableHours.push("0"+(i+1)+":00");
+			else if((i+1)>=10)
+				availableHours.push((i+1)+":00");
+	}
+	if(splittedHours[1]!=undefined){									//jesli jest inne niz undefined to sa juz wizyty w tym dniu
+		for(let i=1;i<splittedHours.length;i++){						//i musimy sie wykluczyc, wiec szukamy po dwóch tabelach
+			for(let j=0;j<availableHours.length;j++)
+				if(splittedHours[i]==availableHours[j])					//jesli jest takie samo to
+					availableHours.splice(j,1);							//usuwamy jeden element począwszy od indeksu j		
+		}
+	}
+	$selectHour = $('<select></select>');
+	$selectHour.prop('id','chooseHour');
+	for(let i=0;i<availableHours.length;i++){
+		$selectHour.append('<option>'+availableHours[i]+'</option>');
+	}
+	$("#tdForHour").append($selectHour);
+	if($('#addVisitButton').length==0){								//jesli nie ma przycisku to dodajemy
+		$sendButton=$('<span></span');
+		$sendButton.prop('id','addVisitButton');
+		$sendButton.addClass('search-button');
+		$sendButton.html('Dodaj wizytę');
+		$sendButton.on('click',function(){
+			sendVisitToAdd();
+		})
+		$tr=$('<tr></tr>');
+		$td=$('<td colspan="2"></td>');
+		$td.append($sendButton);
+		$tr.append($td);
+		$('#addNewVisit').append($tr);
+	}
+}
+//funkcja wysyłająca wizyte do bazy
+function sendVisitToAdd(){
+	let canSend=true;
+	if($('#chooseCustomer').val()==-1)									//jesli w polu klienta są -------------
+		canSend=false;
+	if($('#chooseCustomerAnimal').val()==-2)							//jesli w polu zwierzecia są -----------
+		canSend=false;
+	if($('#chooseDate').val()=="")										//jesli ktos wybrał date a potem kliknął iksa i ją usunął to val jest puste
+		canSend=false;
+	if(canSend){														//jesli nie ma zadnych błędów to wysyłamy
+		$.ajax({									
+		type:"post",
+		url:"visitsService.php",
+		dataType:"json",
+		data:{
+			accType:"doctor",
+			returnVal:"addVisit",											//określa co chcemy
+			animalV:$('#chooseCustomerAnimal').val(),
+			dateV:$('#chooseDate').val(),
+			hourV:$('#chooseHour').val()
+		},
+		beforeSend: function(){
+			$('body').css('opacity','0.6');
+			$('body').css('cursor','progress');
+		},
+		success: function(json){
+			if(json=="success"){
+				$('#doctorSubMenu a').each(function(){															//resetujemy wszystkie przyciski
+					$(this).attr('class','btn btnMenu');
+				});
+				$("#contentTitle").html("");																	//czyścimy środek tytułu
+				$("#contentDescription").html("Wizyta został pomyślnie dodana.");										//to samo dla cotnentu
+			}
+			$('body').css('opacity','1');
+			$('body').css('cursor','default');
+		},
+		error: function(e){
+			console.warn(e);
+			$('body').css('opacity','1');
+			$('body').css('cursor','default');
+		}
+	});
 	}
 }

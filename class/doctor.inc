@@ -624,5 +624,22 @@
 			}
 			return $hours;
 		}
+		//dodanie wizyty
+		public function addVisit($v){																	//przyjmuje tablice z wartosciamy do dodania
+			require('../connect.php');       
+			$retVal=-1;
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				$retVal=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query = "INSERT INTO VISIT(DATE,DOC_ID,CUS_ANI_ID,HOUR) VALUES('".$v['dateV']."',".$this->idUser.",".$v['animalV'].",'".$v['hourV']."')";
+				if($db->query($query))
+					$retVal="success";
+				else
+					$retVal=0;
+			}
+			return $retVal;
+		}
 	}
 ?>

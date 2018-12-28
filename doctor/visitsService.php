@@ -20,5 +20,8 @@
 		else if($_POST['returnVal'] == "getAvalibleHours"){
 			echo json_encode(unserialize($_SESSION['DOCTOR'])->getAvalibleHours($_POST['day'],$_POST['date']));						//zwracamy tabele
 		}
+		else if($_POST['returnVal'] == "addVisit"){
+			echo json_encode(unserialize($_SESSION['DOCTOR'])->addVisit($_POST));						//zwracamy tabele
+		}
 	}
 ?>
