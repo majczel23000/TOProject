@@ -23,5 +23,8 @@
 		else if($_POST['returnVal'] == "addVisit"){
 			echo json_encode(unserialize($_SESSION['DOCTOR'])->addVisit($_POST));						//zwracamy tabele
 		}
+		else if($_POST['returnVal'] == "visitDetails"){
+			echo json_encode(unserialize($_SESSION['DOCTOR'])->getVisitDetails($_POST));						//zwracamy tabele
+		}
 	}
 ?>

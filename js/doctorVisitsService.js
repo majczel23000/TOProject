@@ -98,9 +98,11 @@ function todayVisits(){
 					if(json[i]['DESCRIPTION']=="")
 						json[i]['DESCRIPTION']="Brak";
 					$tr=$("<tr></tr>");
-					$tr.attr("value",i);			//wpisujemy do value id lekarza, które siedzi w JSON
-					//$tr.on('click',function(){showDoctorDetail(json[$(this).attr('value')])});	//i na zdarzenie klikniecia ustawiamy funkcje z przekazaniem tego wiersza z JSON, aby nie pobierać znowu z bazy
-					$tr.html("<td>"+json[i]['HOUR']+"</td><td>"+json[i]['RACE']+"</td><td>"+json[i]['OWNER']+"</td><td>"+json[i]['DESCRIPTION']+"</td><td>"+status+"</td><td><i class=\"fas fa-folder-open\"></i></td>");
+					$tr.html("<td>"+json[i]['HOUR']+"</td><td>"+json[i]['RACE']+"</td><td>"+json[i]['OWNER']+"</td><td>"+json[i]['DESCRIPTION']+"</td><td>"+status+"</td>");
+					$tdOpen = $("<td><i class=\"fas fa-folder-open\"></i></td>")			//komórka do klikniecia w celu otwarcia
+					$tdOpen.attr('value',i);						//zapisujemy id
+					$tdOpen.on('click',function(){showVisitDetail(json[$(this).attr('value')])}); //przekazuje vizyte do funkcji
+					$tr.append($tdOpen);
 					$tbody.append($tr);
 				}
 				$table.append($tbody);
@@ -159,9 +161,11 @@ function prevVisits(){
 					if(json[i]['DESCRIPTION']=="")
 						json[i]['DESCRIPTION']="Brak";
 					$tr=$("<tr></tr>");
-					$tr.attr("value",i);			//wpisujemy do value id lekarza, które siedzi w JSON
-					//$tr.on('click',function(){showDoctorDetail(json[$(this).attr('value')])});	//i na zdarzenie klikniecia ustawiamy funkcje z przekazaniem tego wiersza z JSON, aby nie pobierać znowu z bazy
-					$tr.html("<td>"+json[i]['DATE']+" "+json[i]['HOUR']+"</td><td>"+json[i]['RACE']+"</td><td>"+json[i]['OWNER']+"</td><td>"+json[i]['DESCRIPTION']+"</td><td>"+status+"</td><td><i class=\"fas fa-folder-open\"></i></td>");
+					$tr.html("<td>"+json[i]['DATE']+" "+json[i]['HOUR']+"</td><td>"+json[i]['RACE']+"</td><td>"+json[i]['OWNER']+"</td><td>"+json[i]['DESCRIPTION']+"</td><td>"+status+"</td>");
+					$tdOpen = $("<td><i class=\"fas fa-folder-open\"></i></td>")			//komórka do klikniecia w celu otwarcia
+					$tdOpen.attr('value',i);						//zapisujemy id
+					$tdOpen.on('click',function(){showVisitDetail(json[$(this).attr('value')])}); //przekazuje vizyte do funkcji
+					$tr.append($tdOpen);
 					$tbody.append($tr);
 				}
 				$table.append($tbody);
@@ -220,9 +224,11 @@ function nextVisits(){
 					if(json[i]['DESCRIPTION']=="")
 						json[i]['DESCRIPTION']="Brak";
 					$tr=$("<tr></tr>");
-					$tr.attr("value",i);			//wpisujemy do value id lekarza, które siedzi w JSON
-					//$tr.on('click',function(){showDoctorDetail(json[$(this).attr('value')])});	//i na zdarzenie klikniecia ustawiamy funkcje z przekazaniem tego wiersza z JSON, aby nie pobierać znowu z bazy
-					$tr.html("<td>"+json[i]['DATE']+" "+json[i]['HOUR']+"</td><td>"+json[i]['RACE']+"</td><td>"+json[i]['OWNER']+"</td><td>"+json[i]['DESCRIPTION']+"</td><td>"+status+"</td><td><i class=\"fas fa-folder-open\"></i></td>");
+					$tr.html("<td>"+json[i]['DATE']+" "+json[i]['HOUR']+"</td><td>"+json[i]['RACE']+"</td><td>"+json[i]['OWNER']+"</td><td>"+json[i]['DESCRIPTION']+"</td><td>"+status+"</td>");
+					$tdOpen = $("<td><i class=\"fas fa-folder-open\"></i></td>")			//komórka do klikniecia w celu otwarcia
+					$tdOpen.attr('value',i);						//zapisujemy id
+					$tdOpen.on('click',function(){showVisitDetail(json[$(this).attr('value')])}); //przekazuje vizyte do funkcji
+					$tr.append($tdOpen);
 					$tbody.append($tr);
 				}
 				$table.append($tbody);
@@ -360,6 +366,7 @@ function drawAnimalToSelect(ownerId){
 		}
 	});
 }
+//rysuje date do wyboru
 function drawDateToSelect(){
 	if($('#chooseDate').length==0){	//jesli selecta nie ma
 		$tr=$('<tr></tr>');
@@ -537,4 +544,83 @@ function sendVisitToAdd(){
 		}
 	});
 	}
+}
+//wyswietla szczegółowe dane wizyty
+function showVisitDetail($vis){
+	$.ajax({									
+		type:"post",
+		url:"visitsService.php",
+		dataType:"json",
+		data:{
+			accType:"doctor",
+			returnVal:"visitDetails",											//określa które wizyty chcemy
+			cusAniId:$vis['CUS_ANI_ID'],										//id zwierzecia
+			visId:$vis['VIS_ID']												//id wizyty
+		},
+		beforeSend: function(){
+			$('body').css('opacity','0.6');
+			$('body').css('cursor','progress');
+		},
+		success: function(json){
+			if(json[0]==0 || json[0]==1){													//jesli zero wyników lub błąd połaczenia (1)
+				if(json[0]==1)
+					console.warn("BŁĄD POŁĄCZENIA");
+				else
+					console.warn("BŁĄD");
+			}
+			else{
+				console.log(json)
+				$('#doctorSubMenu a').each(function(){									//resetujemy wszystkie przyciski
+					$(this).attr('class','btn btnMenu');
+				});
+				$("#contentTitle").html("");											//czyścimy tytuł
+				$("#contentDescription").html("");										//czyścimy kontent
+				$("#contentTitle").append("<hr>");																//dajemy se kreske 
+				$("#contentTitle").append("<h3>Karta wizyty: "+$vis['DATE']+", godz. "+$vis['HOUR']+"</h3>");	//ustawiamy tytuł
+				
+				$table=$("<table></table>");
+				$tr=$("<tr><td>Lekarz prowadzący </td></tr>");
+				$tr.append("<td>"+json['DOCTOR']+"</td>");
+				$tr.append("<td>Klient</td>");
+				$tr.append("<td>"+$vis['OWNER']+"</td>");
+				$table.append($tr);
+				$tr=$("<tr><td>Imie zwierzęcia </td></tr>");
+				$tr.append("<td>"+json['NAME']+"</td>");
+				$tr.append("<tr><td>Identyfikator w systemie </td></tr>");
+				$tr.append("<td>"+$vis['CUS_ANI_ID']+"</td>");
+				$table.append($tr);
+				$tr=$("<tr><td>Rasa zwierzęcia </td></tr>");
+				$tr.append("<td>"+$vis['RACE']+"</td>");
+				$tr.append("<tr><td>Waga zwierzęcia </td></tr>");
+				$tr.append("<td>"+json['WEIGHT']+"</td>");
+				$table.append($tr);
+				$tr=$("<tr><td>Data urodzenia zwierzęcia </td></tr>");
+				$tr.append("<td>"+json['BIRTH_DATE']+"</td>");
+				$tr.append("<tr><td>Płeć zwierzęcia </td></tr>");
+				$tr.append("<td>"+json['GENDER']+"</td>");
+				$table.append($tr);
+				$tr=$("<tr><td>Choroby </td></tr>");
+				$tr.append("<td>"+json['DISEASES']+"</td>");
+				$tr.append("<tr><td>Zabiegi </td></tr>");
+				$tr.append("<td>"+json['SERVICES']+"</td>");
+				$table.append($tr);
+				for(let i=0;i<json['PRESCRIPTIONS'].length;i++){
+					$tr=$("<tr><td>Data recepty </td></tr>");
+					$tr.append("<td>"+json['PRESCRIPTIONS'][i]['DATE']+"</td>");
+					$tr.append("<tr><td>Leki </td></tr>");
+					$tr.append("<td>"+json['PRESCRIPTIONS'][i]['MEDICINES']+"</td>");
+					$table.append($tr);
+				}
+				$("#contentDescription").append($table);
+			}
+			$('body').css('opacity','1');
+			$('body').css('cursor','default');
+		},
+		error: function(e){
+			console.warn(e);
+			$('body').css('opacity','1');
+			$('body').css('cursor','default');
+		}
+	});
+
 }

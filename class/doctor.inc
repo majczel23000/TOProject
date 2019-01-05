@@ -535,7 +535,7 @@
 			@$db=new mysqli($server,$user,$password,$dataBase);
 			$visits = Array();											//tworzymy tablice
 			$idx=0;
-			$query="SELECT DATE,VIS_ID,CUS_ANI_ID,HOUR,DESCRIPTION,STATUS FROM VISIT WHERE DOC_ID=".$this->idUser." AND DATE";
+			$query="SELECT DATE,VIS_ID,CUS_ANI_ID,HOUR,DESCRIPTION,STATUS,PRICE FROM VISIT WHERE DOC_ID=".$this->idUser." AND DATE";
 			if($type=="today")
 				$query.="=CURDATE() ORDER BY HOUR"; //dzisiejsze wizyty
 			else if($type=="prev")
@@ -640,6 +640,66 @@
 					$retVal=0;
 			}
 			return $retVal;
+		}
+		public function getVisitDetails($d){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$visDetail="";
+			if(mysqli_connect_errno())
+				$visDetail=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query="SELECT NAME,WEIGHT,HEIGHT,GENDER,BIRTH_DATE FROM CUSTOMER_ANIMAL WHERE CUS_ANI_ID=".$d['cusAniId'];		//pobieramy dane
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$visDetail=0;																	//jesli 0 wierszy to zwracamy 0
+				else
+					$visDetail=$result->fetch_assoc();	
+				$query="SELECT NAME FROM VISIT_DISEASE JOIN DISEASE USING(DIS_ID) WHERE VIS_ID=".$d['visId'];	//pobieramy choroby
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$visDetail['DISEASES']=0;														//jesli 0 wierszy to wpisujemy, ze 0 chorób
+				else{																				//inaczej zapisujemy je w tabeli
+					$visDetail['DISEASES']=Array();
+					$tmp=0;
+					while($dis=$result->fetch_assoc())
+						$visDetail['DISEASES'][$tmp++]=$dis['NAME'];
+				}
+				$query="SELECT NAME FROM VISIT_SERVICE JOIN SERVICE USING(SER_ID) WHERE VIS_ID=".$d['visId'];	//pobieramy zabiegi
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$visDetail['SERVICES']=0;														//jesli 0 wierszy to wpisujemy, ze 0 zabiegów
+				else{																				//inaczej zapisujemy je w tabeli
+					$visDetail['SERVICES']=Array();
+					$tmp=0;
+					while($ser=$result->fetch_assoc())
+						$visDetail['SERVICES'][$tmp++]=$ser['NAME'];
+				}
+				$query="SELECT PRE_ID,DATE FROM PRESCRIPTION WHERE VIS_ID=".$d['visId'];	//pobieramy recepty
+				$result=$db->query($query);																
+				if($result->num_rows==0)
+					$visDetail['PRESCRIPTIONS']=0;														//jesli 0 wierszy to wpisujemy, ze 0 zabiegów
+				else{																				//inaczej zapisujemy je w tabeli
+					$visDetail['PRESCRIPTIONS']=Array();
+					$tmp=0;
+					while($pre=$result->fetch_assoc()){
+						$visDetail['PRESCRIPTIONS'][$tmp]=$pre;
+						$query2="SELECT NAME FROM PRESCRIPTION_MEDICINE JOIN MEDICINE USING(MED_ID) WHERE PRE_ID=".$pre['PRE_ID'];	//pobieramy leków z recepty
+						$result2=$db->query($query2);																
+						if($result2->num_rows==0)
+							$visDetail['PRESCRIPTIONS'][$tmp++]['MEDICINES']=0;										//jesli 0 wierszy to wpisujemy, ze 0 leków
+						else{																				//inaczej zapisujemy je w tabeli
+							$visDetail['PRESCRIPTIONS'][$tmp++]['MEDICINES']=Array();
+							$tmp2=0;
+							while($med=$result2->fetch_assoc())
+								$visDetail['PRESCRIPTIONS'][$tmp-1]['MEDICINES'][$tmp2++]=$med['NAME'];
+						}
+					}
+				}
+				$visDetail['DOCTOR']=$this->lastName." ".$this->firstName;
+
+			}
+			return $visDetail;
 		}
 	}
 ?>

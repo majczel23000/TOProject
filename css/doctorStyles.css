@@ -180,6 +180,7 @@ table.editAH input[type=text],.medicine-edit,.disease-edit{
 }
 #contentDescription{
 	text-align:center;
+
 }
 /*=====TABLECUSTOMERandDOCTORLIST=====*/
 #customerList,#doctorList,#medicinesList,#diseasesList,#petsList,#visitsList{
