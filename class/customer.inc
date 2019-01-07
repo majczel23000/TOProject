@@ -50,6 +50,7 @@
 			if(mysqli_connect_errno())
 				$doctors[$idx]=1;											
 			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`");
 				$query="SELECT FIRST_NAME, LAST_NAME, EMAIL FROM DOCTOR ORDER BY LAST_NAME, FIRST_NAME";		
 				$result=$db->query($query);																
 				if($result->num_rows==0)
