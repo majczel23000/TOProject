@@ -78,17 +78,17 @@ body{
     height: 100%;
     border: none;
     padding: 20px;
-    background:#5a98fc;
+    background:#ff850c;
 }
 .btnShowDoctorDetails:hover, .btnHideDoctorDetails:hover, .btnShowAnimalDetails:hover{
     cursor: pointer;
-    background:#8ab3f5;
+    background:#ffcc99;
 }
 .btnBackToAnimalList, #btnAddAnimal, #btnStatsAnimal{
     display: block;
     margin: 0 auto;
     border: none;
-    background:#5a98fc;
+    background:#ff850c;
     padding: 20px;
     transition: 0.1s all;
     float: left;
@@ -101,7 +101,7 @@ body{
 }
 .btnBackToAnimalList:hover, #btnAddAnimal:hover, #btnStatsAnimal:hover{
     cursor: pointer;
-    background:#8ab3f5;
+    background:#ffcc99;
 }
 .editAnimalButton, .saveAnimalButton, #btnConfirmAddAnimal{
     display: block;
