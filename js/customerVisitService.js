@@ -194,7 +194,7 @@ function createAvailableHours(data){
     // dodaje option (lekarzy) pod warunkiem że mają wpisane godziny przyjęć
     let isSomeoneWorking = false;
     for(let i = 0; i < data.length; i++){
-        if(data[i][selectedDay] !== ''){
+        if(data[i][selectedDay] !== '' && data[i][selectedDay] !== null && data[i][selectedDay] !== 'null'){
             $option=$("<option></option>");
             $option.html(data[i]['FIRST_NAME']+ " " + data[i]['LAST_NAME']);
             $option.attr('ADM_H_ID', data[i]['ADM_H_ID']);
@@ -221,7 +221,6 @@ function createAvailableHours(data){
         errorService(true, "Brak przyjęć w wybranym dniu", $('#date').id + "Error");
         $addButton.addClass("btnAddVisitDisabled");	
     }
-    
 }
 
 // wyswietlanie listy możliwych godzin do wyboru
@@ -447,10 +446,22 @@ function getMyVisits($status){
                 $("#visitHistoryListTbody").empty();
                 for(let i = 0; i < json.length; i++){
                     $status = "";
-                    if(json[i]['STATUS'] === 'PLANNED')
-                        $status = 'Zaplanowana';
-                    else
-                        $status = 'Zamknięta';
+                    const currentDate = new Date();
+                    const visitDate = new Date(json[i]['DATE']);
+                    if(json[i]['STATUS'] === 'PLANNED') {
+                        if(visitDate < currentDate) {
+                            $status = 'Termin upłynął';
+                        } else {
+                            $status = 'Zaplanowana';
+                        }
+                    }
+                    else{
+                        if(visitDate < currentDate) {
+                            $status = 'Termin upłynął';
+                        } else {
+                            $status = 'Zamknięta';
+                        }
+                    }
                     $tr = $("<tr></tr>");
                     $tdDate = $("<td>" + json[i]['DATE'] + "</td>");
                     $tdHour = $("<td>" + json[i]['HOUR'] + "</td>");

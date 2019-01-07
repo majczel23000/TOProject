@@ -436,3 +436,25 @@ body{
 	float:none;
 	display:inline-block;
 }
+
+/*=====OPINION=====*/
+#opinionText{
+    width: 95%;
+    height: 300px;
+    padding: 20px;
+    font-family: 'Calibri';
+    font-size: 1.1rem;  
+}
+#btnSendOpinion{
+    display: block;
+    margin: 0 auto;
+    border: none;
+    background:#ff850c;
+    padding: 20px;
+    margin-bottom:50px;
+    transition: 0.1s all;
+}
+#btnSendOpinion:hover{
+    cursor: pointer;
+    background: #ffcc99;
+}

@@ -44,6 +44,13 @@
                     "href" => "services.php",
                     "class" => "btn btnMenu",
                     "iClass" => "fas fa-clipboard-list"
+                ),
+            5 => Array
+                (
+                    "text" => "Opinia",
+                    "href" => "opinion.php",
+                    "class" => "btn btnMenu",
+                    "iClass" => "far fa-envelope"
                 )
         );
         private $styles = Array("mainStyles.css","customerStyles.css");
