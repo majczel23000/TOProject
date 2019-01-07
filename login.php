@@ -13,7 +13,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>VetManager - Login</title>
+  <title>VetManager - Logowanie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="Stylesheet" type="text/css" href="css/mainStyles.css" />
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -25,8 +25,8 @@
             <a href="index.php">VetManager</a>
         </div>
         <div id="appAuthButtons">
-            <a href="login.php" class="btn btnLogin">Login</a>
-            <a href="register.php" class="btn btnRegister">Register</a>
+            <a href="login.php" class="btn btnLogin">Logowanie</a>
+            <a href="register.php" class="btn btnRegister">Rejestracja</a>
         </div>
         <div class="clear"></div>
         <div id="messages">
@@ -40,18 +40,18 @@
 
     <div id="content">
         <div id="loginForm">
-            <h1>Log into the system:</h1>
+            <h1>Zaloguj się w systemie:</h1>
             <div class="formGroup">
                 <label for="email">Email: </label>
                 <input id="email" type="email" name="email">
                 <div class="clear"></div>
             </div>
             <div class="formGroup">
-                <label for="password">Password: </label>
+                <label for="password">Hasło: </label>
                 <input id="password" type="password" name="password">
                 <div class="clear"></div>
             </div>
-            <button type="submit" class="btn btnLogin">Login</button>
+            <button type="submit" class="btn btnLogin">Zaloguj</button>
             <div class="clear"></div>
         </div>
     </div>

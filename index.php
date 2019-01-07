@@ -24,8 +24,8 @@
             <a href="index.php">VetManager</a>
         </div>
         <div id="actionButtons">
-            <a href="login.php" class="btn btnLogin">Login</a>
-            <a href="register.php" class="btn btnRegister">Register</a>
+            <a href="login.php" class="btn btnLogin">Logowanie</a>
+            <a href="register.php" class="btn btnRegister">Rejestracja</a>
         </div>
         <div class="clear"></div>
         <div id="messages">
@@ -35,50 +35,46 @@
         </div>
     </nav>
 
-    <div id="content">
+    <div id="contentMain">
         <div id="contentTitle">
-            <h1>Welcome to VetManager!</h1>
+            <h1>Witamy w VetManager!</h1>
         </div>
         <div id="contentDescription">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus, 
-            saepe placeat quas asperiores nam laudantium tenetur commodi accusamus, 
-            nisi deserunt nemo aut eveniet quis quod totam quae praesentium officia 
-            earum neque delectus aspernatur cum. Rem hic aliquid, repellendus praesentium 
-            assumenda debitis commodi repudiandae quas, porro eum quia, maxime iste! Pariatur.
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus, 
-            saepe placeat quas asperiores nam laudantium tenetur commodi accusamus, 
-            nisi deserunt nemo aut eveniet quis quod totam quae praesentium officia 
-            earum neque delectus aspernatur cum. Rem hic aliquid, repellendus praesentium 
-            assumenda debitis commodi repudiandae quas, porro eum quia, maxime iste! Pariatur.
+            Wsłuchując się w potrzeby lekarzy, stworzyliśmy oprogramowanie, które wspiera prowadzenie lecznicy weterynaryjnej w sposób: prosty,
+            intuicyjny, mobilny oraz bezpieczny. Tworząc VetManager współpracowaliśmy z osobami powiązanymi z weterynarią oraz ekspertami w tej 
+            dziedzinie. Dzięki tej współpracy jesteśmy przekonani, że VetManager sprosta oczekiwaniom nawet najbardziej wymagających klientów.
         </div>
         <div id="contentFunctions">
             <div class="functionItem">
                 <div class="functionItemImage">
-                    <img src="https://via.placeholder.com/300x150/ddd/000000" alt="">
+                    <img src="https://cdn.shopify.com/s/files/1/0972/9862/articles/Animals-week-Shopify1_300x300.jpg?v=1494278806" alt="">
                 </div>
                 <div class="functionItemDescription">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate nostrum 
-                    officiis, exercitationem asperiores laboriosam corrupti atque tempora animi. Quis, officia!</p>
+                    <p>Zarządzaj swoimi zwierzętami w sposób intuicyjny. Dodawanie oraz edytowanie danych zwierząt nie stanowi przeszkody dla
+                        VetManager.
+                    </p>
                 </div>
                 <div class="clear"></div>
             </div>
             <div class="functionItem">
                 <div class="functionItemImage">
-                    <img src="https://via.placeholder.com/300x150/333/fff" alt="">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSro9F8E0CfXxEQ1KYwZjr2Dm4n7CD3o2v47jOFGJcn53kp54mB" alt="">
                 </div>
                 <div class="functionItemDescription">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate nostrum 
-                    officiis, exercitationem asperiores laboriosam corrupti atque tempora animi. Quis, officia!</p>
+                    <p>Umawiaj wizytę nie wychodząc z domu. Dzięki systemowi możesz umówić wizytę dla dowolnego zwierzęcia zarejestrowanego
+                        w systemie, o porze, w której prowadzone będą w gabinecie wizyty. Umawiaj się także na wizyty do swoich ulubionych lekarzy!
+                    </p>
                 </div>
                 <div class="clear"></div>
             </div>
             <div class="functionItem">
                 <div class="functionItemImage">
-                    <img src="https://via.placeholder.com/300x150/ffffff/000000" alt="">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWZRtpwr-Qo8uiaOq7YFvtFqbfKq8Kz_IGCTY-JEZLVsa1KDaE" alt="">
                 </div>
                 <div class="functionItemDescription">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate nostrum 
-                    officiis, exercitationem asperiores laboriosam corrupti atque tempora animi. Quis, officia!</p>
+                    <p>Uzyskaj informację dotyczące zabiegów, lekarzy, a także zerknij na statystyki swoich zwierząt - te wszystkie rzeczy zawiera
+                        właśnie VetManager!
+                    </p>
                 </div>
                 <div class="clear"></div>
             </div>

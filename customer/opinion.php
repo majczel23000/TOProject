@@ -11,7 +11,7 @@
 		
 		protected function showContent(){
             echo "\t\t <div id=\"contentTitle\">\n";
-			echo "\t\t\t<h1><i class=\"fas fa-clipboard-list\"></i> Podziel się z nami swoją opinią!</h1>\n";
+			echo "\t\t\t<h1><i class=\"far fa-envelope\"></i> Podziel się z nami swoją opinią!</h1>\n";
 			echo "\t\t </div>\n";
             echo "\t\t <div id=\"contentDescription\">\n";
             echo "\t\t\t <textarea placeholder=\"Napisz swoją wiadomość\" id=\"opinionText\"></textarea>";

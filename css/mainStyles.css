@@ -94,7 +94,12 @@ html, body {
 
 
 /*=====CONTENTSTYLES=====*/
-#content {
+#contentMain {
+    height: 100%;
+    width: 100%;
+    background: #f6f6f6;
+}
+#content{
     height: 100%;
     width: 100%;
 }
@@ -120,6 +125,13 @@ html, body {
     width: 100%;
     text-align: center;
     padding: 20px;
+    background: #333;
+    color: #f6f6f5;
+    margin-bottom:20px;
+    transition: 0.2s all;
+}
+.functionItem:hover{
+    background: #444;
 }
 .functionItemImage {
     float: left;

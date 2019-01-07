@@ -9,7 +9,7 @@ $("#btnSendOpinion").on('click', function(){
             $("#btnSendOpinion").removeClass("btnAddVisitDisabled");
             console.log('send');
             textarea.val("");
-            showMessage('Dziękujęmy za wysłanie opini!', true);
+            showMessage('Dziękujemy za wysłanie opini!', true);
         } else {
             errorService(true, "Minimalnie 20 znaków", $('#opinionText').id + "Error");
             $("#btnSendOpinion").addClass("btnAddVisitDisabled");

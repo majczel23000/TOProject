@@ -13,7 +13,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>VetManager - Register</title>
+  <title>VetManager - Rejestracja</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="Stylesheet" type="text/css" href="css/mainStyles.css" />
 </head>
@@ -23,8 +23,8 @@
             <a href="index.php">VetManager</a>
         </div>
         <div id="appAuthButtons">
-            <a href="login.php" class="btn btnLogin">Login</a>
-            <a href="register.php" class="btn btnRegister">Register</a>
+            <a href="login.php" class="btn btnLogin">Logowanie</a>
+            <a href="register.php" class="btn btnRegister">Rejestracja</a>
         </div>
         <div class="clear"></div>
     </nav>
@@ -32,14 +32,14 @@
     <div id="content">
         
         <div id="registerForm">
-                <h1>Register in the system:</h1>
+                <h1>Zarejestruj się w systemie:</h1>
             <div class="formGroup">
-                <label for="firstName">First Name: </label>
+                <label for="firstName">Imię: </label>
                 <input id="firstName" type="text" name="firstName">
                 <div class="clear"></div>
             </div>
             <div class="formGroup">
-                <label for="lastName">Last Name: </label>
+                <label for="lastName">Nazwisko: </label>
                 <input id="lastName" type="text" name="lastName">
                 <div class="clear"></div>
             </div>
@@ -49,16 +49,16 @@
                 <div class="clear"></div>
             </div>
             <div class="formGroup">
-                <label for="password">Password: </label>
+                <label for="password">Hasło: </label>
                 <input id="password" type="password" name="password">
                 <div class="clear"></div>
             </div>
             <div class="formGroup">
-                <label for="confirmPassword">Confirm password: </label>
+                <label for="confirmPassword">Potwierdź hasło: </label>
                 <input id="confirmPassword" type="password" name="confirmPassword">
                 <div class="clear"></div>
             </div>
-            <button id="btnRegister" type="submit" class="btn btnRegisterDisabled">Register</button>
+            <button id="btnRegister" type="submit" class="btn btnRegisterDisabled">Zarejestruj</button>
             <div class="clear"></div>
         </div>
     </div>
