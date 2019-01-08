@@ -611,7 +611,13 @@ function showVisitDetail($vis){
 					$tr.append("<td>"+json['PRESCRIPTIONS'][i]['MEDICINES']+"</td>");
 					$table.append($tr);
 				}
+				$buttonPdfVisit = $("<a></a>");
+				$buttonPdfVisit.attr('class','btn btnMenu');
+				$buttonPdfVisit.html('Rezultat wizyty [PDF]');
+				$buttonPdfVisit.attr('target','_blank');
+				$buttonPdfVisit.attr('href','../doctor/visitpdf.php');
 				$("#contentDescription").append($table);
+				$("#contentDescription").append($buttonPdfVisit);
 			}
 			$('body').css('opacity','1');
 			$('body').css('cursor','default');
