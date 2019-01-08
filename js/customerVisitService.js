@@ -226,10 +226,13 @@ function createAvailableHours(data){
 // wyswietlanie listy możliwych godzin do wyboru
 function showAvailableHoursList(adm_h_id, data){
     // szukam najwczesniejszej i najpóźniejszej godziny od której będą prowadzone przyjęcia w wybranym dniu dla wybranego lekarza
+    let minimumMinutes, maksimumMinutes;
     for(let i = 0; i < data.length; i++){
         if(data[i]['ADM_H_ID'] === adm_h_id){
             minimum = parseInt(data[i][selectedDay].split('-')[0]);
+            minimumMinutes = data[i][selectedDay].split('-')[0].split(":")[1];
             maksimum = parseInt(data[i][selectedDay].split('-')[1]);
+            maksimumMinutes = data[i][selectedDay].split('-')[1].split(":")[1];
         }
     }
 
@@ -249,14 +252,27 @@ function showAvailableHoursList(adm_h_id, data){
 			// w przypadku braku wyników, czyli nie ma jeszcze umówionych wizyt w danym dniu
 			if(json[0]==0){
                 availableHours = [];
-                for(let i = minimum; i < maksimum; i++){
+                let firstChecked = false;
+                let lastChecked = false;
+                console.log(minimum, maksimum);
+                for(let i = minimum; i <= maksimum; i++){
                     if(i<10){
-                        availableHours.push("0"+i+":00");
-                        availableHours.push("0"+i+":30");
+                        if(minimumMinutes === '30' && !firstChecked) {
+                            availableHours.push("0"+i+":30");
+                            firstChecked = true;
+                        } else if(i < maksimum){
+                            availableHours.push("0"+i+":00");
+                            availableHours.push("0"+i+":30");
+                        }
                     }
                     else if(i>=10){
-                        availableHours.push(i+":00");
-                        availableHours.push(i+":30");
+                        if(maksimumMinutes === '30' && i==maksimum && !lastChecked){
+                            availableHours.push(i+":00");
+                            lastChecked = true;
+                        } else if(i < maksimum){
+                            availableHours.push(i+":00");
+                            availableHours.push(i+":30");
+                        }
                     }		
                 }
                 // dodaje je na strone
