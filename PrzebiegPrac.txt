@@ -50,3 +50,4 @@ Aktualnie: 28/33
 
 info
 na profilu lekarza, w liœcie lekarzy, nie wyœwietla siê ten lekarz, który jest zalogowany, bo od tego jest zak³adka "profil"
+lol, co to za czary?

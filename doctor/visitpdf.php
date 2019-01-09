@@ -1,5 +1,6 @@
 <?php
-require('../fpdf181/fpdf.php');
+//require('../fpdf181/fpdf.php');
+require('../tfpdf/tfpdf.php');
 $cusAniId = $_GET['cusAniId'];
 $visId = $_GET['visId'];
 
@@ -11,12 +12,30 @@ if(mysqli_connect_errno())
     $visDetail=1;											//jesli błąd bazy to zwracamy 1
 else{
     $db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
-    $query="SELECT NAME,WEIGHT,HEIGHT,GENDER,BIRTH_DATE FROM CUSTOMER_ANIMAL WHERE CUS_ANI_ID=".$cusAniId;		//pobieramy dane
+    $query="SELECT NAME,WEIGHT,HEIGHT,GENDER,BIRTH_DATE,RACE,SPECIES,FIRST_NAME,LAST_NAME FROM CUSTOMER_ANIMAL JOIN customer USING(CUS_ID) JOIN animal_race USING(ANI_RAC_ID) JOIN animal_species USING(ANI_SPE_ID) WHERE CUS_ANI_ID=".$cusAniId;		//pobieramy dane
     $result=$db->query($query);																
     if($result->num_rows==0)
         $visDetail=0;																	//jesli 0 wierszy to zwracamy 0
     else
-        $visDetail=$result->fetch_assoc();	
+        $visDetail=$result->fetch_assoc();
+        
+    $query="SELECT DATE, HOUR, DESCRIPTION, FIRST_NAME, LAST_NAME FROM visit JOIN DOCTOR USING(DOC_ID) WHERE VIS_ID=".$visId;	// pobieramy dane wizyty
+    $result=$db->query($query);															
+    if($result->num_rows==0){                           // jak brak
+        $visDetail['VISIT_DATE']='Brak danych';
+        $visDetail['VISIT_HOUR']='Brak danych';
+        $visDetail['VISIT_DESCRIPTION']='Brak danych';
+        $visDetail['DOCTOR_FIRST_NAME']='Brak danych';
+        $visDetail['DOCTOR_LAST_NAME']='Brak danych';
+    } else{												// inaczej zapisujemy
+        $dis=$result->fetch_assoc();
+        $visDetail['VISIT_DATE']=$dis['DATE'];
+        $visDetail['VISIT_HOUR']=$dis['HOUR'];
+        $visDetail['VISIT_DESCRIPTION']=$dis['DESCRIPTION'];
+        $visDetail['DOCTOR_FIRST_NAME']=$dis['FIRST_NAME'];
+        $visDetail['DOCTOR_LAST_NAME']=$dis['LAST_NAME'];
+    }
+        
     $query="SELECT NAME FROM VISIT_DISEASE JOIN DISEASE USING(DIS_ID) WHERE VIS_ID=".$visId;	//pobieramy choroby
     $result=$db->query($query);																
     if($result->num_rows==0)
@@ -61,13 +80,13 @@ else{
 }
 
 
-class PDF extends FPDF
+class PDF extends TFPDF
 {
     function Header()
     {
-        $this->SetFont('Arial','B',15);
-        $this->Cell(70);
-        $this->Cell(50,10,'Rezultat wizyty',1,0,'C');
+        $this->SetFont('DejaVu','',18);
+        $this->Cell(50);
+        $this->Cell(90,10,'Rezultat wizyty',1,0,'C');
         $this->Ln(20);
     }
 
@@ -80,28 +99,88 @@ class PDF extends FPDF
 }
 
 $pdf = new PDF();
+$pdf->AddFont('DejaVu','','DejaVuSansMono.ttf',true);
+$pdf->AddFont('DejaVu2','','DejaVuSerif-Bold.ttf',true);
+$pdf->SetFont('DejaVu','',12);
 $pdf->AliasNbPages();
 $pdf->AddPage();
-$pdf->SetFont('arial','',12);
 $w = array(80, 110);
-$pdf->Cell($w[0],10,'Imie zwierzecia:',1,0,'C');
+
+$pdf->Ln();
+$pdf->Cell($w[0],10,'Data wizyty:',1,0,'C');
+$pdf->Cell($w[1],10,$visDetail['VISIT_DATE'],1,0,'C');
+
+$pdf->Ln();
+$pdf->Cell($w[0],10,'Godzina wizyty:',1,0,'C');
+$pdf->Cell($w[1],10,$visDetail['VISIT_HOUR'],1,0,'C');
+
+$pdf->Ln();
+$pdf->Cell($w[0],10,'Gatunek zwierzęcia:',1,0,'C');
+$pdf->Cell($w[1],10,$visDetail['SPECIES'],1,0,'C');
+
+$pdf->Ln();
+$pdf->Cell($w[0],10,'Rasa zwierzęcia:',1,0,'C');
+$pdf->Cell($w[1],10,$visDetail['RACE'],1,0,'C');
+
+$pdf->Ln();
+$pdf->Cell($w[0],10,'Imię zwierzęcia:',1,0,'C');
 $pdf->Cell($w[1],10,$visDetail['NAME'],1,0,'C');
+
 $pdf->Ln();
 $pdf->Cell($w[0],10,'Data urodzenia:',1,0,'C');
 $pdf->Cell($w[1],10,$visDetail['BIRTH_DATE'],1,0,'C');
+
 $pdf->Ln();
-$pdf->Cell($w[0],10,'Plec:',1,0,'C');
+$pdf->Cell($w[0],10,'Płeć:',1,0,'C');
 if($visDetail['GENDER'] === 'FEMALE')
-    $gender = 'zenska';
+    $gender = 'Żeńska';
 else
-    $gender = 'zenska';
+    $gender = 'Męska';
 $pdf->Cell($w[1],10,$gender,1,0,'C');
+
 $pdf->Ln();
 $pdf->Cell($w[0],10,'Waga:',1,0,'C');
 $pdf->Cell($w[1],10,$visDetail['WEIGHT'].' kg',1,0,'C');
+
 $pdf->Ln();
 $pdf->Cell($w[0],10,'Wzrost:',1,0,'C');
 $pdf->Cell($w[1],10,$visDetail['HEIGHT'].' cm',1,0,'C');
+
+$pdf->Ln();
+$pdf->Cell($w[0],10,'Właściciel:',1,0,'C');
+$pdf->Cell($w[1],10,$visDetail['FIRST_NAME'].' '.$visDetail['LAST_NAME'],1,0,'C');
+
+$pdf->Ln();
+$pdf->Cell($w[0],10,'Lekarz przyjmujący:',1,0,'C');
+$pdf->Cell($w[1],10,$visDetail['DOCTOR_FIRST_NAME'].' '.$visDetail['DOCTOR_LAST_NAME'],1,0,'C');
+
+$pdf->Ln();
+$pdf->setFillColor(255,255,255);
+$pdf->Cell($w[0],10,'Opis:',1,0,'C');
+$pdf->SetFont('DejaVu','',10);
+$pdf->MultiCell($w[1],10,$visDetail['VISIT_DESCRIPTION'], 1, 'J', 1, 2, '' ,'', true);
+$pdf->SetFont('DejaVu','',12);
+
+if($visDetail['DISEASES'] != 0){
+    $pdf->Cell($w[0],10,'Zdiagnozowane choroby:',1,0,'C');
+    $diseases = "";
+    foreach($visDetail['DISEASES'] as $value){
+        $diseases .= $value.',' ;
+    }
+    $pdf->setFillColor(255,255,255); 
+    $pdf->MultiCell($w[1],10,$diseases,1,0,'C');
+}
+
+if($visDetail['SERVICES'] != 0){
+    $pdf->Cell($w[0],10,'Świadczone usługi:',1,0,'C');
+    $services = "";
+    foreach($visDetail['SERVICES'] as $value){
+        $services .= $value.',' ;
+    }
+    $pdf->setFillColor(255,255,255); 
+    $pdf->MultiCell($w[1],10,$services,1,0,'C');
+}
+
 $pdf->Output("visit.pdf", "I");
 
 ?>
