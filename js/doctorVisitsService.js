@@ -615,7 +615,11 @@ function showVisitDetail($vis){
 				$buttonPdfVisit.attr('class','btn btnMenu');
 				$buttonPdfVisit.html('Rezultat wizyty [PDF]');
 				$buttonPdfVisit.attr('target','_blank');
-				$buttonPdfVisit.attr('href','../doctor/visitpdf.php');
+				//$buttonPdfVisit.attr('href','../doctor/visitpdf.php');
+				$buttonPdfVisit.on('click', function(){
+					window.open('../doctor/visitpdf.php?cusAniId='+$vis['CUS_ANI_ID']+"&visId="+$vis['VIS_ID'], '_blank');
+				})
+				
 				$("#contentDescription").append($table);
 				$("#contentDescription").append($buttonPdfVisit);
 			}
