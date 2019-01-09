@@ -65,6 +65,14 @@
 											//"id" => "logoutButton",
 											"class" => "btn btnMenu",
 											"iClass" => "fas fa-book-dead"
+										),
+									8 => Array
+										(
+											"text" => "Statystyki",
+											"href" => "stats.php",
+											//"id" => "logoutButton",
+											"class" => "btn btnMenu",
+											"iClass" => "fas fa-chart-area"
 										)
 								);
 			private $styles = Array("mainStyles.css","doctorStyles.css");								//nazwy plików ze stylami

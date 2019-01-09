@@ -701,5 +701,57 @@
 			}
 			return $visDetail;
 		}
+		//pobiera statystyki
+		public function getStats(){
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			$stats = Array();											//tworzymy tablice
+			$idx=0;
+			if(mysqli_connect_errno())
+				$pets[$idx]=1;											//jesli błąd bazy to zwracamy 1
+			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
+				$query="SELECT COUNT(*) FROM DOCTOR";										//ilość lekarzy
+				$result=$db->query($query);
+				$stats['NUM_DOCTORS']=$result->fetch_assoc()['COUNT(*)'];	
+				
+				$query="SELECT COUNT(*) FROM CUSTOMER";										//ilość klientów
+				$result=$db->query($query);
+				$stats['NUM_CUSTOMERS']=$result->fetch_assoc()['COUNT(*)'];		
+
+				$query="SELECT COUNT(*) FROM CUSTOMER_ANIMAL";										//ilość zwierząt
+				$result=$db->query($query);
+				$stats['NUM_CUSTOMER_ANIMALS']=$result->fetch_assoc()['COUNT(*)'];	
+
+				$query="SELECT COUNT(*) FROM MEDICINE";																								//ilość leków
+				$result=$db->query($query);
+				$stats['NUM_MEDICINES']=$result->fetch_assoc()['COUNT(*)'];	
+				
+				$query="SELECT COUNT(*) FROM DISEASE";																								//ilość chorób
+				$result=$db->query($query);
+				$stats['NUM_DISEASES']=$result->fetch_assoc()['COUNT(*)'];
+				
+				$query="SELECT COUNT(*) FROM VISIT WHERE DATE<CURDATE() OR DATE=CURDATE() AND HOUR<CURTIME()";										//ilość odbytych wizyt
+				$result=$db->query($query);
+				$stats['NUM_PREV_VISITS']=$result->fetch_assoc()['COUNT(*)'];
+				
+				$query="SELECT COUNT(*) FROM VISIT WHERE DATE>CURDATE() OR DATE=CURDATE() AND HOUR>CURTIME()";										//ilość zaplanowanych wizyt
+				$result=$db->query($query);
+				$stats['NUM_NEXT_VISITS']=$result->fetch_assoc()['COUNT(*)'];
+				
+				$query="SELECT concat(LAST_NAME,' ',FIRST_NAME) as NEW_CUS FROM CUSTOMER ORDER BY CUS_ID DESC LIMIT 1";								//najnowszy uzytkownik
+				$result=$db->query($query);
+				$stats['NEWEST_CUSTOMER']=$result->fetch_assoc()['NEW_CUS'];
+				
+				$query="SELECT RACE, COUNT(ANI_RAC_ID) AS NUM FROM customer_animal JOIN animal_race USING(ANI_RAC_ID) GROUP BY ANI_RAC_ID ORDER BY NUM DESC LIMIT 1";				
+				$result=$db->query($query);
+				$row=$result->fetch_assoc();
+				$stats['MOST_ANIMALS']=$row['RACE']." (".$row['NUM'].")";
+				
+				
+				
+			}
+			return $stats;
+		}
 	}
 ?>

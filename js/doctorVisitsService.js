@@ -634,3 +634,178 @@ function showVisitDetail($vis){
 	});
 
 }
+
+$("#countMedDos").on('click',function(){
+	// przezroczysty div na cały ekran
+	$container=$('<div></div>');
+	$container.prop('id','opacityContainer');
+	$container.css({
+		'position':'fixed',
+		'top':'0px',
+		'left':'0px',
+		'width':'100%',
+		'height':'100%',
+		'background':'rgba(255, 255, 255, 0.6)'
+	});	
+	$('body').append($container);
+
+	// div wyśrodkowany w pionie i poziomie na tytuł i treść
+	$countCotainer = $('<div></div>');
+	$countCotainer.prop('id','countMedDosContainer');
+	$countCotainer.css({
+		'position':'absolute',
+		'top':'50%',
+		'left':'50%',
+		'width':'500px',
+		'padding': '20px 50px',
+		'background':'#ff850c',
+		'margin-left':'-270px',
+		'margin-top':'-270px',
+		'border-radius': '5px',
+		'box-shadow': '0px 0px 5px 0px rgba(0,0,0,0.75)'
+	});	
+	$container.append($countCotainer);
+
+	// tytuł modala
+	$title = $('<div></div>');
+	$title.prop('id','titleCountContainer');
+	$title.css({
+		'width': '440px',
+		'float': 'left',
+		'padding': '10px 20px 20px 20px',
+		'background':'#ff850c',
+		'font-size':'1.3rem'
+	});
+	$title.html("<i class='fas fa-info-circle' style='margin-right: 10px'></i>Obliczanie dawek leków");
+	$countCotainer.append($title);
+
+	// przycisk do zamykania modala
+	$closeButton = $('<div></div>');
+	$closeButton.prop('id','closeModal');
+	$closeButton.css({
+		'width': '20px',
+		'float': 'left',
+		'font-size': '1.6rem',
+		'background':'#ff850c'
+	});
+	$closeButton.hover(function(){
+		$(this).css(
+			"cursor", "pointer"
+		);
+	});
+	$closeButton.html("<i class='fas fa-window-close'></i>");
+	$countCotainer.append($closeButton);
+
+	// div na dane do wyswietlenia
+	$message = $('<div></div>');
+	$message.prop('id','messageCountContainer');
+	$message.css({
+		'width': '100%',
+		'height': '100%',
+		'font-size': '1.1rem'
+	});
+	//select z wyborem zwierzecia 
+	$selectAnimalForCount=$('<select></select>');
+	$selectAnimalForCount.attr('id','selectAnimalForCount');
+	$selectAnimalForCount.css('width','100%');
+	$selectAnimalForCount.on('change',function(){							//jesli sie zmienia to wpisuje wartosc do odpowiednieog inpuita
+		if($selectAnimalForCount.val()!=-1){
+			$("#wieghtForCount").val($(this).val());
+			if($("#dosageForCount").val()!="")								 //jesli drugi input jest wypełniny to liczymy dawkowanie
+				$("#resultForCount").val($("#dosageForCount").val() * $("#wieghtForCount").val());
+		}
+	});
+	//select z wyborem leku
+	$selectMedicineForCount=$('<select></select>');
+	$selectMedicineForCount.attr('id','selectMedicineForCount');
+	$selectMedicineForCount.css('width','100%');
+	$selectMedicineForCount.on('change',function(){							//jesli sie zmienia to wpisuje wartosc do odpowiednieog inpuita
+		if($selectMedicineForCount.val()!=-1){
+			$("#dosageForCount").val($(this).val());
+			if($("#wieghtForCount").val()!="")                               //jesli drugi input jest wypełniny to liczymy dawkowanie
+				$("#resultForCount").val($("#dosageForCount").val() * $("#wieghtForCount").val());
+		}
+	});
+	
+	$.ajax({									
+		type:"post",
+		url:"visitsService.php",
+		dataType:"json",
+		data:{
+			accType:"doctor",
+			returnVal:"countMedDos"											//określa co chcemy										
+		},
+		success: function(json){
+			$selectAnimalForCount.append('<option value="-1">-------------------</option>');	//budujemy dwa selecty
+			for(let i=0;i<json[0].length;i++){
+				
+				$selectAnimalForCount.append('<option value="'+json[0][i]['WEIGHT']+'">'+json[0][i]['NAME']+' - '+json[0][i]['LAST_NAME_OWNER']+' '+json[0][i]['FIRST_NAME_OWNER']+'</option>');
+			}
+			$selectMedicineForCount.append('<option value="-1">-------------------</option>');
+			for(let i=0;i<json[1].length;i++){
+				
+				$selectMedicineForCount.append('<option value="'+json[1][i]['DOSAGE']+'">'+json[1][i]['NAME']+'</option>');
+			}
+			//console.log(json);
+		},
+		error: function(e){
+			console.warn(e);
+		}
+	});
+	
+	// dane do wyświetlenia
+	$div = $('<div style="float:left; width: 100%; padding: 10px 0px">Wybierz zwierzę oraz lek lub wprowadz wagę zwierzęcia oraz dawkę leku samodzielnie:</div>');
+	$message.append($div);
+	$div = $('<div style="float:left; width: 50%; padding: 10px 0px">Zwierzę:</div>');
+	$div2 = $('<div style="float:left; width: 50%; padding: 10px 0px"></div>');
+	$div2.append($selectAnimalForCount);
+	$message.append($div);
+	$message.append($div2);
+	$div = $('<div style="float:left; width: 50%; padding: 10px 0px">Lek:</div>');
+	$div2 = $('<div style="float:left; width: 50%; padding: 10px 0px"></div>');
+	$div2.append($selectMedicineForCount);
+	$message.append($div);
+	$message.append($div2);
+	$div = $('<div style="float:left; width: 50%; padding: 10px 0px">Waga zwierzęcia:</div>');
+	$div2 = $('<div style="float:left; width: 50%; padding: 10px 0px"></div>');	
+	$weightInput=$('<input>');
+	$weightInput.attr('id','wieghtForCount');
+	$weightInput.attr('type','text');
+	$weightInput.css('width','100%');
+	$weightInput.on('blur',function(){
+		if($(this).val()!="" && $("#dosageForCount").val()!="")                               //po wyblirowaniu, jesli oba są uzupełnine to mnozymy
+				$("#resultForCount").val($("#dosageForCount").val() * $(this).val());
+	});
+	$div2.append($weightInput);
+	$message.append($div);
+	$message.append($div2);
+	$div = $('<div style="float:left; width: 50%; padding: 10px 0px">Dawkowanie leku:</div>');
+	$div2 = $('<div style="float:left; width: 50%; padding: 10px 0px"></div>');
+	$dosageInput=$('<input>');
+	$dosageInput.attr('id','dosageForCount');
+	$dosageInput.attr('type','text');
+	$dosageInput.css('width','100%');
+	$dosageInput.on('blur',function(){
+		if($(this).val()!="" && $("#wieghtForCount").val()!="")                               //po wyblirowaniu, jesli oba są uzupełnine to mnozymy
+				$("#resultForCount").val($("#wieghtForCount").val() * $(this).val());
+	});
+	$div2.append($dosageInput);
+	$message.append($div);
+	$message.append($div2);
+	$div = $('<div style="float:left; width: 50%; padding: 10px 0px">Dawka:</div>');
+	$div2 = $('<div style="float:left; width: 50%; padding: 10px 0px"><input id="resultForCount" style="width:100%" type="text" disabled="true"></div>');
+	$message.append($div);
+	$message.append($div2);
+	
+	
+	$countCotainer.append($message);
+	$container.on('click', function(){
+		$container.remove();
+	}).children().click(function() {
+		return false;
+	});
+	
+	$closeButton.on('click', function(){
+		$container.remove();
+	});
+})

@@ -26,5 +26,11 @@
 		else if($_POST['returnVal'] == "visitDetails"){
 			echo json_encode(unserialize($_SESSION['DOCTOR'])->getVisitDetails($_POST));						//zwracamy tabele
 		}
+		else if($_POST['returnVal'] == "countMedDos"){
+			$arr=Array();
+			$arr[0]=unserialize($_SESSION['DOCTOR'])->getAllPets();
+			$arr[1]=unserialize($_SESSION['DOCTOR'])->getAllMedicines();
+			echo json_encode($arr);						//zwracamy tabele
+		}
 	}
 ?>
