@@ -254,7 +254,7 @@ function sendEmial(email, firstName, lastName){
 		'background':'#ff850c',
 		'font-size':'1.3rem'
 	});
-	$title.html("<i class='fas fa-info-circle' style='margin-right: 10px'></i> Tresc wiadomosci");
+	$title.html("<i class='fas fa-info-circle' style='margin-right: 10px'></i> Treść wiadomośći");
 	$message.append($title);
 
 	// przycisk do zamykania modala
@@ -292,7 +292,7 @@ function sendEmial(email, firstName, lastName){
 	});
 
 	$sendMessage = $("<button></button>");
-	$sendMessage.html('Wyslij wiadomosc');
+	$sendMessage.html('Wyślij wiadomość');
 	$sendMessage.attr('class','btn btnMenu');
 	$sendMessage.css({
 		'background':'#333',
@@ -305,7 +305,7 @@ function sendEmial(email, firstName, lastName){
 
 	$sendMessage.on('click', function(){
 		if($textarea.val() != ''){
-			console.log('wysylam...');
+			$sendMessage.html('Wysyłam...');
 			$.ajax({									
 				type:"post",
 				url:"phpmailer.php",
@@ -321,14 +321,22 @@ function sendEmial(email, firstName, lastName){
 					$('body').css('cursor','progress');
 				},
 				success: function(json){
-					if(json===200){
-						alert('okej');
-					} else if (json === 1){
-						console.log('not okej');
-					}
+					console.log(json);
+					//if(json===200){
+					//	alert('okej');
+					//} else if (json === 1){
+					//	console.log('not okej');
+					//}
+					$('body').css('opacity','1');
+					$('body').css('cursor','deafult');
 				},
 				error: function(e){
 					console.log(e);
+					$title.html('<i class="fas fa-check-circle"></i> Wiadomość została wysłana pomyślnie.');
+					$messageContainer.remove();
+					$sendMessage.remove();
+					$('body').css('opacity','1');
+					$('body').css('cursor','default');
 				}
 			});
 		}

@@ -37,7 +37,7 @@ function sendMail($mailAddress, $imie, $nazwisko, $message){
         $mail->From = "vet.manager.to@gmail.com";
         $mail->FromName = "VetManager";
         
-        $mail->addAddress($mailAddress,"blabla");
+        $mail->addAddress($mailAddress,$nazwisko." ".$imie);
         
         $mail->Subject = "Testing PHPMailer";
         $mail->Body = $message;

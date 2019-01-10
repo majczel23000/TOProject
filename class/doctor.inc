@@ -663,7 +663,7 @@
 					$visDetail['DISEASES']=Array();
 					$tmp=0;
 					while($dis=$result->fetch_assoc())
-						$visDetail['DISEASES'][$tmp++]=$dis['NAME'];
+						$visDetail['DISEASES'][$tmp++]=" ".$dis['NAME'];
 				}
 				$query="SELECT NAME FROM VISIT_SERVICE JOIN SERVICE USING(SER_ID) WHERE VIS_ID=".$d['visId'];	//pobieramy zabiegi
 				$result=$db->query($query);																
@@ -673,7 +673,7 @@
 					$visDetail['SERVICES']=Array();
 					$tmp=0;
 					while($ser=$result->fetch_assoc())
-						$visDetail['SERVICES'][$tmp++]=$ser['NAME'];
+						$visDetail['SERVICES'][$tmp++]=" ".$ser['NAME'];
 				}
 				$query="SELECT PRE_ID,DATE FROM PRESCRIPTION WHERE VIS_ID=".$d['visId'];	//pobieramy recepty
 				$result=$db->query($query);																
@@ -692,7 +692,7 @@
 							$visDetail['PRESCRIPTIONS'][$tmp++]['MEDICINES']=Array();
 							$tmp2=0;
 							while($med=$result2->fetch_assoc())
-								$visDetail['PRESCRIPTIONS'][$tmp-1]['MEDICINES'][$tmp2++]=$med['NAME'];
+								$visDetail['PRESCRIPTIONS'][$tmp-1]['MEDICINES'][$tmp2++]=" ".$med['NAME'];
 						}
 					}
 				}

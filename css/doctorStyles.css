@@ -292,8 +292,12 @@ table.editAH input[type=text],.medicine-edit,.disease-edit{
 	letter-spacing:1px;
 	font-weight:600;
 }
-#visitDetailTable > tr:nth-child(2n+1) > td:nth-child(2),#visitDetailTable > tr:nth-child(2n+1) > td:first-child,#visitDetailTable > tr:nth-child(2n) > td:nth-child(3),#visitDetailTable > tr:nth-child(2n) > td:last-child{
+#visitDetailTable > tr:nth-child(2n+1){
 	background-color:#ccc;
+}
+#visitDetailTable td{
+	padding: 10px 1%;
+	width:23%;
 }
 .doctor-service-error-info{
 	display:block;

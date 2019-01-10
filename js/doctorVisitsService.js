@@ -593,12 +593,20 @@ function showVisitDetail($vis){
 				$tr=$("<tr><td>Rasa zwierzęcia </td></tr>");
 				$tr.append("<td>"+$vis['RACE']+"</td>");
 				$tr.append("<td>Waga zwierzęcia </td>");
-				$tr.append("<td>"+json['WEIGHT']+"</td>");
+				$tr.append("<td>"+json['WEIGHT']+" kg</td>");
 				$table.append($tr);
 				$tr=$("<tr><td>Data urodzenia zwierzęcia </td></tr>");
 				$tr.append("<td>"+json['BIRTH_DATE']+"</td>");
 				$tr.append("<td>Płeć zwierzęcia </td>");
 				$tr.append("<td>"+json['GENDER']+"</td>");
+				$table.append($tr);
+				$tr=$("<tr><td>Status </td></tr>");
+				$tr.append("<td>"+$vis['STATUS']+"</td>");
+				$tr.append("<td>Cena </td>");
+				$tr.append("<td>"+$vis['PRICE']+"</td>");
+				$table.append($tr);
+				$tr=$("<tr><td>Opis wizyty </td></tr>");
+				$tr.append("<td colspan=\"3\" style=\"text-align:left;padding-left:50px\">"+$vis['DESCRIPTION']+"</td>");
 				$table.append($tr);
 				$tr=$("<tr><td>Choroby </td></tr>");
 				$tr.append("<td>"+json['DISEASES']+"</td>");
@@ -641,7 +649,7 @@ function showVisitDetail($vis){
 					})
 				}
 				
-				
+				$("#contentDescription").append('<div style="clear:both;"></div>');
 			}
 			$('body').css('opacity','1');
 			$('body').css('cursor','default');
