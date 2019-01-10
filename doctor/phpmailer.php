@@ -21,18 +21,18 @@ function sendMail($mailAddress, $imie, $nazwisko, $message){
 	try {
         $mail = new PHPMailer();
         $mail->IsSMTP();
-        $mail->Mailer = 'smtp';
+        // $mail->Mailer = 'smtp';
         $mail->SMTPAuth = true;
-        $mail->SMTPDebug = 2;
+        $mail->SMTPDebug = 1;
         $mail->Host = 'smtp.gmail.com';
         $mail->Port = 587;
         $mail->SMTPSecure = 'tls';
         
         $mail->Username = "vet.manager.to@gmail.com";
-        $mail->Password = "Vetmanager1996";
+        $mail->Password = "VetManager1996";
         
         $mail->IsHTML(true);
-        $mail->SingleTo = true;
+        // $mail->SingleTo = true;
         
         $mail->From = "vet.manager.to@gmail.com";
         $mail->FromName = "VetManager";
@@ -60,7 +60,8 @@ function sendMail($mailAddress, $imie, $nazwisko, $message){
 	catch (\Exception $e){
 		echo $e->getMessage();
 		return false;
-	}
+    }
+    mail($mailAddress,"My subject",$message);
 }
 
 ?>
