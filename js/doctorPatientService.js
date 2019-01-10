@@ -179,10 +179,24 @@ function getCustomerData(){
 					$tbody.append("<tr><td>Ostatnia wizyta: </td><td>"+json['VISIT_PREV']+"</td></tr>");
 					$tbody.append("<tr><td>Następa wizyta: </td><td>"+json['VISIT_NEXT']+"</td></tr>");
 					$tbody.append("<tr><td>Liczba wizyt: </td><td>"+json['VISIT_NUM']+"</td></tr>");
-					
+
+					$tr = $("<tr></tr>");
+					$td = $("<td></td>");
+					$td.attr('colspan',2);
+					$tr.append($td);
+					$sendMailButton = $("<button></button>");
+					$sendMailButton.attr('id','sendMailButton');
+					$sendMailButton.attr('class', 'btn btnMenu');
+					$sendMailButton.html('Wyslij wiadomosc email klientowi');
+					$sendMailButton.on('click', function(){
+						sendEmial(json['EMAIL'], json['FIRST_NAME'], json['LAST_NAME']);
+					})
+					$td.append($sendMailButton);
+					$tbody.append($tr);
+
 					$table.append($tbody);
 					$("#contentDescription").append($table);														//wstawiamy na strone tabele juz pelną
-					
+
 					$('html, body').animate({
 						scrollTop: $("#customerDetail").offset().top
 					}, 1000);
@@ -197,4 +211,138 @@ function getCustomerData(){
 			}
 		});
 	}
+}
+
+function sendEmial(email, firstName, lastName){
+	// przezroczysty div na cały ekran
+	$container=$('<div></div>');
+	$container.prop('id','opacityContainer');
+	$container.css({
+		'position':'fixed',
+		'top':'0px',
+		'left':'0px',
+		'width':'100%',
+		'height':'100%',
+		'background':'rgba(255, 255, 255, 0.6)'
+	});	
+	$('body').append($container);
+
+	// div wyśrodkowany w pionie i poziomie na tytuł i treść
+	$message = $('<div></div>');
+	$message.prop('id','message');
+	$message.css({
+		'position':'absolute',
+		'top':'50%',
+		'left':'50%',
+		'width':'500px',
+		'padding': '20px 50px',
+		'background':'#ff850c',
+		'margin-left':'-270px',
+		'margin-top':'-200px',
+		'border-radius': '5px',
+		'box-shadow': '0px 0px 5px 0px rgba(0,0,0,0.75)'
+	});	
+	$container.append($message);
+
+	// tytuł modala
+	$title = $('<div></div>');
+	$title.prop('id','titlemessage');
+	$title.css({
+		'width': '440px',
+		'float': 'left',
+		'padding': '10px 20px 20px 20px',
+		'background':'#ff850c',
+		'font-size':'1.3rem'
+	});
+	$title.html("<i class='fas fa-info-circle' style='margin-right: 10px'></i> Tresc wiadomosci");
+	$message.append($title);
+
+	// przycisk do zamykania modala
+	$closeButton = $('<div></div>');
+	$closeButton.prop('id','closeModal');
+	$closeButton.css({
+		'width': '20px',
+		'float': 'left',
+		'font-size': '1.6rem',
+		'background':'#ff850c'
+	});
+	$closeButton.hover(function(){
+		$(this).css(
+			"cursor", "pointer"
+		);
+	});
+	$closeButton.html("<i class='fas fa-window-close'></i>");
+	$message.append($closeButton);
+
+	// div na dane do wyswietlenia
+	$messageContainer = $('<div></div>');
+	$messageContainer.prop('id','messageContainer');
+	$messageContainer.css({
+		'width': '100%',
+		'height': '100%',
+		'font-size': '1.1rem'
+	});
+	
+	// dane do wyświetlenia
+	$textarea = $("<textarea></textarea>");
+	$textarea.css({
+		'width': '100%',
+		'height': '200px',
+		'font-size': '1.1rem'
+	});
+
+	$sendMessage = $("<button></button>");
+	$sendMessage.html('Wyslij wiadomosc');
+	$sendMessage.attr('class','btn btnMenu');
+	$sendMessage.css({
+		'background':'#333',
+		'color': '#f6f6f6'
+	})
+
+	$messageContainer.append($textarea);
+	$messageContainer.append($sendMessage);
+	$message.append($messageContainer);
+
+	$sendMessage.on('click', function(){
+		if($textarea.val() != ''){
+			console.log('wysylam...');
+			$.ajax({									
+				type:"post",
+				url:"phpmailer.php",
+				dataType:"json",
+				data:{
+					email: email,
+					firstName:firstName,
+					lastName: lastName,
+					message: $textarea.val()
+				},
+				beforeSend: function(){
+					$('body').css('opacity','0.6');
+					$('body').css('cursor','progress');
+				},
+				success: function(json){
+					if(json===200){
+						alert('okej');
+					} else if (json === 1){
+						console.log('not okej');
+					}
+				},
+				error: function(e){
+					console.log(e);
+				}
+			});
+		}
+		
+	})
+
+	// po kliknięciu gdziekolwiek poza content znika modal
+	$container.on('click', function(){
+		$container.remove();
+	}).children().click(function() {
+		return false;
+	});
+	
+	$closeButton.on('click', function(){
+		$container.remove();
+	});	
 }

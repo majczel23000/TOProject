@@ -1,6 +1,6 @@
 <?php
 	$server='localhost';
 	$user='root';
-	$password='';
+	$password='password';
 	$dataBase='vetmenager';
 ?>
