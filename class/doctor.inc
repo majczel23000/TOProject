@@ -748,7 +748,7 @@
 				$row=$result->fetch_assoc();
 				$stats['MOST_ANIMALS']=$row['RACE']." (".$row['NUM'].")";
 				
-				
+				$stats['DATE']=date('Y-m-d H:i:s');
 				
 			}
 			return $stats;

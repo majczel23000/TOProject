@@ -579,6 +579,7 @@ function showVisitDetail($vis){
 				$("#contentTitle").append("<h3>Karta wizyty: "+$vis['DATE']+", godz. "+$vis['HOUR']+"</h3>");	//ustawiamy tytuł
 				
 				$table=$("<table></table>");
+				$table.attr('id','visitDetailTable');
 				$tr=$("<tr><td>Lekarz prowadzący </td></tr>");
 				$tr.append("<td>"+json['DOCTOR']+"</td>");
 				$tr.append("<td>Klient</td>");
@@ -586,28 +587,28 @@ function showVisitDetail($vis){
 				$table.append($tr);
 				$tr=$("<tr><td>Imie zwierzęcia </td></tr>");
 				$tr.append("<td>"+json['NAME']+"</td>");
-				$tr.append("<tr><td>Identyfikator w systemie </td></tr>");
+				$tr.append("<td>Identyfikator w systemie </td>");
 				$tr.append("<td>"+$vis['CUS_ANI_ID']+"</td>");
 				$table.append($tr);
 				$tr=$("<tr><td>Rasa zwierzęcia </td></tr>");
 				$tr.append("<td>"+$vis['RACE']+"</td>");
-				$tr.append("<tr><td>Waga zwierzęcia </td></tr>");
+				$tr.append("<td>Waga zwierzęcia </td>");
 				$tr.append("<td>"+json['WEIGHT']+"</td>");
 				$table.append($tr);
 				$tr=$("<tr><td>Data urodzenia zwierzęcia </td></tr>");
 				$tr.append("<td>"+json['BIRTH_DATE']+"</td>");
-				$tr.append("<tr><td>Płeć zwierzęcia </td></tr>");
+				$tr.append("<td>Płeć zwierzęcia </td>");
 				$tr.append("<td>"+json['GENDER']+"</td>");
 				$table.append($tr);
 				$tr=$("<tr><td>Choroby </td></tr>");
 				$tr.append("<td>"+json['DISEASES']+"</td>");
-				$tr.append("<tr><td>Zabiegi </td></tr>");
+				$tr.append("<td>Zabiegi </td>");
 				$tr.append("<td>"+json['SERVICES']+"</td>");
 				$table.append($tr);
 				for(let i=0;i<json['PRESCRIPTIONS'].length;i++){
 					$tr=$("<tr><td>Data recepty </td></tr>");
 					$tr.append("<td>"+json['PRESCRIPTIONS'][i]['DATE']+"</td>");
-					$tr.append("<tr><td>Leki </td></tr>");
+					$tr.append("<td>Leki </td>");
 					$tr.append("<td>"+json['PRESCRIPTIONS'][i]['MEDICINES']+"</td>");
 					$table.append($tr);
 				}

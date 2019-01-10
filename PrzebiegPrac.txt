@@ -22,7 +22,7 @@ KLI-09 - dodanie nowego zwierzêcia
 KLI-10 - edycja swojego zwierzêcia
 KLI-11 - przegla statystyk swoich zwierz¹t
 
-LEK-01 - ?????????????????????????????
+LEK-01 - Przegl¹d statystyk przychodni
 LEK-02 - wyswietlenie listy klientów
 LEK-03 - wyswietlenie szczegó³ów klienta
 LEK-04 - przegl¹d zwierz¹t klienta
@@ -46,7 +46,7 @@ Tego nie ma w wymaganiach, ale jest ju¿ u nas:
 Wszystkich wymagañ w dokumentacji jest 36. ///edit, przeciez s¹ 33
 30% aplikacji to oko³o 11 wymagañ. +
 
-Aktualnie: 28/33
+Aktualnie: 29/33
 
 info
 na profilu lekarza, w liœcie lekarzy, nie wyœwietla siê ten lekarz, który jest zalogowany, bo od tego jest zak³adka "profil"

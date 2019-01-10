@@ -74,7 +74,7 @@ body{
     font-size: 1rem;
 }
 /*=====TABLEINFOSTYLES=====*/
-#userInfo, #customerDetail, #doctorDetail{
+#userInfo, #customerDetail, #doctorDetail, #mainStatsTable{
 	cursor:default;
     background: #f6f6f6;
     border-radius:3px;
@@ -86,16 +86,16 @@ body{
     width: 100%;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
-#userInfo tr:nth-child(2n),#customerDetail tr:nth-child(2n),#doctorDetail tr:nth-child(2n){
+#userInfo tr:nth-child(2n),#customerDetail tr:nth-child(2n),#doctorDetail tr:nth-child(2n), #mainStatsTable tr:nth-child(2n){
 	opacity:0.97;
 }
-#userInfo > tbody > tr:hover > td:nth-child(odd),#customerDetail tr:hover td:nth-child(odd) ,#doctorDetail > tbody > tr:hover > td:nth-child(odd){
+#userInfo > tbody > tr:hover > td:nth-child(odd),#customerDetail tr:hover td:nth-child(odd) ,#doctorDetail > tbody > tr:hover > td:nth-child(odd), #mainStatsTable > tbody > tr:hover > td:nth-child(odd){
     background: #e6e6e6;
 }
-#userInfo > tbody > tr:hover > td,#customerDetail tr:hover td,#doctorDetail > tbody > tr:hover > td {
+#userInfo > tbody > tr:hover > td,#customerDetail tr:hover td,#doctorDetail > tbody > tr:hover > td , #mainStatsTable > tbody > tr:hover > td{
     background:#444;
 }
-#userInfo > tbody > tr > td, #customerDetail td,#doctorDetail > tbody > tr > td {
+#userInfo > tbody > tr > td, #customerDetail td,#doctorDetail > tbody > tr > td, #mainStatsTable > tbody > tr > td{
     background:#f0f0f0;
     padding:20px;
     text-align:left;
@@ -104,9 +104,12 @@ body{
     overflow: hidden;
     width: 50%;
 }
-#userInfo > tbody > tr > td:nth-child(even), #customerDetail td:nth-child(even),#doctorDetail > tbody > tr > td:nth-child(even){
+#userInfo > tbody > tr > td:nth-child(even), #customerDetail td:nth-child(even),#doctorDetail > tbody > tr > td:nth-child(even),#mainStatsTable > tbody > tr > td:nth-child(even){
     background: #333;
     color: #f6f6f6;
+}
+#mainStatsTable > tbody > tr > td:nth-child(even){
+	text-align:center;
 }
 #userInfo tr .sector-title{
 	text-align:center;
@@ -115,7 +118,7 @@ body{
 	font-size:1.5rem;
 	background-color:#d9d9d9;
 }
-#customerDetail thead th,#doctorDetail thead th{
+#customerDetail thead th,#doctorDetail thead th, #mainStatsTable thead th{
     color: #f6f6f6;
     background-color: gray;
 	padding:20px 0px;
@@ -273,6 +276,24 @@ table.editAH input[type=text],.medicine-edit,.disease-edit{
 	border:none;
     padding: 31px 10%;
     width: 80%;
+}
+#visitDetailTable{
+	cursor:default;
+    background: #f6f6f6;
+    border-radius:3px;
+    border-collapse: collapse;
+    height: 320px;
+    margin: auto;
+    padding:5px;
+    width: 90%;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+#visitDetailTable > tr > td:nth-child(2n+1){
+	letter-spacing:1px;
+	font-weight:600;
+}
+#visitDetailTable > tr:nth-child(2n+1) > td:nth-child(2),#visitDetailTable > tr:nth-child(2n+1) > td:first-child,#visitDetailTable > tr:nth-child(2n) > td:nth-child(3),#visitDetailTable > tr:nth-child(2n) > td:last-child{
+	background-color:#ccc;
 }
 .doctor-service-error-info{
 	display:block;
