@@ -620,9 +620,28 @@ function showVisitDetail($vis){
 				$buttonPdfVisit.on('click', function(){
 					window.open('../doctor/visitpdf.php?cusAniId='+$vis['CUS_ANI_ID']+"&visId="+$vis['VIS_ID'], '_blank');
 				})
-				
+
 				$("#contentDescription").append($table);
 				$("#contentDescription").append($buttonPdfVisit);
+
+				if(json['PRESCRIPTIONS'].length > 0) {
+					$buttonPdfPrescription = $("<a></a>");
+					$buttonPdfPrescription.attr('class','btn btnMenu');
+					$buttonPdfPrescription.html('Recepta [PDF]');
+					$buttonPdfPrescription.attr('target','_blank');
+					$("#contentDescription").append($buttonPdfPrescription);
+					$buttonPdfPrescription.on('click', function(){
+						let params = "preId=";
+						for(let i=0;i<json['PRESCRIPTIONS'].length;i++){
+							params += json['PRESCRIPTIONS'][i]['PRE_ID'];
+							if(i!=json['PRESCRIPTIONS'].length-1)
+								params += ',';
+						}
+						window.open('../doctor/prescriptionpdf.php?'+params+'&visId='+$vis['VIS_ID'], '_blank');
+					})
+				}
+				
+				
 			}
 			$('body').css('opacity','1');
 			$('body').css('cursor','default');
