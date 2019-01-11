@@ -67,6 +67,37 @@ $pdf->AliasNbPages();
 for($i=0; $i<count($prescriptions); $i+=1){
     $pdf->AddPage();
     
+    $pdf->SetFont('DejaVu','',10);
+    $pdf->Ln();
+    $pdf->Cell(80,6,'Gabinet weterynaryjny VetManager',0,0,'C');
+    $pdf->Cell(100,6,'',0,0,'C');
+
+    $pdf->Ln();
+    $pdf->Cell(80,6,'31-678 Kraków',0,0,'C');
+    $pdf->Cell(100,6,'',0,0,'C');
+    
+    $pdf->Ln();
+    $pdf->Cell(80,6,'ul. Warszawska 15,',0,0,'C');
+    $pdf->Cell(100,6,'',0,0,'C');
+
+    $pdf->Ln();
+    $pdf->Cell(80,6,'Tel: 856 145 996',0,0,'C');
+    $pdf->Cell(100,6,'',0,0,'C');
+
+    $pdf->Ln();
+    $pdf->Cell(80,2,'.................................',0,0,'C');
+    $pdf->Cell(100,2,'',0,0,'C');
+
+    $pdf->SetFont('DejaVu','',8);
+    $pdf->Ln();
+    $pdf->Cell(80,5,'Wystawiający receptę',0,0,'C');
+    $pdf->Cell(100,5,'',0,0,'C');
+
+    $pdf->Ln();
+    $pdf->Cell(80,20,'',0,0,'C');
+    $pdf->Cell(100,20,'',0,0,'C');
+
+    $pdf->SetFont('DejaVu','',10);
     $pdf->Ln();
     $pdf->Cell(80,10,'Data wystawienia:',1,0,'C');
     $pdf->Cell(100,10,$prescriptions[$i]['DATE'],1,0,'C');
@@ -76,89 +107,25 @@ for($i=0; $i<count($prescriptions); $i+=1){
     $pdf->Cell(100,10,$prescriptions[$i]['DOC_FIRST_NAME'].' '.$prescriptions[$i]['DOC_LAST_NAME'],1,0,'C');
 
     $pdf->Ln();
-    $pdf->Cell(80,100,'Leki:',1,0,'C');
+    $pdf->Cell(80,80,'Leki:',1,0,'C');
     $medicines = "";
     foreach($prescriptions[$i]['MEDICINES'] as $value){
         $medicines .= $value.',' ;
     }
     $pdf->SetFillColor(255,255,255);
-    $pdf->MultiCell(100,100,$medicines,1,0,'C');
-    
-    
+    $pdf->MultiCell(100,80,$medicines,1,0,'C');
 
+    $pdf->SetFont('DejaVu','',8);
+    $pdf->Cell(80,20,'',0,0,'C');
+    $pdf->Cell(100,20,'',0,0,'C');
+    $pdf->Ln();
+    $pdf->Cell(80,2,'.......................................',0,0,'C');
+    $pdf->Cell(100,2,'.......................................',0,0,'C');
+
+    $pdf->Ln();
+    $pdf->Cell(80,10,'Miejscowość i data',0,0,'C');
+    $pdf->Cell(100,10,'Podpis i pieczęć lekarza weterynarii',0,0,'C');
 }
-
-
-// $pdf->Ln();
-// $pdf->Cell($w[0],10,'Godzina wizyty:',1,0,'C');
-// $pdf->Cell($w[1],10,$visDetail['VISIT_HOUR'],1,0,'C');
-
-// $pdf->Ln();
-// $pdf->Cell($w[0],10,'Gatunek zwierzęcia:',1,0,'C');
-// $pdf->Cell($w[1],10,$visDetail['SPECIES'],1,0,'C');
-
-// $pdf->Ln();
-// $pdf->Cell($w[0],10,'Rasa zwierzęcia:',1,0,'C');
-// $pdf->Cell($w[1],10,$visDetail['RACE'],1,0,'C');
-
-// $pdf->Ln();
-// $pdf->Cell($w[0],10,'Imię zwierzęcia:',1,0,'C');
-// $pdf->Cell($w[1],10,$visDetail['NAME'],1,0,'C');
-
-// $pdf->Ln();
-// $pdf->Cell($w[0],10,'Data urodzenia:',1,0,'C');
-// $pdf->Cell($w[1],10,$visDetail['BIRTH_DATE'],1,0,'C');
-
-// $pdf->Ln();
-// $pdf->Cell($w[0],10,'Płeć:',1,0,'C');
-// if($visDetail['GENDER'] === 'FEMALE')
-//     $gender = 'Żeńska';
-// else
-//     $gender = 'Męska';
-// $pdf->Cell($w[1],10,$gender,1,0,'C');
-
-// $pdf->Ln();
-// $pdf->Cell($w[0],10,'Waga:',1,0,'C');
-// $pdf->Cell($w[1],10,$visDetail['WEIGHT'].' kg',1,0,'C');
-
-// $pdf->Ln();
-// $pdf->Cell($w[0],10,'Wzrost:',1,0,'C');
-// $pdf->Cell($w[1],10,$visDetail['HEIGHT'].' cm',1,0,'C');
-
-// $pdf->Ln();
-// $pdf->Cell($w[0],10,'Właściciel:',1,0,'C');
-// $pdf->Cell($w[1],10,$visDetail['FIRST_NAME'].' '.$visDetail['LAST_NAME'],1,0,'C');
-
-// $pdf->Ln();
-// $pdf->Cell($w[0],10,'Lekarz przyjmujący:',1,0,'C');
-// $pdf->Cell($w[1],10,$visDetail['DOCTOR_FIRST_NAME'].' '.$visDetail['DOCTOR_LAST_NAME'],1,0,'C');
-
-// $pdf->Ln();
-// $pdf->setFillColor(255,255,255);
-// $pdf->Cell($w[0],10,'Opis:',1,0,'C');
-// $pdf->SetFont('DejaVu','',10);
-// $pdf->MultiCell($w[1],10,$visDetail['VISIT_DESCRIPTION'], 1, 'J', 1, 2, '' ,'', true);
-// $pdf->SetFont('DejaVu','',12);
-
-// if($visDetail['DISEASES'] != 0){
-//     $pdf->Cell($w[0],10,'Zdiagnozowane choroby:',1,0,'C');
-//     $diseases = "";
-//     foreach($visDetail['DISEASES'] as $value){
-//         $diseases .= $value.',' ;
-//     }
-//     $pdf->setFillColor(255,255,255); 
-//     $pdf->MultiCell($w[1],10,$diseases,1,0,'C');
-// }
-
-// if($visDetail['SERVICES'] != 0){
-//     $pdf->Cell($w[0],10,'Świadczone usługi:',1,0,'C');
-//     $services = "";
-//     foreach($visDetail['SERVICES'] as $value){
-//         $services .= $value.',' ;
-//     }
-//     $pdf->setFillColor(255,255,255); 
-//     $pdf->MultiCell($w[1],10,$services,1,0,'C');
-// }
 
 $pdf->Output("prescription.pdf", "I");
 
