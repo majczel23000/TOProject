@@ -140,7 +140,12 @@ function showPetDetail(pet){
 	$message.append($div);
 	$message.append($div2);
 	$div = ('<div style="float:left; width: 50%; padding: 10px 0px">Płeć:</div>');
-	$div2 = ('<div style="float:left; width: 50%; padding: 10px 0px">' + pet['GENDER'] + '</div>');
+	let gender = '';
+	if(pet['GENDER'] === 'MALE')
+		gender = 'Samiec';
+	else
+		gender = 'Samica';
+	$div2 = ('<div style="float:left; width: 50%; padding: 10px 0px">' + gender + '</div>');
 	$message.append($div);
 	$message.append($div2);
 	$div = ('<div style="float:left; width: 50%; padding: 10px 0px">Data urodzenia:</div>');

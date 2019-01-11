@@ -234,7 +234,7 @@ $('#editUserInfoButton').on('click', function(e){
 				console.log(json);
 				switch(json){
                     case 0:
-                        localStorage.setItem('messageSuccess', 'Pomyslnie zedytowano dane.');
+                        localStorage.setItem('messageSuccess', 'Pomyślnie zedytowano dane.');
                         location.href="index.php"
                         break;
                     default:

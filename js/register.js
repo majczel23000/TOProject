@@ -232,7 +232,7 @@ function register(){
 			success: function(json){
 				switch(json){
 					case 0:
-						localStorage.setItem('messageSuccess', 'Pomyslnie zarejestrowano. Prosze się zalogować.')
+						localStorage.setItem('messageSuccess', 'Pomyślnie zarejestrowano. Prosze się zalogować.')
 						location.href="login.php";
 					default:
 						console.log('Default success response');

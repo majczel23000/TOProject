@@ -1,4 +1,4 @@
 $('#logoutButton').on('click', function(){
-    localStorage.setItem('messageSuccess', 'Pomyslnie wylogowano.')
+    localStorage.setItem('messageSuccess', 'Pomyślnie wylogowano.')
 	location.href="../logout.php";
 });

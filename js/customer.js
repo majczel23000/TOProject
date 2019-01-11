@@ -1,5 +1,5 @@
 $('#logoutButton').on('click', function(){
-    localStorage.setItem('messageSuccess', 'Pomyslnie wylogowano.')
+    localStorage.setItem('messageSuccess', 'Pomyślnie wylogowano.')
 	location.href="../logout.php";
 });
 
@@ -62,7 +62,7 @@ $('#editUserInfoButton').on('click', function(e){
             success: function(json){
                 switch(json){
                     case 0:
-                        localStorage.setItem('messageSuccess', 'Pomyslnie zedytowano dane.');
+                        localStorage.setItem('messageSuccess', 'Pomyślnie zedytowano dane.');
                         location.href="index.php"
                         break;
                     default:

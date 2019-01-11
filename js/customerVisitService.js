@@ -466,14 +466,14 @@ function getMyVisits($status){
                     const visitDate = new Date(json[i]['DATE']);
                     if(json[i]['STATUS'] === 'PLANNED') {
                         if(visitDate < currentDate) {
-                            $status = 'Termin upłynął';
+                            $status = 'Zaplanowana (po terminie)';
                         } else {
                             $status = 'Zaplanowana';
                         }
                     }
                     else{
                         if(visitDate < currentDate) {
-                            $status = 'Termin upłynął';
+                            $status = 'Zaplanowana (po terminie)';
                         } else {
                             $status = 'Zamknięta';
                         }

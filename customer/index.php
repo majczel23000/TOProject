@@ -30,11 +30,21 @@
 			echo "\t\t\t\t\t </tr> \n";
 			echo "\t\t\t\t\t <tr> \n";
 			echo "\t\t\t\t\t\t <td>Adres</td>\n";
-			echo "\t\t\t\t\t\t <td class=\"tdBeforeEdit\"  id=\"address\">".$this->user->getAddress()."</td>\n";
+			$address = "";
+			if($this->user->getAddress() === '')
+				$address = "Brak danych";
+			else 
+				$address = $this->user->getAddress();
+			echo "\t\t\t\t\t\t <td class=\"tdBeforeEdit\"  id=\"address\">".$address."</td>\n";
 			echo "\t\t\t\t\t </tr> \n";
 			echo "\t\t\t\t\t <tr> \n";
 			echo "\t\t\t\t\t\t <td>Numer telefonu</td>\n";
-			echo "\t\t\t\t\t\t <td class=\"tdBeforeEdit\" id=\"phoneNumber\">".$this->user->getPhoneNumber()."</td>\n";
+			$phone = "";
+			if($this->user->getPhoneNumber() === '')
+				$phone = "Brak danych";
+			else 
+				$phone = $this->user->getPhoneNumber();
+			echo "\t\t\t\t\t\t <td class=\"tdBeforeEdit\" id=\"phoneNumber\">".$phone."</td>\n";
 			echo "\t\t\t\t\t </tr> \n";
 			echo "\t\t\t\t\t <tr> \n";
 			echo "\t\t\t\t\t\t <td>Ostatnie udane logowanie</td>\n";

@@ -133,9 +133,9 @@ $pdf->Cell($w[1],10,$visDetail['BIRTH_DATE'],1,0,'C');
 $pdf->Ln();
 $pdf->Cell($w[0],10,'Płeć:',1,0,'C');
 if($visDetail['GENDER'] === 'FEMALE')
-    $gender = 'Żeńska';
+    $gender = 'Samica';
 else
-    $gender = 'Męska';
+    $gender = 'Samiec';
 $pdf->Cell($w[1],10,$gender,1,0,'C');
 
 $pdf->Ln();

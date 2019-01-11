@@ -71,7 +71,7 @@ function login(){
 						$('#loginForm').append($errLogin);
 						break;
 					case 0:
-						localStorage.setItem('messageSuccess', 'Pomyslnie zalogowano. Witamy ponownie.');
+						localStorage.setItem('messageSuccess', 'Pomyślnie zalogowano. Witamy ponownie.');
 						location.href=json[1];
 						break;	
 					default:

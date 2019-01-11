@@ -34,7 +34,7 @@
 						echo '<td>Liczba przeprowadzonych wizyt</td><td>'.$arr['NUM_PREV_VISITS'].'</td>';
 					echo '</tr>';
 					echo '<tr>';
-						echo '<td>Liczba zaplanwanych wizyt</td><td>'.$arr['NUM_NEXT_VISITS'].'</td>';
+						echo '<td>Liczba zaplanowanych wizyt</td><td>'.$arr['NUM_NEXT_VISITS'].'</td>';
 					echo '</tr>';
 					echo '<tr>';
 						echo '<td>Najnowszy klient</td><td>'.$arr['NEWEST_CUSTOMER'].'</td>';
