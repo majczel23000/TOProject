@@ -16,6 +16,7 @@
 			echo "\t\t\t	<a id=\"nextVisits\" class=\"btn btnMenu\"> <i class=\"fas fa-forward\" style=\"margin-right: 10px\"></i>Przyszłe wizyty</a>\n";
 			echo "\t\t\t	<a id=\"addVisit\" class=\"btn btnMenu\"> <i class=\"fas fa-calendar-plus\" style=\"margin-right: 10px\"></i>Dodaj nową wizytę </a>\n";
 			echo "\t\t\t	<a id=\"countMedDos\" class=\"btn btnMenu\"> <i class=\"fas fa-calculator\" style=\"margin-right: 10px\"></i>Oblicz dawkę leku </a>\n";
+			echo "\t\t\t	<a id=\"supportDiagnose\" class=\"btn btnMenu\"> <i class=\"fas fa-ambulance\" style=\"margin-right: 10px\"></i> Wspomaganie diagnozy </a>\n";
 			echo "\t\t	</div>\n";
 			echo "\t\t	<div id=\"contentTitle\">\n";
 			echo "\t\t	</div>\n";

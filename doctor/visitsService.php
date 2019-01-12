@@ -32,5 +32,8 @@
 			$arr[1]=unserialize($_SESSION['DOCTOR'])->getAllMedicines();
 			echo json_encode($arr);						//zwracamy tabele
 		}
+		else if($_POST['returnVal'] == "diagnoses"){
+			echo json_encode(unserialize($_SESSION['DOCTOR'])->getAllDiagnoses());						//zwracamy tabele
+		}
 	}
 ?>

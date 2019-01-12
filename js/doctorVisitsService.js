@@ -662,7 +662,7 @@ function showVisitDetail($vis){
 	});
 
 }
-
+//obliczanie dawek leków
 $("#countMedDos").on('click',function(){
 	// przezroczysty div na cały ekran
 	$container=$('<div></div>');
@@ -827,6 +827,208 @@ $("#countMedDos").on('click',function(){
 	
 	
 	$countCotainer.append($message);
+	$container.on('click', function(){
+		$container.remove();
+	}).children().click(function() {
+		return false;
+	});
+	
+	$closeButton.on('click', function(){
+		$container.remove();
+	});
+});
+//wspomaganie diagnozy
+$("#supportDiagnose").on('click',function(){
+	// przezroczysty div na cały ekran
+	$container=$('<div></div>');
+	$container.prop('id','opacityContainer');
+	$container.css({
+		'position':'fixed',
+		'top':'0px',
+		'left':'0px',
+		'width':'100%',
+		'height':'100%',
+		'background':'rgba(255, 255, 255, 0.6)'
+	});	
+	$('body').append($container);
+
+	// div wyśrodkowany w pionie i poziomie na tytuł i treść
+	$diagnoseCotainer = $('<div></div>');
+	$diagnoseCotainer.prop('id','countMedDosContainer');
+	$diagnoseCotainer.css({
+		'position':'absolute',
+		'top':'50%',
+		'left':'50%',
+		'width':'500px',
+		'padding': '20px 50px',
+		'background':'#ff850c',
+		'margin-left':'-270px',
+		'margin-top':'-350px',
+		'border-radius': '5px',
+		'box-shadow': '0px 0px 5px 0px rgba(0,0,0,0.75)'
+	});	
+	$container.append($diagnoseCotainer);
+
+	// tytuł modala
+	$title = $('<div></div>');
+	$title.prop('id','titleDiagnoseContainer');
+	$title.css({
+		'width': '440px',
+		'float': 'left',
+		'padding': '10px 20px 20px 20px',
+		'background':'#ff850c',
+		'font-size':'1.3rem'
+	});
+	$title.html("<i class='fas fa-info-circle' style='margin-right: 10px'></i>Wspomaganie diagnozy");
+	$diagnoseCotainer.append($title);
+
+	// przycisk do zamykania modala
+	$closeButton = $('<div></div>');
+	$closeButton.prop('id','closeModal');
+	$closeButton.css({
+		'width': '20px',
+		'float': 'left',
+		'font-size': '1.6rem',
+		'background':'#ff850c'
+	});
+	$closeButton.hover(function(){
+		$(this).css(
+			"cursor", "pointer"
+		);
+	});
+	$closeButton.html("<i class='fas fa-window-close'></i>");
+	$diagnoseCotainer.append($closeButton);
+
+	// div na dane do wyswietlenia
+	$message = $('<div></div>');
+	$message.prop('id','messageDiagnoseContainer');
+	$message.css({
+		'width': '100%',
+		'height': '100%',
+		'font-size': '1.1rem'
+	});
+	//pytania jak często
+	const questions = [	"Jak często zwierze kaszle?",
+						"Jak często ma katar?",
+						"Jak często ma biegunkę?",
+						"Jak często wymiotuje",
+						"Jak często oddaje mocz?",
+						"Jak często pije?",
+						"Jak często ma kontakt z innymi zwierzętami?"];
+	//pytania kiedy ostatnio					
+	const questions2 = [	"Kiedy ostatnio było szczepione?",
+						"Kiedy ostatnio było odrobaczane?"];
+
+	for(let i=0;i<questions.length;i++){
+		//treść pytania
+		$div = $('<div style="float:left; height:40px; width: 50%; padding: 10px 0px">'+(i+1)+'. '+questions[i]+'</div>');
+		//select z wyborem
+		$div2 = $('<div style="float:left; height:40px; width: 50%; padding: 10px 0px"><select style="width:100%" id="question'+i+'"><option value="0">Nie występuje</option><option value="25">Bardzo rzadko</option><option value="50">Rzadko</option><option value="75">Często</option><option value="100">Bardzo często</option></select></div>');
+		$message.append($div);
+		$message.append($div2);
+	}
+	
+	for(let i=questions.length;i<questions.length+questions2.length;i++){
+		//treść pytania
+		$div = $('<div style="float:left; height:40px; width: 50%; padding: 10px 0px">'+(i+1)+'. '+questions2[i-questions.length]+'</div>');
+		//select z wyborem
+		$div2 = $('<div style="float:left; height:40px; width: 50%; padding: 10px 0px"><select style="width:100%" id="question'+i+'"><option value="0">W ciągu ostatniego miesiąca</option><option value="25">W ciągu ostatnich dwóch miesięcy</option><option value="50">W ciągu ostatniego pół roku</option><option value="75">W ciągu ostatniego roku</option><option value="100">Ponad rok temu</option></select></div>');
+		$message.append($div);
+		$message.append($div2);
+	}
+	$div = $('<div style="float:left; width: 100%; padding: 10px 0px"></div>');
+	$sendButton=$("<span style=\"display:block;height:20px;width:75%;text-align:center;margin:auto;margin-top:10px;\" class=\"btnEdit\">Sprawdź rezultat</span>");
+	$sendButton.on('click',function(){
+		$(this).html("Sprawdzam...");
+		let distans=0;
+		//let minD=10000;
+		//let id=-1;
+		let ids=[								//tabela przechowuje id i dystans (5 najmiejszych dysansów)
+			[-1,10000],				//id, dystans
+			[-1,10000],
+			[-1,10000],
+			[-1,10000],
+			[-1,10000]
+			];
+		$.ajax({									
+			type:"post",
+			url:"visitsService.php",
+			async:false,
+			dataType:"json",
+			data:{
+				accType:"doctor",
+				returnVal:"diagnoses"											//określa co chcemy										
+			},
+			success: function(json){
+				console.log(json);
+				for(let i=0;i<json.length;i++){
+					distans=Math.sqrt(
+						Math.pow(json[i]['QUESTION0']-$('#question0').val(),2)+
+						Math.pow(json[i]['QUESTION1']-$('#question1').val(),2)+
+						Math.pow(json[i]['QUESTION2']-$('#question2').val(),2)+
+						Math.pow(json[i]['QUESTION3']-$('#question3').val(),2)+
+						Math.pow(json[i]['QUESTION4']-$('#question4').val(),2)+
+						Math.pow(json[i]['QUESTION5']-$('#question5').val(),2)+
+						Math.pow(json[i]['QUESTION6']-$('#question6').val(),2)+
+						Math.pow(json[i]['QUESTION7']-$('#question7').val(),2)+
+						Math.pow(json[i]['QUESTION8']-$('#question8').val(),2));
+					/*if(distans<minD){
+						minD=distans;
+						id=i;
+					}*/
+					if(distans<ids[4][1]){										//ids[4][1]bo tutaj bedzie siedział najwiekszy dystans
+						ids[4][0]=i;
+						ids[4][1]=distans;
+						let change, temp;
+						do{											//sortowanie bąbelkowe, tak, aby najwmiejszy dystans był pierwszy, wraz z jego id
+							change = false;
+							for(let j=0; j<ids.length-1;j++){
+								if (ids[j+1][1]<ids[j][1]){
+									temp = ids[j];
+									ids[j] = ids[j+1];
+									ids[j+1] = temp;
+									change = true;
+								}
+							}
+						} while (change);
+					}
+				}
+				console.log(ids);
+				let diseasesText="Żadna ze sprawdzonych diagnoz nie posiada identycznych parametrów. ";	//text do wyswietlenia
+				let isTheSame=false;									//pomaga w okresleniu czy była taka sama diagnoza (dystans=0)
+				let detectedDisease=[];
+				let detectedDiseaseText="";
+				for(let i=0;i<ids.length;i++){							//przechodzimy po tabeli z id
+					if(ids[i][1]==0 && !isTheSame){						//sprawdzamy czy jest jakaś której dystans wynosił 0
+						diseasesText="Znaleziono diagnozę o identycznych parametrach. Zdiagnozowana choroba: "+json[ids[i][0]]['DISEASE']+".";
+						isTheSame=true;
+					}
+					if(isNaN(detectedDisease[json[ids[i][0]]['DISEASE']])){	//zapisujemy ilosc wykrytych chorób w tabeli
+						detectedDisease[json[ids[i][0]]['DISEASE']]=1;		//index to nazwa chorby, a wartos to ich ilosc
+					}														//jesli nie jest liczbą to zapisuemy tam 1, a jesli jest to inkrementujemy
+					else 													
+						detectedDisease[json[ids[i][0]]['DISEASE']]+=1;
+					detectedDiseaseText+="<br>"+json[ids[i][0]]['DISEASE'];
+					console.log(json[ids[i][0]]);
+				}
+				console.log(detectedDisease);
+				diseasesText+=" <br><br><span style=\"font-size:1.3rem\">Lista chorób z najbardziej pasujących diagnoz: </span>"+detectedDiseaseText;
+				$message.remove();
+				$span=$('<span>'+diseasesText+'</span>');
+				$diagnoseCotainer.append($span);
+				$diagnoseCotainer.css({
+					'margin-top':'-250px'
+				});	
+			},
+			error: function(e){
+				console.warn(e);
+			}
+		});
+		$(this).html("Sprawdź rezultat");
+	});
+	$div.append($sendButton);
+	$message.append($div);
+	$diagnoseCotainer.append($message);
 	$container.on('click', function(){
 		$container.remove();
 	}).children().click(function() {
