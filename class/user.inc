@@ -74,6 +74,7 @@
 			if(mysqli_connect_errno())
             $retVal = 1;
 			else{
+				$db->query("SET NAMES `utf8` COLLATE `utf8_polish_ci`"); 
 				$hashedPassword = password_hash($p, PASSWORD_DEFAULT);
 				$query = "INSERT INTO customer (FIRST_NAME, LAST_NAME, PASSWORD, EMAIL) VALUES('".$fN."','".$lN."','".$hashedPassword."','".$e."')";
 				$db->query($query);

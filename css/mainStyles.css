@@ -197,7 +197,7 @@ html, body {
 }
 .register-error{
 	display:block;
-	color:red;
+	color:#b26060;
 	letter-spacing:1px;
 	position:absolute;
 }

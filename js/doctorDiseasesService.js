@@ -268,40 +268,47 @@ function addDisease(){
 		const diseaseName=$('#diseaseName').val();							//pobieramy wartosci
 		const diseaseSymptoms=$('#diseaseSymptoms').val();
 		const diseaseTreatment=$('#diseaseTreatment').val();
-
-		$.ajax({									
-			type:"post",
-			url:"diseasesService.php",
-			dataType:"json",
-			data:{
-				accType:"doctor",
-				returnVal:"addingDisease",											//określa co robimy
-				diseaseName:diseaseName,
-				diseaseSymptoms:diseaseSymptoms,
-				diseaseTreatment:diseaseTreatment								
-			},
-			beforeSend: function(){
-				$('body').css('opacity','0.6');
-				$('body').css('cursor','progress');
-			},
-			success: function(json){
-				if(json=="success"){
-					$('#opacityContainer').remove();
-					$('#doctorSubMenu a').each(function(){															//resetujemy wszystkie przyciski
-						$(this).attr('class','btn btnMenu');
-					});
-					$("#contentTitle").html("");																	//czyścimy środek tytułu
-					$("#contentDescription").html("Choroba została pomyślnie dodana.");										//to samo dla cotnentu
+		
+		if(diseaseName!="" && diseaseSymptoms!="" && diseaseTreatment!=""){
+			$.ajax({									
+				type:"post",
+				url:"diseasesService.php",
+				dataType:"json",
+				data:{
+					accType:"doctor",
+					returnVal:"addingDisease",											//określa co robimy
+					diseaseName:diseaseName,
+					diseaseSymptoms:diseaseSymptoms,
+					diseaseTreatment:diseaseTreatment								
+				},
+				beforeSend: function(){
+					$('body').css('opacity','0.6');
+					$('body').css('cursor','progress');
+				},
+				success: function(json){
+					if(json=="success"){
+						$('#opacityContainer').remove();
+						$('#doctorSubMenu a').each(function(){															//resetujemy wszystkie przyciski
+							$(this).attr('class','btn btnMenu');
+						});
+						$("#contentTitle").html("");																	//czyścimy środek tytułu
+						$("#contentDescription").html("Choroba została pomyślnie dodana.");										//to samo dla cotnentu
+					}
+					$('body').css('opacity','1');
+					$('body').css('cursor','default');
+				},
+				error: function(e){
+					console.warn(e);
+					$('body').css('opacity','1');
+					$('body').css('cursor','default');
 				}
-				$('body').css('opacity','1');
-				$('body').css('cursor','default');
-			},
-			error: function(e){
-				console.warn(e);
-				$('body').css('opacity','1');
-				$('body').css('cursor','default');
-			}
-		});
+			});
+		}
+		else{
+			if($('#disease-err').length>0)
+				$('#disease-err').remove();
+			$("#contentDescription").append('<span id="disease-err" style="color:#b26060">Proszę wypełnić wszystkie pola.</span>');
+		}
 	})
 	$("#contentDescription").append($addButton);
 	isSomeoneActive=true;

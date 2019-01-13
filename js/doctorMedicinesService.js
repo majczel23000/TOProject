@@ -268,40 +268,52 @@ function addMedicine(){
 		const medicineName=$('#medicineName').val();							//pobieramy wartosci
 		const medicineDosage=$('#medicineDosage').val();
 		const medicineDescription=$('#medicineDescription').val();
-
-		$.ajax({									
-			type:"post",
-			url:"medicinesService.php",
-			dataType:"json",
-			data:{
-				accType:"doctor",
-				returnVal:"addingMedicine",											//określa co robimy
-				medicineName:medicineName,
-				medicineDosage:medicineDosage,
-				medicineDescription:medicineDescription								
-			},
-			beforeSend: function(){
-				$('body').css('opacity','0.6');
-				$('body').css('cursor','progress');
-			},
-			success: function(json){
-				if(json=="success"){
-					$('#opacityContainer').remove();
-					$('#doctorSubMenu a').each(function(){															//resetujemy wszystkie przyciski
-						$(this).attr('class','btn btnMenu');
-					});
-					$("#contentTitle").html("");																	//czyścimy środek tytułu
-					$("#contentDescription").html("Lek został pomyślnie dodany.");										//to samo dla cotnentu
+		
+		if(medicineName!="" && medicineDosage!="" && medicineDescription!="" && !isNaN(medicineDosage)){
+			$.ajax({									
+				type:"post",
+				url:"medicinesService.php",
+				dataType:"json",
+				data:{
+					accType:"doctor",
+					returnVal:"addingMedicine",											//określa co robimy
+					medicineName:medicineName,
+					medicineDosage:medicineDosage,
+					medicineDescription:medicineDescription								
+				},
+				beforeSend: function(){
+					$('body').css('opacity','0.6');
+					$('body').css('cursor','progress');
+				},
+				success: function(json){
+					if(json=="success"){
+						$('#opacityContainer').remove();
+						$('#doctorSubMenu a').each(function(){															//resetujemy wszystkie przyciski
+							$(this).attr('class','btn btnMenu');
+						});
+						$("#contentTitle").html("");																	//czyścimy środek tytułu
+						$("#contentDescription").html("Lek został pomyślnie dodany.");										//to samo dla cotnentu
+					}
+					$('body').css('opacity','1');
+					$('body').css('cursor','default');
+				},
+				error: function(e){
+					console.warn(e);
+					$('body').css('opacity','1');
+					$('body').css('cursor','default');
 				}
-				$('body').css('opacity','1');
-				$('body').css('cursor','default');
-			},
-			error: function(e){
-				console.warn(e);
-				$('body').css('opacity','1');
-				$('body').css('cursor','default');
-			}
-		});
+			});
+		}
+		else if(isNaN(medicineDosage)){
+			if($('#medicine-err').length>0)
+				$('#medicine-err').remove();
+			$("#contentDescription").append('<span id="medicine-err" style="color:#b26060">Dawkowanie musi być liczbą.</span>');
+		}
+		else{
+			if($('#medicine-err').length>0)
+				$('#medicine-err').remove();
+			$("#contentDescription").append('<span id="medicine-err" style="color:#b26060">Proszę wypełnić wszystkie pola.</span>');
+		}
 	})
 	$("#contentDescription").append($addButton);
 	isSomeoneActive=true;

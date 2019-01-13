@@ -75,7 +75,7 @@ $('#email').on('blur',function(){
 
 //obsługa imienie
 $('#firstName').on('blur',function(){
-	const nameReg = /^([a-zA-Z]){3,20}$/													//regularne tylko dla liter
+	const nameReg = /^([a-zA-ZąćęłńóśźżĄĘŁŃÓŚŹŻ.-\s]){3,20}$/								//regularne tylko dla liter
 	const name="emptyFirstName";															//nazwa błędu z pustym inputem
 	const name2="tooLessLetterFN";															//nazwa błęd, gdy za mało liter
 	if(!$(this).val()){																		//jesli pole puste	
@@ -96,7 +96,7 @@ $('#firstName').on('blur',function(){
 
 //obsługa nazwiska
 $('#lastName').on('blur',function(){
-	const nameReg = /^([a-zA-Z]){2,25}$/													//regularne tylko dla liter
+	const nameReg = /^([a-zA-ZąćęłńóśźżĄĘŁŃÓŚŹŻ.-\s]){3,20}$/								//regularne tylko dla liter
 	const name="emptyLastName";
 	const name2="tooLessLetterLN";															//nazwa błęd, gdy za mało liter
 	if(!$(this).val()){																		//jesli pole puste	

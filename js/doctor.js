@@ -1,9 +1,9 @@
 let validationObjects = {
-	"firstName": ['First Name', true],
-	"lastName": ['Last Name', true],
-	"address": ['Address', true],
-	"phoneNumber": ['Phone Number', true],
-	"academicTitle": ['Academic Title', true]
+	"firstName": ['Imię', true],
+	"lastName": ['Nazwisko', true],
+	"address": ['Adres', true],
+	"phoneNumber": ['Numer telefonu', true],
+	"academicTitle": ['Tytuł naukowy', true]
 };
 
 $('#editUserInfoButton').on('click', function(e){
