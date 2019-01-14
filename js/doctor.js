@@ -342,3 +342,180 @@ function errorService(action, msg, id){
         $('#'+id).remove();
     }
 }
+
+$('#changePasswordButton').on('click', function(){
+    showModalComponent("Zmiana hasła");
+})
+
+// funkcja do tworzenia komponentu modala
+function showModalComponent($titleText){
+	// przezroczysty div na cały ekran
+	$container=$('<div></div>');
+	$container.prop('id','modalContainer');
+	$container.css({
+		'position':'fixed',
+		'top':'0px',
+		'left':'0px',
+		'width':'100%',
+		'height':'100%',
+		'background':'rgba(255, 255, 255, 0.6)'
+	});	
+
+	$('body').append($container);
+
+	// div wyśrodkowany w pionie i poziomie na tytuł i treść
+	$content = $('<div></div>');
+	$content.prop('id','modalContent');
+	$content.css({
+		'position':'absolute',
+		'top':'50%',
+		'left':'50%',
+		'width':'500px',
+		'padding': '20px 50px',
+		'background':'#ff850c',
+		'margin-left':'-270px',
+		'margin-top':'-220px',
+		'border-radius': '5px',
+		'box-shadow': '0px 0px 5px 0px rgba(0,0,0,0.75)'
+	});	
+	$container.append($content).hide().fadeIn(100);
+
+	// tytuł modala
+	$title = $('<div></div>');
+	$title.prop('id','modalTitle');
+	$title.css({
+		'width': '440px',
+		'float': 'left',
+		'padding': '10px 20px 20px 20px',
+		'background':'#ff850c',
+		'font-size':'1.3rem'
+	});
+	$title.html("<i class='fas fa-align-center' style='margin-right: 10px'></i>" + $titleText);
+	$content.append($title);
+
+	// przycisk do zamykania modala
+	$closeButton = $('<div></div>');
+	$closeButton.prop('id','closeModal');
+	$closeButton.css({
+		'width': '20px',
+		'float': 'left',
+		'font-size': '1.6rem',
+		'background':'#ff850c'
+	});
+	$closeButton.hover(function(){
+		$(this).css(
+			"cursor", "pointer"
+		);
+	});
+	$closeButton.html("<i class='fas fa-window-close'></i>");
+	$content.append($closeButton);
+
+	// div na wiadomosc do wyswietlenia
+	$message = $('<div></div>');
+	$message.prop('id','messageModal');
+	$message.css({
+		'width': '100%',
+		'height': '100%',
+		'font-size': '1.1rem'
+	});
+
+    $input = $("<input>");
+    $input.attr('type', 'password');
+    $input.attr('id', 'changePassInput');
+    $input.attr('placeholder', 'Wpisz nowe hasło');
+    $input.css({
+		'width': '97%',
+		'padding': '10px',
+		'font-size': '1.1rem'
+    });
+    
+    $button = $("<button></button>");
+    $button.attr('id', 'acceptNewPassButton');
+    $button.attr('class', 'btnEdit');
+    $button.html('Zmień hasło');
+    $button.css({
+		'display': 'block',
+		'margin': '0 auto',
+		'margin-top': '10px'
+    });
+
+    $message.append($input);
+    $message.append($button);
+    $content.append($message);
+    
+    // po kliknięciu 'Zmień hasło'
+    $button.on('click', function(){
+        if($input.val().length < 5){
+            $input.css('background',"#ffa8a8");
+            $('#'+$input.attr('id')+"Error").remove();
+            $error = $('<p></p>');
+            $error.prop('class','edit-data-error');
+            $error.attr('id', $input.attr('id')+"Error");
+            $error.html('Nowe hasło musi mieć przynajmniej 5 znaków');
+            
+            $content.append($error);
+
+            $input.on('keyup', function(){
+                if($input.val().length < 5){
+                    $input.css('background',"#ffa8a8");
+                    $('#'+$input.attr('id')+"Error").remove();
+                    $error = $('<span></span>');
+                    $error.prop('class','edit-data-error');
+                    $error.attr('id', $input.attr('id')+"Error");
+                    $error.html('Nowe hasło musi mieć przynajmniej 5 znaków');
+                    
+                    $content.append($error);
+                } else {
+                    $input.css('background',"#f6f6f6");
+                    $('#'+$input.attr('id')+"Error").remove();
+                }
+            })
+
+        } else {
+            $('#'+$input.attr('id')+"Error").remove();
+            console.log($input.val());
+            $.ajax({
+                type:"post",
+                url:"editDoctorData.php",
+                dataType:"json",
+                data: {
+                    password: $input.val()
+                },
+                beforeSend: function(){
+                    $('body').css('opacity','0.6');
+                    $('body').css('cursor','progress');
+                },
+                success: function(json){
+                    switch(json){
+                        case 0:
+                            localStorage.setItem('messageSuccess', 'Hasło zostało zmienione.');
+                            location.href="index.php"
+                            break;
+                        default:
+                            console.log('Default success response');
+                            break;
+                    }
+                    $('body').css('opacity','1');
+                    $('body').css('cursor','default');
+                },
+                error: function(e){
+                    console.warn(e);
+                    $('body').css('opacity','1');
+                    $('body').css('cursor','default');
+                }
+            });
+        }
+        
+    })
+
+	// po kliknięciu gdziekolwiek poza content znika modal
+	$container.on('click', function(){
+		$container.fadeOut(100,function(){$container.remove();});
+	}).children().click(function() {
+		return false;
+	});
+	
+	$closeButton.on('click', function(){
+		$container.fadeOut(100,function(){$container.remove();});
+	})
+}

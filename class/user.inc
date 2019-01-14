@@ -118,6 +118,21 @@
 			}
 			return "Brak danych";
 		}
+
+		public function changePassword($pass){
+			$retVal;
+			require('../connect.php');        
+			@$db=new mysqli($server,$user,$password,$dataBase);
+			if(mysqli_connect_errno())
+				$retVal = 1;
+			else{
+				$hashedPassword = password_hash($pass, PASSWORD_DEFAULT);
+				$query="UPDATE ".$this->accType." SET PASSWORD = '".$hashedPassword."' WHERE ".substr($this->accType,0,3)."_ID=".$this->idUser;
+				$result=$db->query($query);
+				$retVal = 0;
+			}
+			return $retVal;
+		}
 	}
 
 ?>

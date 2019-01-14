@@ -1,5 +1,9 @@
 <?php
-if(isset($_POST['firstName']) && isset($_POST['lastName']) && isset($_POST['address']) && isset($_POST['phoneNumber']) && isset($_POST['academicTitle'])){
+if(isset($_POST['password'])){
+	session_start();		
+	require ('../class/doctor.inc');
+	echo json_encode(unserialize($_SESSION['DOCTOR'])->changePassword($_POST['password']));
+} else if(isset($_POST['firstName']) && isset($_POST['lastName']) && isset($_POST['address']) && isset($_POST['phoneNumber']) && isset($_POST['academicTitle'])){
 	session_start();		
 	require ('../class/doctor.inc');
 	$hours = Array(	"MONDAY"	=> $_POST['mondayHours'],

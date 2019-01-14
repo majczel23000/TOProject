@@ -73,6 +73,18 @@ body{
     margin-top: 20px;
     font-size: 1rem;
 }
+#changePasswordButton {
+    border: none;
+    background:#ff850c;
+    padding: 15px 22px;
+    margin-bottom:50px;
+    margin-top:10px;
+    transition: 0.1s all;
+}
+#changePasswordButton:hover {
+    cursor: pointer;
+    background: #ffcc99;
+}
 /*=====TABLEINFOSTYLES=====*/
 #userInfo, #customerDetail, #doctorDetail, #mainStatsTable{
 	cursor:default;

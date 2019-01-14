@@ -57,6 +57,7 @@
 			echo "\t\t\t\t </tbody> \n";
 			echo "\t\t\t </table> \n";
 			echo "\t\t\t <button id=\"editUserInfoButton\" class=\"btnEdit center\"><i class=\"fas fa-edit\"></i> Edytuj dane</button>\n";
+			echo "\t\t\t <button id=\"changePasswordButton\" class=\"btnLogin center\"><i class=\"fas fa-edit\"></i> Zmień hasło</button>\n";
 			echo "\t\t	</div>\n";
 		}
 
